@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rate Limiting for LLMs — Valkey for AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../use-case.css">
+<style>
+  :root{
+    --accent-color:#10b981;--accent-color2:#06b6d4;
+    --accent-gradient:linear-gradient(135deg,#10b981,#06b6d4);
+    --accent-bg:linear-gradient(135deg,#10b981,#06b6d4);
+    --accent-glow:rgba(16,185,129,.18)
+  }
+  .btn-primary{background:linear-gradient(135deg,#10b981,#06b6d4)}
+  .btn-primary:hover{box-shadow:0 4px 20px rgba(16,185,129,.35)}
+  .uc-breadcrumb a{color:#10b981}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="nav-inner">
+  <a href="/" class="nav-logo"><img src="/valkey-logo.svg" alt="Valkey"><span class="accent">for ai</span></a>
+  <div class="nav-links">
+    <a href="/#use-cases">Use Cases</a>
+    <a href="/use-cases/rate-limiting/">Rate Limiting</a>
+    <a href="/demo/rate-limiter.html">Live Demo</a>
+    <a href="https://github.com/meet-bhagdev/valkeyforai" target="_blank">GitHub</a>
+  </div>
+</div></nav>
+
+<div class="uc-hero">
+  <div class="uc-breadcrumb"><a href="/">Home</a> → <a href="/#use-cases">Use Cases</a> → Rate Limiting</div>
+  <div class="uc-icon-wrap" style="background:linear-gradient(135deg,#10b981,#06b6d4)">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+  </div>
+  <h1>Rate Limiting<br><span>for LLM APIs</span></h1>
+  <p>Token-aware, cost-based, and hierarchical rate limiting for production AI workloads. Protect your APIs, control spend, and keep your LLM integrations reliable.</p>
+  <div class="uc-hero-tags">
+    <span>LLM APIs</span><span>Cost Control</span><span>Sliding Window</span><span>Token Bucket</span><span>Multi-tier Limits</span>
+  </div>
+</div>
+
+<div class="uc-main">
+  <!-- COOKBOOKS PANEL -->
+  <div class="uc-panel">
+    <div class="uc-panel-header">
+      <h2>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Cookbooks
+      </h2>
+      <p>6 step-by-step guides from basic limiting to production-grade multi-tier systems</p>
+    </div>
+    <div class="uc-panel-body">
+      <ul class="cb-list">
+        <li class="cb-item">
+          <a href="/cookbooks/rate-limiting/01-getting-started.html">
+            <span class="cb-num">01</span>
+            <div class="cb-info">
+              <h4>Getting Started</h4>
+              <p>Fixed-window rate limiting in under 5 minutes</p>
+              <div class="cb-badges"><span class="cb-badge easy">Beginner</span><span class="cb-badge time">~5 min</span></div>
+            </div>
+          </a>
+        </li>
+        <li class="cb-item">
+          <a href="/cookbooks/rate-limiting/02-token-aware.html">
+            <span class="cb-num">02</span>
+            <div class="cb-info">
+              <h4>Token-Aware Limiting</h4>
+              <p>Track LLM token consumption alongside request counts</p>
+              <div class="cb-badges"><span class="cb-badge medium">Intermediate</span><span class="cb-badge time">~15 min</span></div>
+            </div>
+          </a>
+        </li>
+        <li class="cb-item">
+          <a href="/cookbooks/rate-limiting/03-agent-limiting.html">
+            <span class="cb-num">03</span>
+            <div class="cb-info">
+              <h4>Agent Rate Limiting</h4>
+              <p>Per-agent and per-conversation rate limits for AI workloads</p>
+              <div class="cb-badges"><span class="cb-badge medium">Intermediate</span><span class="cb-badge time">~20 min</span></div>
+            </div>
+          </a>
+        </li>
+        <li class="cb-item">
+          <a href="/cookbooks/rate-limiting/04-hierarchical.html">
+            <span class="cb-num">04</span>
+            <div class="cb-info">
+              <h4>Hierarchical Limits</h4>
+              <p>User → Organization → Global limit tiers with atomic enforcement</p>
+              <div class="cb-badges"><span class="cb-badge hard">Advanced</span><span class="cb-badge time">~25 min</span></div>
+            </div>
+          </a>
+        </li>
+        <li class="cb-item">
+          <a href="/cookbooks/rate-limiting/05-cost-based.html">
+            <span class="cb-num">05</span>
+            <div class="cb-info">
+              <h4>Cost-Based Limiting</h4>
+              <p>Track and limit by dollar cost per model and per user</p>
+              <div class="cb-badges"><span class="cb-badge hard">Advanced</span><span class="cb-badge time">~25 min</span></div>
+            </div>
+          </a>
+        </li>
+        <li class="cb-item">
+          <a href="/cookbooks/rate-limiting/06-production.html">
+            <span class="cb-num">06</span>
+            <div class="cb-info">
+              <h4>Production Patterns</h4>
+              <p>Distributed limiting, monitoring, failover, and observability</p>
+              <div class="cb-badges"><span class="cb-badge hard">Advanced</span><span class="cb-badge time">~30 min</span></div>
+            </div>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- DEMO PANEL -->
+  <div class="uc-panel" style="display:flex;flex-direction:column">
+    <div class="uc-panel-header">
+      <h2>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Live Demo
+      </h2>
+      <p>Test all 4 algorithms in real-time — fixed window, sliding window, token bucket, and leaky bucket</p>
+    </div>
+    <iframe class="demo-frame" src="/demo/rate-limiter.html" title="Rate Limiter Live Demo"></iframe>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div style="max-width:1200px;margin:0 auto;padding:0 24px 48px">
+  <div style="background:var(--card);border:1px solid var(--brd);border-radius:var(--radius);padding:36px">
+    <h2 style="font-size:22px;font-weight:800;margin-bottom:24px">How Valkey Powers Rate Limiting</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px">
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#10b981;margin-bottom:8px">FIXED WINDOW</div>
+        <code style="display:block;background:rgba(0,0,0,.4);padding:12px;border-radius:8px;font-size:12px;line-height:1.6;color:#a5f3fc">INCR rl:{user}:{window}<br>EXPIRE key {window_sec}</code>
+        <p style="font-size:13px;color:var(--t2);margin-top:8px">One key per window. Atomic increment + TTL. ~0.2ms.</p>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#10b981;margin-bottom:8px">SLIDING WINDOW</div>
+        <code style="display:block;background:rgba(0,0,0,.4);padding:12px;border-radius:8px;font-size:12px;line-height:1.6;color:#a5f3fc">ZADD rl:{user} {ts} {id}<br>ZREMRANGEBYSCORE ...<br>ZCARD key</code>
+        <p style="font-size:13px;color:var(--t2);margin-top:8px">Sorted set per user. Prune old events. Exact count.</p>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#10b981;margin-bottom:8px">TOKEN BUCKET</div>
+        <code style="display:block;background:rgba(0,0,0,.4);padding:12px;border-radius:8px;font-size:12px;line-height:1.6;color:#a5f3fc">HSET bucket tokens {n}<br>HSET bucket last_refill {ts}<br>EVALSHA lua_script</code>
+        <p style="font-size:13px;color:var(--t2);margin-top:8px">Lua script for atomic refill + consume. Burst-friendly.</p>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#10b981;margin-bottom:8px">TOKEN-AWARE</div>
+        <code style="display:block;background:rgba(0,0,0,.4);padding:12px;border-radius:8px;font-size:12px;line-height:1.6;color:#a5f3fc">INCRBY rl:{user}:tokens {n}<br>INCR rl:{user}:requests<br>EXPIRE key {ttl}</code>
+        <p style="font-size:13px;color:var(--t2);margin-top:8px">Track both requests AND tokens. Ideal for LLM APIs.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="uc-github">
+  <div class="uc-github-card">
+    <div>
+      <h3>Complete source code on GitHub</h3>
+      <p>Full Python implementation with 5 algorithms, FastAPI integration, Redis/Valkey client, and Docker compose.</p>
+    </div>
+    <div class="uc-github-card-actions">
+      <a href="https://github.com/meet-bhagdev/valkeyforai" target="_blank" class="btn btn-primary">View on GitHub →</a>
+      <a href="/cookbooks/rate-limiting/" class="btn btn-outline">All 6 Cookbooks →</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

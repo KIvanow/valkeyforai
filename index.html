@@ -22,7 +22,6 @@
                 <a href="#use-cases">Use Cases</a>
                 <a href="#how-it-works">How It Works</a>
                 <a href="#cookbooks">Cookbooks</a>
-                <a href="#architectures">Architectures</a>
                 <a href="/demo/rate-limiter.html">Live Demo</a>
                 <a href="https://github.com/valkey-io" target="_blank" class="nav-github">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
@@ -72,70 +71,70 @@
                 <p class="section-subtitle">From caching LLM responses to powering real-time vector search, Valkey is the high-performance backbone for modern AI applications.</p>
             </div>
             <div class="bento-grid">
-                <div class="bento-card bento-large anim-fade-up" data-delay="0">
+                <a href="/use-cases/semantic-caching/" class="bento-card bento-large anim-fade-up" data-delay="0" style="text-decoration:none;color:inherit;display:block">
                     <div class="bento-icon" style="--icon-bg: #6366f1">
                         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8a3 3 0 0 0-3 3"/></svg>
                     </div>
                     <h3>Semantic Caching</h3>
                     <p>Cache LLM responses by meaning, not just exact match. Cut costs by 60%+ and slash latency from seconds to milliseconds.</p>
                     <div class="bento-tags"><span>LLM</span><span>Cost Savings</span><span>Low Latency</span></div>
-                </div>
-                <div class="bento-card anim-fade-up" data-delay="100">
+                </a>
+                <a href="/use-cases/conversation-memory/" class="bento-card anim-fade-up" data-delay="100" style="text-decoration:none;color:inherit;display:block">
                     <div class="bento-icon" style="--icon-bg: #8b5cf6">
                         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                     </div>
                     <h3>Conversation Memory</h3>
                     <p>Scalable, low-latency session storage for chatbot and agent conversations with TTL-based expiry.</p>
                     <div class="bento-tags"><span>Chatbots</span><span>Sessions</span></div>
-                </div>
-                <div class="bento-card anim-fade-up" data-delay="200">
+                </a>
+                <a href="/use-cases/vector-search/" class="bento-card anim-fade-up" data-delay="200" style="text-decoration:none;color:inherit;display:block">
                     <div class="bento-icon" style="--icon-bg: #ec4899">
                         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                     </div>
                     <h3>Vector Search</h3>
                     <p>Native vector similarity search with HNSW and FLAT indexing. Sub-millisecond nearest-neighbor queries.</p>
                     <div class="bento-tags"><span>Embeddings</span><span>Search</span></div>
-                </div>
-                <div class="bento-card anim-fade-up" data-delay="100">
+                </a>
+                <a href="/use-cases/agent-session-state/" class="bento-card anim-fade-up" data-delay="100" style="text-decoration:none;color:inherit;display:block">
                     <div class="bento-icon" style="--icon-bg: #f59e0b">
                         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                     </div>
                     <h3>Agent Session State</h3>
                     <p>Persist tool calls, reasoning chains, and intermediate results for multi-step AI agents with atomic operations.</p>
                     <div class="bento-tags"><span>Agents</span><span>State</span></div>
-                </div>
-                <div class="bento-card anim-fade-up" data-delay="200">
+                </a>
+                <a href="/use-cases/rate-limiting/" class="bento-card anim-fade-up" data-delay="200" style="text-decoration:none;color:inherit;display:block">
                     <div class="bento-icon" style="--icon-bg: #10b981">
                         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                     </div>
-                    <h3><a href="/cookbooks/rate-limiting/" style="color:inherit">Rate Limiting</a></h3>
+                    <h3>Rate Limiting</h3>
                     <p>Token-aware rate limiting for LLM APIs. Sliding window counters and token bucket patterns built in.</p>
-                    <div class="bento-tags"><span>API</span><span>Protection</span><span><a href="/cookbooks/rate-limiting/" style="color:inherit">6 Cookbooks →</a></span><span><a href="/demo/rate-limiter.html" style="color:inherit">Live Demo →</a></span></div>
-                </div>
-                <div class="bento-card bento-large anim-fade-up" data-delay="300">
+                    <div class="bento-tags"><span>API</span><span>Protection</span><span>6 Cookbooks →</span><span>Live Demo →</span></div>
+                </a>
+                <a href="/use-cases/streaming-buffers/" class="bento-card bento-large anim-fade-up" data-delay="300" style="text-decoration:none;color:inherit;display:block">
                     <div class="bento-icon" style="--icon-bg: #06b6d4">
                         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
                     </div>
                     <h3>Streaming Response Buffers</h3>
                     <p>Buffer and broadcast streaming LLM responses with Pub/Sub and Streams. Perfect for real-time UIs and multi-client delivery.</p>
                     <div class="bento-tags"><span>Streaming</span><span>Real-time</span><span>Pub/Sub</span></div>
-                </div>
-                <div class="bento-card anim-fade-up" data-delay="100">
+                </a>
+                <a href="/use-cases/rag-pipelines/" class="bento-card anim-fade-up" data-delay="100" style="text-decoration:none;color:inherit;display:block">
                     <div class="bento-icon" style="--icon-bg: #f43f5e">
                         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
                     </div>
                     <h3>RAG Pipelines</h3>
                     <p>Retrieval-Augmented Generation with vector search, document chunking, and metadata filtering — all in Valkey.</p>
                     <div class="bento-tags"><span>RAG</span><span>Retrieval</span></div>
-                </div>
-                <div class="bento-card anim-fade-up" data-delay="200">
+                </a>
+                <a href="/use-cases/feature-store/" class="bento-card anim-fade-up" data-delay="200" style="text-decoration:none;color:inherit;display:block">
                     <div class="bento-icon" style="--icon-bg: #a855f7">
                         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
                     </div>
-                    <h3><a href="/cookbooks/feature-store/" style="color:inherit">Feature Store</a></h3>
+                    <h3>Feature Store</h3>
                     <p>Real-time feature serving for ML models. Microsecond reads for online inference at scale.</p>
-                    <div class="bento-tags"><span>ML</span><span>Inference</span><span><a href="/cookbooks/feature-store/" style="color:inherit">6 Cookbooks →</a></span><span><a href="/demo/feature-store.html" style="color:inherit">Live Demo →</a></span></div>
-                </div>
+                    <div class="bento-tags"><span>ML</span><span>Inference</span><span>6 Cookbooks →</span><span>Live Demo →</span></div>
+                </a>
             </div>
         </div>
     </section>
@@ -240,66 +239,6 @@
         </div>
     </section>
 
-    <!-- ARCHITECTURES -->
-    <section class="section section-dark" id="architectures">
-        <div class="container">
-            <div class="section-header anim-fade-up">
-                <span class="section-tag">Reference Architectures</span>
-                <h2 class="section-title">Battle-tested blueprints<br>for production AI.</h2>
-                <p class="section-subtitle">Each architecture includes data models, scaling considerations, failure modes, and deployment patterns.</p>
-            </div>
-            <div class="arch-grid">
-                <div class="arch-card anim-fade-up" data-delay="0">
-                    <div class="arch-diagram">
-                        <div class="arch-node arch-node-app">App</div>
-                        <div class="arch-arrow">→</div>
-                        <div class="arch-node arch-node-valkey">Valkey</div>
-                        <div class="arch-arrow">→</div>
-                        <div class="arch-node arch-node-llm">LLM API</div>
-                    </div>
-                    <h3>Semantic Cache Layer</h3>
-                    <p>Intercept LLM calls, check for semantically similar cached responses, and only call the API on cache miss. Includes embedding generation, similarity threshold tuning, and cache invalidation strategies.</p>
-                    <div class="arch-details">
-                        <span>Vector Similarity</span>
-                        <span>Write-Through</span>
-                        <span>TTL Eviction</span>
-                    </div>
-                </div>
-                <div class="arch-card anim-fade-up" data-delay="150">
-                    <div class="arch-diagram">
-                        <div class="arch-node arch-node-app">Query</div>
-                        <div class="arch-arrow">→</div>
-                        <div class="arch-node arch-node-valkey">Valkey VSS</div>
-                        <div class="arch-arrow">→</div>
-                        <div class="arch-node arch-node-llm">LLM + Context</div>
-                    </div>
-                    <h3>RAG with Valkey Vector Store</h3>
-                    <p>Store document embeddings directly in Valkey. Query with vector similarity search, combine with metadata filters, and feed results into the LLM context window for grounded generation.</p>
-                    <div class="arch-details">
-                        <span>HNSW Index</span>
-                        <span>Hybrid Search</span>
-                        <span>Metadata Filters</span>
-                    </div>
-                </div>
-                <div class="arch-card anim-fade-up" data-delay="300">
-                    <div class="arch-diagram">
-                        <div class="arch-node arch-node-app">Agent</div>
-                        <div class="arch-arrow">→</div>
-                        <div class="arch-node arch-node-valkey">Valkey Streams</div>
-                        <div class="arch-arrow">→</div>
-                        <div class="arch-node arch-node-llm">Tool / LLM</div>
-                    </div>
-                    <h3>Multi-Agent Orchestration</h3>
-                    <p>Use Valkey Streams and Hashes to coordinate multi-agent workflows. Persist tool outputs, share state between agents, and implement reliable task queues with consumer groups.</p>
-                    <div class="arch-details">
-                        <span>Consumer Groups</span>
-                        <span>Atomic State</span>
-                        <span>Event Sourcing</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- CTA -->
     <section class="section cta-section" id="cta">
@@ -340,7 +279,6 @@
                         <a href="/cookbooks/feature-store/">Feature Store Cookbooks</a>
                         <a href="/demo/feature-store.html">Feature Store Demo</a>
                         <a href="/demo/rate-limiter.html">Rate Limiter Demo</a>
-                        <a href="#architectures">Architectures</a>
                     </div>
                     <div class="footer-col">
                         <h4>Community</h4>
