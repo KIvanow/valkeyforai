@@ -8,11 +8,12 @@
 <link rel="stylesheet" href="../cookbook.css">
 <style>
 :root{--accent:#f43f5e}
-.code-block{background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:20px;margin:16px 0;font-family:'SF Mono','Fira Code',monospace;font-size:13px;line-height:1.7;overflow-x:auto}
+.code-block{background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:20px;margin:16px 0;font-family:'SF Mono','Fira Code',monospace;font-size:13px;line-height:1.7;overflow-x:auto;white-space:pre-wrap}
 .code-block .cmd{color:#f43f5e}
 .code-block .str{color:#10b981}
 .code-block .num{color:#f59e0b}
 .code-block .comment{color:rgba(245,245,247,.4)}
+.code-block .kw{color:#8b5cf6}
 .section{margin:40px 0}
 .section h2{font-size:24px;font-weight:800;margin-bottom:16px}
 .section p{color:rgba(245,245,247,.7);line-height:1.7;margin-bottom:16px}
@@ -52,110 +53,99 @@ td{color:rgba(245,245,247,.8)}
 <div class="section">
 <h2>Cluster Mode</h2>
 <p>Distribute data across multiple nodes for horizontal scaling:</p>
-<div class="code-block">
-<span class="comment"># Docker Compose for 3-node cluster</span>
+<div class="code-block"><span class="comment"># Docker Compose for 3-node cluster</span>
 version: '3.8'
 services:
-  valkey-1:
-    image: valkey/valkey-stack:latest
-    command: valkey-server --cluster-enabled yes --cluster-node-timeout 5000
-    ports:
-      - "7001:6379"
-  valkey-2:
-    image: valkey/valkey-stack:latest
-    command: valkey-server --cluster-enabled yes --cluster-node-timeout 5000
-    ports:
-      - "7002:6379"
-  valkey-3:
-    image: valkey/valkey-stack:latest
-    command: valkey-server --cluster-enabled yes --cluster-node-timeout 5000
-    ports:
-      - "7003:6379"
-</div>
-<div class="code-block">
-<span class="comment"># Create cluster</span>
+    valkey-1:
+        image: valkey/valkey-stack:latest
+        command: valkey-server --cluster-enabled yes --cluster-node-timeout 5000
+        ports:
+            - "7001:6379"
+    valkey-2:
+        image: valkey/valkey-stack:latest
+        command: valkey-server --cluster-enabled yes --cluster-node-timeout 5000
+        ports:
+            - "7002:6379"
+    valkey-3:
+        image: valkey/valkey-stack:latest
+        command: valkey-server --cluster-enabled yes --cluster-node-timeout 5000
+        ports:
+            - "7003:6379"</div>
+<div class="code-block"><span class="comment"># Create cluster</span>
 valkey-cli --cluster create \
-  127.0.0.1:7001 127.0.0.1:7002 127.0.0.1:7003 \
-  --cluster-replicas 0
-</div>
+    127.0.0.1:7001 127.0.0.1:7002 127.0.0.1:7003 \
+    --cluster-replicas 0</div>
 </div>
 
 <div class="section">
 <h2>Replication for HA</h2>
-<div class="code-block">
-<span class="comment"># valkey.conf for replica</span>
+<div class="code-block"><span class="comment"># valkey.conf for replica</span>
 replicaof primary.host 6379
 replica-read-only yes
 
 <span class="comment"># Connect to replicas for read scaling</span>
-primary = valkey.Valkey(host='primary', port=6379)
-replica = valkey.Valkey(host='replica', port=6379)
+primary = valkey.Valkey(host=<span class="str">'primary'</span>, port=<span class="num">6379</span>)
+replica = valkey.Valkey(host=<span class="str">'replica'</span>, port=<span class="num">6379</span>)
 
 <span class="comment"># Write to primary, read from replicas</span>
 primary.hset(key, mapping=data)
-results = replica.ft('idx').search(query)
-</div>
+results = replica.ft(<span class="str">'idx'</span>).search(query)</div>
 </div>
 
 <div class="section">
 <h2>Memory Optimization</h2>
-<div class="code-block">
-<span class="comment"># valkey.conf optimizations</span>
+<div class="code-block"><span class="comment"># valkey.conf optimizations</span>
 maxmemory 8gb
 maxmemory-policy volatile-lru
 
 <span class="comment"># Use FLOAT16 for 50% memory savings (slight accuracy loss)</span>
-<span class="cmd">FT.CREATE</span> idx ON HASH PREFIX 1 "doc:"
-  SCHEMA embedding VECTOR HNSW 6
-    TYPE <span class="str">FLOAT16</span>  <span class="comment"># Instead of FLOAT32</span>
-    DIM 1536
-    DISTANCE_METRIC COSINE
+<span class="cmd">FT.CREATE</span> idx ON HASH PREFIX <span class="num">1</span> <span class="str">"doc:"</span>
+    SCHEMA embedding VECTOR HNSW <span class="num">6</span>
+        TYPE <span class="str">FLOAT16</span>  <span class="comment"># Instead of FLOAT32</span>
+        DIM <span class="num">1536</span>
+        DISTANCE_METRIC COSINE
 
 <span class="comment"># Enable compression for hash values</span>
 hash-max-ziplist-entries 512
-hash-max-ziplist-value 64
-</div>
+hash-max-ziplist-value 64</div>
 </div>
 
 <div class="section">
 <h2>Connection Pooling</h2>
-<div class="code-block">
-<span class="comment"># Use connection pools in production</span>
+<div class="code-block"><span class="comment"># Use connection pools in production</span>
 pool = valkey.ConnectionPool(
-    host='localhost',
-    port=6379,
-    max_connections=50,
-    decode_responses=False
+    host=<span class="str">'localhost'</span>,
+    port=<span class="num">6379</span>,
+    max_connections=<span class="num">50</span>,
+    decode_responses=<span class="kw">False</span>
 )
 client = valkey.Valkey(connection_pool=pool)
 
 <span class="comment"># Or use async with connection pool</span>
 pool = valkey.asyncio.ConnectionPool.from_url(
-    "redis://localhost:6379",
-    max_connections=50
-)
-</div>
+    <span class="str">"redis://localhost:6379"</span>,
+    max_connections=<span class="num">50</span>
+)</div>
 </div>
 
 <div class="section">
 <h2>AWS ElastiCache / MemoryDB</h2>
-<div class="code-block">
-<span class="comment"># Connect to ElastiCache cluster</span>
+<div class="code-block"><span class="comment"># Connect to ElastiCache cluster</span>
 client = valkey.Valkey(
-    host='my-cluster.cache.amazonaws.com',
-    port=6379,
-    ssl=True,
-    ssl_cert_reqs='required'
+    host=<span class="str">'my-cluster.cache.amazonaws.com'</span>,
+    port=<span class="num">6379</span>,
+    ssl=<span class="kw">True</span>,
+    ssl_cert_reqs=<span class="str">'required'</span>
 )
 
 <span class="comment"># For cluster mode</span>
-from valkey.cluster import ValkeyCluster
+<span class="kw">from</span> valkey.cluster <span class="kw">import</span> ValkeyCluster
+
 cluster = ValkeyCluster(
-    host='my-cluster.cache.amazonaws.com',
-    port=6379,
-    ssl=True
-)
-</div>
+    host=<span class="str">'my-cluster.cache.amazonaws.com'</span>,
+    port=<span class="num">6379</span>,
+    ssl=<span class="kw">True</span>
+)</div>
 </div>
 
 <div class="nav-footer">

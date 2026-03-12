@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="../cookbook.css">
 <style>
 :root{--accent:#f43f5e}
-.code-block{background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:20px;margin:16px 0;font-family:'SF Mono','Fira Code',monospace;font-size:13px;line-height:1.7;overflow-x:auto}
+.code-block{background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:20px;margin:16px 0;font-family:'SF Mono','Fira Code',monospace;font-size:13px;line-height:1.7;overflow-x:auto;white-space:pre-wrap}
 .code-block .cmd{color:#f43f5e}
 .code-block .str{color:#10b981}
 .code-block .num{color:#f59e0b}
@@ -39,16 +39,14 @@
 <div class="section">
 <h2>Strategy 1: TTL-Based Expiration</h2>
 <p>The simplest approach — let entries expire automatically:</p>
-<div class="code-block">
-<span class="comment"># Set TTL when storing</span>
+<div class="code-block"><span class="comment"># Set TTL when storing</span>
 <span class="cmd">HSET</span> cache:query_abc123 query <span class="str">"..."</span> response <span class="str">"..."</span>
 <span class="cmd">EXPIRE</span> cache:query_abc123 <span class="num">3600</span>  <span class="comment"># 1 hour</span>
 
-<span class="comment"># Or use SETEX for atomic set + expire</span>
+<span class="comment"># Or use Python helper</span>
 <span class="kw">def</span> cache_with_ttl(key, data, ttl=<span class="num">3600</span>):
     client.hset(key, mapping=data)
-    client.expire(key, ttl)
-</div>
+    client.expire(key, ttl)</div>
 
 <div class="pattern-card">
 <h4>Recommended TTLs by Content Type</h4>
@@ -59,8 +57,7 @@
 <div class="section">
 <h2>Strategy 2: Version Tagging</h2>
 <p>Include version numbers in cache keys to invalidate all at once:</p>
-<div class="code-block">
-<span class="comment"># Store current version</span>
+<div class="code-block"><span class="comment"># Store current version</span>
 <span class="cmd">SET</span> cache:version <span class="num">42</span>
 
 <span class="comment"># Include version in cache keys</span>
@@ -72,15 +69,13 @@
 <span class="comment"># Invalidate ALL cache by bumping version</span>
 <span class="kw">def</span> invalidate_all():
     client.incr(<span class="str">"cache:version"</span>)
-    <span class="comment"># Old keys will miss and eventually expire</span>
-</div>
+    <span class="comment"># Old keys will miss and eventually expire</span></div>
 </div>
 
 <div class="section">
 <h2>Strategy 3: Event-Driven Invalidation</h2>
 <p>Invalidate cache when source documents change:</p>
-<div class="code-block">
-<span class="comment"># Track which cache entries depend on which documents</span>
+<div class="code-block"><span class="comment"># Track which cache entries depend on which documents</span>
 <span class="kw">def</span> cache_response(query, response, source_docs):
     cache_key = get_cache_key(query)
     client.hset(cache_key, mapping={
@@ -103,15 +98,13 @@
         client.delete(*cache_keys)
     
     <span class="comment"># Clean up dependency tracking</span>
-    client.delete(f<span class="str">"doc_deps:{doc_id}"</span>)
-</div>
+    client.delete(f<span class="str">"doc_deps:{doc_id}"</span>)</div>
 </div>
 
 <div class="section">
 <h2>Strategy 4: Namespace-Based Invalidation</h2>
 <p>Organize cache by namespace for bulk invalidation:</p>
-<div class="code-block">
-<span class="comment"># Use namespaced prefixes</span>
+<div class="code-block"><span class="comment"># Use namespaced prefixes</span>
 cache:docs:technical:...
 cache:docs:support:...
 cache:faqs:billing:...
@@ -125,27 +118,23 @@ cache:faqs:billing:...
         <span class="kw">if</span> keys:
             client.delete(*keys)
         <span class="kw">if</span> cursor == <span class="num">0</span>:
-            <span class="kw">break</span>
-</div>
+            <span class="kw">break</span></div>
 </div>
 
 <div class="section">
 <h2>Strategy 5: LRU with MAXMEMORY</h2>
 <p>Let Valkey automatically evict least-recently-used entries:</p>
-<div class="code-block">
-<span class="comment"># valkey.conf</span>
+<div class="code-block"><span class="comment"># valkey.conf</span>
 maxmemory 2gb
 maxmemory-policy allkeys-lru
 
 <span class="comment"># Or volatile-lru to only evict keys with TTL set</span>
-maxmemory-policy volatile-lru
-</div>
+maxmemory-policy volatile-lru</div>
 </div>
 
 <div class="section">
 <h2>Combined Approach</h2>
-<div class="code-block">
-<span class="kw">class</span> SmartCache:
+<div class="code-block"><span class="kw">class</span> SmartCache:
     <span class="kw">def</span> __init__(self, default_ttl=<span class="num">3600</span>):
         self.client = valkey.Valkey()
         self.default_ttl = default_ttl
@@ -171,8 +160,7 @@ maxmemory-policy volatile-lru
         self.client.delete(f<span class="str">"deps:{source_id}"</span>)
     
     <span class="kw">def</span> invalidate_all(self):
-        self.client.incr(<span class="str">"cache:version"</span>)
-</div>
+        self.client.incr(<span class="str">"cache:version"</span>)</div>
 </div>
 
 <div class="nav-footer">

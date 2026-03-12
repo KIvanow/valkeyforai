@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="../cookbook.css">
 <style>
 :root{--accent:#f43f5e}
-.code-block{background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:20px;margin:16px 0;font-family:'SF Mono','Fira Code',monospace;font-size:13px;line-height:1.7;overflow-x:auto}
+.code-block{background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:20px;margin:16px 0;font-family:'SF Mono','Fira Code',monospace;font-size:13px;line-height:1.7;overflow-x:auto;white-space:pre-wrap}
 .code-block .cmd{color:#f43f5e}
 .code-block .str{color:#10b981}
 .code-block .num{color:#f59e0b}
@@ -52,8 +52,7 @@ td{color:rgba(245,245,247,.8)}
 
 <div class="section">
 <h2>Built-in INFO Command</h2>
-<div class="code-block">
-<span class="comment"># Get all stats</span>
+<div class="code-block"><span class="comment"># Get all stats</span>
 <span class="cmd">INFO</span>
 
 <span class="comment"># Specific sections</span>
@@ -62,14 +61,12 @@ td{color:rgba(245,245,247,.8)}
 <span class="cmd">INFO</span> clients
 
 <span class="comment"># Search module stats</span>
-<span class="cmd">FT.INFO</span> idx:docs
-</div>
+<span class="cmd">FT.INFO</span> idx:docs</div>
 </div>
 
 <div class="section">
 <h2>Application-Level Metrics</h2>
-<div class="code-block">
-<span class="kw">import</span> time
+<div class="code-block"><span class="kw">import</span> time
 <span class="kw">from</span> dataclasses <span class="kw">import</span> dataclass, field
 
 <span class="kw">@dataclass</span>
@@ -102,20 +99,21 @@ metrics = CacheMetrics()
         metrics.misses += <span class="num">1</span>
         metrics.miss_latencies.append(latency)
     
-    <span class="kw">return</span> result
-</div>
+    <span class="kw">return</span> result</div>
 </div>
 
 <div class="section">
 <h2>Prometheus Integration</h2>
-<div class="code-block">
-<span class="kw">from</span> prometheus_client <span class="kw">import</span> Counter, Histogram, Gauge
+<div class="code-block"><span class="kw">from</span> prometheus_client <span class="kw">import</span> Counter, Histogram, Gauge
 
 <span class="comment"># Define metrics</span>
 cache_hits = Counter(<span class="str">'rag_cache_hits_total'</span>, <span class="str">'Cache hits'</span>)
 cache_misses = Counter(<span class="str">'rag_cache_misses_total'</span>, <span class="str">'Cache misses'</span>)
-search_latency = Histogram(<span class="str">'rag_search_seconds'</span>, <span class="str">'Search latency'</span>,
-    buckets=[.<span class="num">001</span>, .<span class="num">005</span>, .<span class="num">01</span>, .<span class="num">05</span>, .<span class="num">1</span>, .<span class="num">5</span>, <span class="num">1</span>])
+search_latency = Histogram(
+    <span class="str">'rag_search_seconds'</span>,
+    <span class="str">'Search latency'</span>,
+    buckets=[.<span class="num">001</span>, .<span class="num">005</span>, .<span class="num">01</span>, .<span class="num">05</span>, .<span class="num">1</span>, .<span class="num">5</span>, <span class="num">1</span>]
+)
 vector_count = Gauge(<span class="str">'rag_vectors_total'</span>, <span class="str">'Total vectors'</span>)
 
 <span class="comment"># Usage</span>
@@ -125,14 +123,12 @@ vector_count = Gauge(<span class="str">'rag_vectors_total'</span>, <span class="
 <span class="kw">if</span> cache_hit:
     cache_hits.inc()
 <span class="kw">else</span>:
-    cache_misses.inc()
-</div>
+    cache_misses.inc()</div>
 </div>
 
 <div class="section">
 <h2>Logging Best Practices</h2>
-<div class="code-block">
-<span class="kw">import</span> structlog
+<div class="code-block"><span class="kw">import</span> structlog
 
 log = structlog.get_logger()
 
@@ -143,7 +139,8 @@ log = structlog.get_logger()
         results = <span class="kw">await</span> cache.lookup(query)
         latency_ms = (time.perf_counter() - start) * <span class="num">1000</span>
         
-        log.info(<span class="str">"cache_lookup"</span>,
+        log.info(
+            <span class="str">"cache_lookup"</span>,
             user_id=user_id,
             query_length=len(query),
             cache_hit=results <span class="kw">is not None</span>,
@@ -154,14 +151,12 @@ log = structlog.get_logger()
         
     <span class="kw">except</span> Exception <span class="kw">as</span> e:
         log.error(<span class="str">"cache_error"</span>, error=str(e), query=query[:<span class="num">50</span>])
-        <span class="kw">raise</span>
-</div>
+        <span class="kw">raise</span></div>
 </div>
 
 <div class="section">
 <h2>Health Check Endpoint</h2>
-<div class="code-block">
-<span class="kw">@app.get</span>(<span class="str">"/health"</span>)
+<div class="code-block"><span class="kw">@app.get</span>(<span class="str">"/health"</span>)
 <span class="kw">async def</span> health_check():
     <span class="kw">try</span>:
         <span class="comment"># Check Valkey connection</span>
@@ -178,8 +173,7 @@ log = structlog.get_logger()
             <span class="str">"avg_latency_ms"</span>: round(metrics.avg_hit_latency, <span class="num">2</span>)
         }
     <span class="kw">except</span> Exception <span class="kw">as</span> e:
-        <span class="kw">return</span> {<span class="str">"status"</span>: <span class="str">"unhealthy"</span>, <span class="str">"error"</span>: str(e)}
-</div>
+        <span class="kw">return</span> {<span class="str">"status"</span>: <span class="str">"unhealthy"</span>, <span class="str">"error"</span>: str(e)}</div>
 </div>
 
 <div class="section">

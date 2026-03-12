@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="../cookbook.css">
 <style>
 :root{--accent:#f43f5e}
-.code-block{background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:20px;margin:16px 0;font-family:'SF Mono','Fira Code',monospace;font-size:13px;line-height:1.7;overflow-x:auto}
+.code-block{background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:20px;margin:16px 0;font-family:'SF Mono','Fira Code',monospace;font-size:13px;line-height:1.7;overflow-x:auto;white-space:pre-wrap}
 .code-block .cmd{color:#f43f5e}
 .code-block .str{color:#10b981}
 .code-block .num{color:#f59e0b}
@@ -64,19 +64,21 @@ td{color:rgba(245,245,247,.8)}
 </div>
 </div>
 
-<div class="code-block">
-<span class="comment"># HNSW Index (recommended for production)</span>
+<div class="code-block"><span class="comment"># HNSW Index (recommended for production)</span>
 <span class="cmd">FT.CREATE</span> idx:hnsw ON HASH PREFIX <span class="num">1</span> <span class="str">"doc:"</span>
-  SCHEMA embedding <span class="kw">VECTOR HNSW</span> <span class="num">6</span>
-    TYPE FLOAT32 DIM <span class="num">1536</span> DISTANCE_METRIC COSINE
-    M <span class="num">16</span>              <span class="comment"># Max connections per node</span>
-    EF_CONSTRUCTION <span class="num">200</span>  <span class="comment"># Build-time accuracy</span>
+    SCHEMA embedding <span class="kw">VECTOR HNSW</span> <span class="num">6</span>
+        TYPE FLOAT32
+        DIM <span class="num">1536</span>
+        DISTANCE_METRIC COSINE
+        M <span class="num">16</span>              <span class="comment"># Max connections per node</span>
+        EF_CONSTRUCTION <span class="num">200</span>  <span class="comment"># Build-time accuracy</span>
 
 <span class="comment"># FLAT Index (for small datasets or exact search)</span>
 <span class="cmd">FT.CREATE</span> idx:flat ON HASH PREFIX <span class="num">1</span> <span class="str">"doc:"</span>
-  SCHEMA embedding <span class="kw">VECTOR FLAT</span> <span class="num">6</span>
-    TYPE FLOAT32 DIM <span class="num">1536</span> DISTANCE_METRIC COSINE
-</div>
+    SCHEMA embedding <span class="kw">VECTOR FLAT</span> <span class="num">6</span>
+        TYPE FLOAT32
+        DIM <span class="num">1536</span>
+        DISTANCE_METRIC COSINE</div>
 </div>
 
 <div class="section">
@@ -92,40 +94,43 @@ td{color:rgba(245,245,247,.8)}
 <div class="section">
 <h2>Hybrid Search: Vectors + Keywords</h2>
 <p>Combine vector similarity with keyword matching for more precise results:</p>
-<div class="code-block">
-<span class="comment"># Create index with text and vector fields</span>
+<div class="code-block"><span class="comment"># Create index with text and vector fields</span>
 <span class="cmd">FT.CREATE</span> idx:hybrid ON HASH PREFIX <span class="num">1</span> <span class="str">"doc:"</span>
-  SCHEMA
-    content <span class="kw">TEXT</span>
-    category <span class="kw">TAG</span>
-    embedding <span class="kw">VECTOR HNSW</span> <span class="num">6</span> TYPE FLOAT32 DIM <span class="num">1536</span> DISTANCE_METRIC COSINE
+    SCHEMA
+        content <span class="kw">TEXT</span>
+        category <span class="kw">TAG</span>
+        embedding <span class="kw">VECTOR HNSW</span> <span class="num">6</span>
+            TYPE FLOAT32
+            DIM <span class="num">1536</span>
+            DISTANCE_METRIC COSINE
 
 <span class="comment"># Hybrid query: vector search + category filter</span>
 <span class="cmd">FT.SEARCH</span> idx:hybrid
-  <span class="str">"(@category:{technical})=>[KNN 5 @embedding $vec AS score]"</span>
-  PARAMS <span class="num">2</span> vec [embedding_bytes]
-  SORTBY score
-  DIALECT <span class="num">2</span>
+    <span class="str">"(@category:{technical})=>[KNN 5 @embedding $vec AS score]"</span>
+    PARAMS <span class="num">2</span> vec [embedding_bytes]
+    SORTBY score
+    DIALECT <span class="num">2</span>
 
 <span class="comment"># Hybrid query: vector search + keyword filter</span>
 <span class="cmd">FT.SEARCH</span> idx:hybrid
-  <span class="str">"(@content:python programming)=>[KNN 5 @embedding $vec AS score]"</span>
-  PARAMS <span class="num">2</span> vec [embedding_bytes]
-  DIALECT <span class="num">2</span>
-</div>
+    <span class="str">"(@content:python programming)=>[KNN 5 @embedding $vec AS score]"</span>
+    PARAMS <span class="num">2</span> vec [embedding_bytes]
+    DIALECT <span class="num">2</span></div>
 </div>
 
 <div class="section">
 <h2>Metadata Filtering</h2>
-<div class="code-block">
-<span class="comment"># Index with multiple filter fields</span>
+<div class="code-block"><span class="comment"># Index with multiple filter fields</span>
 <span class="cmd">FT.CREATE</span> idx:docs ON HASH PREFIX <span class="num">1</span> <span class="str">"doc:"</span>
-  SCHEMA
-    content <span class="kw">TEXT</span>
-    category <span class="kw">TAG</span>
-    author <span class="kw">TAG</span>
-    date <span class="kw">NUMERIC</span>
-    embedding <span class="kw">VECTOR HNSW</span> <span class="num">6</span> TYPE FLOAT32 DIM <span class="num">1536</span> DISTANCE_METRIC COSINE
+    SCHEMA
+        content <span class="kw">TEXT</span>
+        category <span class="kw">TAG</span>
+        author <span class="kw">TAG</span>
+        date <span class="kw">NUMERIC</span>
+        embedding <span class="kw">VECTOR HNSW</span> <span class="num">6</span>
+            TYPE FLOAT32
+            DIM <span class="num">1536</span>
+            DISTANCE_METRIC COSINE
 
 <span class="comment"># Filter by category</span>
 <span class="cmd">FT.SEARCH</span> idx:docs <span class="str">"(@category:{billing})=>[KNN 5 @embedding $vec AS score]"</span> ...
@@ -134,14 +139,12 @@ td{color:rgba(245,245,247,.8)}
 <span class="cmd">FT.SEARCH</span> idx:docs <span class="str">"(@date:[1704067200 1706745600])=>[KNN 5 @embedding $vec AS score]"</span> ...
 
 <span class="comment"># Multiple filters</span>
-<span class="cmd">FT.SEARCH</span> idx:docs <span class="str">"(@category:{support} @author:{john})=>[KNN 5 @embedding $vec AS score]"</span> ...
-</div>
+<span class="cmd">FT.SEARCH</span> idx:docs <span class="str">"(@category:{support} @author:{john})=>[KNN 5 @embedding $vec AS score]"</span> ...</div>
 </div>
 
 <div class="section">
 <h2>Python Implementation</h2>
-<div class="code-block">
-<span class="kw">from</span> valkey.commands.search.query <span class="kw">import</span> Query
+<div class="code-block"><span class="kw">from</span> valkey.commands.search.query <span class="kw">import</span> Query
 
 <span class="kw">def</span> hybrid_search(query_text, category=<span class="kw">None</span>, date_range=<span class="kw">None</span>, k=<span class="num">5</span>):
     <span class="comment"># Build filter</span>
@@ -162,8 +165,7 @@ td{color:rgba(245,245,247,.8)}
     q.return_fields(<span class="str">"content"</span>, <span class="str">"category"</span>, <span class="str">"score"</span>)
     q.dialect(<span class="num">2</span>)
     
-    <span class="kw">return</span> client.ft(<span class="str">"idx:docs"</span>).search(q, {<span class="str">"vec"</span>: query_bytes})
-</div>
+    <span class="kw">return</span> client.ft(<span class="str">"idx:docs"</span>).search(q, {<span class="str">"vec"</span>: query_bytes})</div>
 </div>
 
 <div class="nav-footer">

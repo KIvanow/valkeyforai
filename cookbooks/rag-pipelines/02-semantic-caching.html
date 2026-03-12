@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="../cookbook.css">
 <style>
 :root{--accent:#f43f5e}
-.code-block{background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:20px;margin:16px 0;font-family:'SF Mono','Fira Code',monospace;font-size:13px;line-height:1.7;overflow-x:auto}
+.code-block{background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:20px;margin:16px 0;font-family:'SF Mono','Fira Code',monospace;font-size:13px;line-height:1.7;overflow-x:auto;white-space:pre-wrap}
 .code-block .cmd{color:#f43f5e}
 .code-block .str{color:#10b981}
 .code-block .num{color:#f59e0b}
@@ -54,24 +54,21 @@ td{color:rgba(245,245,247,.8)}
 
 <div class="section">
 <h2>Create a Cache Index</h2>
-<div class="code-block">
-<span class="cmd">FT.CREATE</span> idx:llm_cache
-  ON HASH
-  PREFIX <span class="num">1</span> <span class="str">"cache:"</span>
-  SCHEMA
-    query <span class="kw">TEXT</span>
-    response <span class="kw">TEXT</span>
-    embedding <span class="kw">VECTOR HNSW</span> <span class="num">6</span>
-      TYPE FLOAT32
-      DIM <span class="num">1536</span>
-      DISTANCE_METRIC COSINE
-</div>
+<div class="code-block"><span class="cmd">FT.CREATE</span> idx:llm_cache
+    ON HASH
+    PREFIX <span class="num">1</span> <span class="str">"cache:"</span>
+    SCHEMA
+        query <span class="kw">TEXT</span>
+        response <span class="kw">TEXT</span>
+        embedding <span class="kw">VECTOR HNSW</span> <span class="num">6</span>
+            TYPE FLOAT32
+            DIM <span class="num">1536</span>
+            DISTANCE_METRIC COSINE</div>
 </div>
 
 <div class="section">
 <h2>Cache Lookup Pattern</h2>
-<div class="code-block">
-<span class="kw">async def</span> semantic_cache_lookup(query: str, threshold: float = <span class="num">0.92</span>):
+<div class="code-block"><span class="kw">async def</span> semantic_cache_lookup(query: str, threshold: float = <span class="num">0.92</span>):
     <span class="comment"># Embed the query</span>
     query_embedding = <span class="kw">await</span> get_embedding(query)
     query_bytes = np.array(query_embedding, dtype=np.float32).tobytes()
@@ -91,8 +88,7 @@ td{color:rgba(245,245,247,.8)}
         <span class="kw">if</span> similarity >= threshold:
             <span class="kw">return</span> results[<span class="num">2</span>][<span class="num">1</span>]  <span class="comment"># Return cached response</span>
     
-    <span class="kw">return</span> <span class="kw">None</span>  <span class="comment"># Cache miss</span>
-</div>
+    <span class="kw">return</span> <span class="kw">None</span>  <span class="comment"># Cache miss</span></div>
 </div>
 
 <div class="section">
@@ -115,8 +111,7 @@ td{color:rgba(245,245,247,.8)}
 <div class="section">
 <h2>TTL Strategies</h2>
 <p>Different content needs different cache lifetimes:</p>
-<div class="code-block">
-<span class="comment"># Store with TTL</span>
+<div class="code-block"><span class="comment"># Store with TTL</span>
 <span class="kw">def</span> cache_response(query, response, ttl_seconds=<span class="num">3600</span>):
     key = f<span class="str">"cache:{hash(query)[:16]}"</span>
     embedding = get_embedding(query)
@@ -134,14 +129,12 @@ TTL_CONFIG = {
     <span class="str">"news"</span>: <span class="num">3600</span>,         <span class="comment"># 1 hour - current events</span>
     <span class="str">"weather"</span>: <span class="num">1800</span>,       <span class="comment"># 30 min - frequently changes</span>
     <span class="str">"stock"</span>: <span class="num">60</span>,           <span class="comment"># 1 min - real-time data</span>
-}
-</div>
+}</div>
 </div>
 
 <div class="section">
 <h2>Complete Caching Class</h2>
-<div class="code-block">
-<span class="kw">class</span> SemanticCache:
+<div class="code-block"><span class="kw">class</span> SemanticCache:
     <span class="kw">def</span> __init__(self, threshold=<span class="num">0.92</span>, default_ttl=<span class="num">3600</span>):
         self.client = valkey.Valkey(decode_responses=<span class="kw">False</span>)
         self.threshold = threshold
@@ -156,8 +149,10 @@ TTL_CONFIG = {
                 <span class="str">'SCHEMA'</span>, <span class="str">'query'</span>, <span class="str">'TEXT'</span>, <span class="str">'response'</span>, <span class="str">'TEXT'</span>,
                 <span class="str">'embedding'</span>, <span class="str">'VECTOR'</span>, <span class="str">'HNSW'</span>, <span class="str">'6'</span>,
                 <span class="str">'TYPE'</span>, <span class="str">'FLOAT32'</span>, <span class="str">'DIM'</span>, <span class="str">'1536'</span>,
-                <span class="str">'DISTANCE_METRIC'</span>, <span class="str">'COSINE'</span>)
-        <span class="kw">except</span>: <span class="kw">pass</span>
+                <span class="str">'DISTANCE_METRIC'</span>, <span class="str">'COSINE'</span>
+            )
+        <span class="kw">except</span>:
+            <span class="kw">pass</span>
     
     <span class="kw">async def</span> get(self, query: str) -> str | <span class="kw">None</span>:
         emb = <span class="kw">await</span> get_embedding(query)
@@ -167,7 +162,8 @@ TTL_CONFIG = {
             <span class="str">'FT.SEARCH'</span>, <span class="str">'idx:cache'</span>,
             <span class="str">'*=>[KNN 1 @embedding $v AS s]'</span>,
             <span class="str">'PARAMS'</span>, <span class="str">'2'</span>, <span class="str">'v'</span>, vec,
-            <span class="str">'DIALECT'</span>, <span class="str">'2'</span>)
+            <span class="str">'DIALECT'</span>, <span class="str">'2'</span>
+        )
         
         <span class="kw">if</span> results[<span class="num">0</span>] > <span class="num">0</span> <span class="kw">and</span> (<span class="num">1</span> - float(results[<span class="num">2</span>][<span class="num">3</span>])) >= self.threshold:
             <span class="kw">return</span> results[<span class="num">2</span>][<span class="num">1</span>].decode()
@@ -177,10 +173,11 @@ TTL_CONFIG = {
         key = f<span class="str">"cache:{hashlib.sha256(query.encode()).hexdigest()[:16]}"</span>
         emb = <span class="kw">await</span> get_embedding(query)
         self.client.hset(key, mapping={
-            <span class="str">"query"</span>: query, <span class="str">"response"</span>: response,
-            <span class="str">"embedding"</span>: np.array(emb, dtype=np.float32).tobytes()})
-        self.client.expire(key, ttl <span class="kw">or</span> self.default_ttl)
-</div>
+            <span class="str">"query"</span>: query,
+            <span class="str">"response"</span>: response,
+            <span class="str">"embedding"</span>: np.array(emb, dtype=np.float32).tobytes()
+        })
+        self.client.expire(key, ttl <span class="kw">or</span> self.default_ttl)</div>
 </div>
 
 <div class="warning">
