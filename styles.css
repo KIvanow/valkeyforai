@@ -415,10 +415,15 @@ img { max-width: 100%; }
     transition: opacity var(--transition);
 }
 
+.bento-card {
+    cursor: pointer;
+}
+
 .bento-card:hover {
     background: var(--bg-card-hover);
     border-color: var(--border-hover);
-    transform: translateY(-4px);
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 8px 32px rgba(168, 85, 247, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
 .bento-card:hover::before {
