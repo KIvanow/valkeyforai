@@ -23,7 +23,7 @@
 
 <h2>Step 1: Start Valkey with Search Module</h2>
 <pre><code><span class="comment"># Start Valkey with the search module loaded</span>
-valkey-server --loadmodule /path/to/libsearch.so</code></pre>
+valkey-server --loadmodule /usr/lib/valkey/libsearch.so</code></pre>
 <p>Verify the module is loaded:</p>
 <pre><code>valkey-cli MODULE LIST
 <span class="comment"># Should show "search" in the output</span></code></pre>
