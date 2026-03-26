@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>01 — Context Engineering Fundamentals — Valkey for AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../cookbook.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<style>
+body.light .nav{background:rgba(255,255,255,.9)!important}
+body.light pre{background:rgba(0,0,0,.03)!important;border-color:rgba(0,0,0,.08)!important}
+body.light code{color:#1d1d1f}
+body.light .callout{background:rgba(0,0,0,.02);border-color:rgba(0,0,0,.08)}
+body.light table{border-color:rgba(0,0,0,.08)}
+body.light th{background:rgba(0,0,0,.04)}
+body.light td{border-color:rgba(0,0,0,.06)}
+body.light{--bg:#fff;--bg-elevated:#f5f5f7;--bg-card:rgba(0,0,0,.03);--bg-card-hover:rgba(0,0,0,.06);--brd:rgba(0,0,0,.08);--t1:#1d1d1f;--t2:rgba(29,29,31,.6);--t3:rgba(29,29,31,.4)}
+.theme-toggle{background:rgba(128,128,128,.12);border:1px solid rgba(128,128,128,.2);border-radius:100px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;position:fixed;top:18px;right:24px;z-index:1001}
+pre{position:relative}
+pre code.hljs{background:transparent!important;padding:0}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="nav-inner"><a href="/" class="nav-logo"><img src="/valkey-logo.svg" alt="Valkey"><span class="accent">for ai</span></a><div class="nav-links"><a href="/#use-cases">Use Cases</a><a href="/#frameworks">Frameworks</a><a href="https://github.com/meet-bhagdev/valkeyforai/tree/main" target="_blank">GitHub</a></div></div></nav>
+<article>
+<div class="breadcrumb"><a href="/">Home</a> → <a href="/cookbooks/context-engineering/">Context Engineering</a> → 01 Fundamentals</div>
+<div class="meta"><span class="diff-easy">Beginner</span><span class="lang">Python</span><span class="lang">~20 min</span></div>
+<h1>Context Engineering <span class="gradient">Fundamentals</span></h1>
+<p class="lead">Context engineering is the discipline of systematically selecting, structuring, and delivering the right context to an LLM. Learn how Valkey serves as the unified memory layer for all five context sources.</p>
+
+<h2>What is Context Engineering?</h2>
+<p>Context engineering is the discipline of <strong>systematically selecting, structuring, and delivering the right context</strong> to an LLM to improve reliability and performance.</p>
+<p>As Andrej Karpathy (OpenAI founding team) puts it: <em>&quot;Context engineering is the delicate art and science of filling the context window with just the right information for the next step.&quot;</em></p>
+<p>It goes beyond prompt engineering. Prompts are just one input. Context engineering treats context as <strong>infrastructure</strong> — including retrieved knowledge, long-term memory, tool calls, conversation history, and structured formatting.</p>
+<blockquote>
+<p><strong>Why this matters for production AI:</strong> Most agent failures are not model failures — they are context failures. The right context, delivered at the right time, is the difference between a useful agent and one that hallucinates.</p>
+</blockquote>
+<h2>The 5 Context Sources</h2>
+<p>Every LLM call needs context assembled from up to 5 sources. Valkey can serve as the unified backend for all of them:</p>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>What It Is</th>
+<th>Valkey Data Structure</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>System Instructions</strong></td>
+<td>Agent role, constraints, output format</td>
+<td><code>HSET</code> (hash)</td>
+<td><code>agent:config:support_bot</code></td>
+</tr>
+<tr>
+<td><strong>Conversation History</strong></td>
+<td>Recent messages in the current session</td>
+<td><code>RPUSH</code> / <code>LRANGE</code> (list)</td>
+<td><code>chat:session:abc123</code></td>
+</tr>
+<tr>
+<td><strong>Retrieved Knowledge</strong></td>
+<td>Relevant docs/facts from a knowledge base</td>
+<td><code>FT.SEARCH</code> KNN (vector)</td>
+<td>Semantic search over embeddings</td>
+</tr>
+<tr>
+<td><strong>Tool Outputs</strong></td>
+<td>Results from function/API calls</td>
+<td><code>HSET</code> (hash)</td>
+<td><code>tool:result:step_3</code></td>
+</tr>
+<tr>
+<td><strong>Long-term Memory</strong></td>
+<td>User preferences, past interactions</td>
+<td><code>HSET</code> with no TTL</td>
+<td><code>memory:user:alice</code></td>
+</tr>
+</tbody></table>
+<h2>Prerequisites</h2>
+<ul>
+<li>Valkey with the <strong>valkey-search</strong> module (or ElastiCache for Valkey 8.2+)</li>
+<li>Python 3.9+ with <code>redis</code></li>
+</ul>
+<pre><code class="language-bash">pip install redis
+</code></pre>
+<h2>Step 1: Store System Instructions</h2>
+<pre><code class="language-python">import redis
+import json
+
+client = redis.Redis(host=&quot;localhost&quot;, port=6379, decode_responses=True)
+
+# Store agent configuration
+client.hset(&quot;agent:config:support_bot&quot;, mapping={
+    &quot;role&quot;: &quot;You are a helpful customer support agent for Acme Corp.&quot;,
+    &quot;constraints&quot;: &quot;Always be polite. Never share internal pricing. Escalate billing issues.&quot;,
+    &quot;output_format&quot;: &quot;Respond in markdown. Keep answers under 200 words.&quot;,
+    &quot;tools_available&quot;: json.dumps([&quot;search_kb&quot;, &quot;check_order&quot;, &quot;create_ticket&quot;]),
+})
+print(&quot;System instructions stored&quot;)
+</code></pre>
+<h2>Step 2: Manage Conversation History</h2>
+<pre><code class="language-python">import time
+
+def add_message(session_id: str, role: str, content: str):
+    &quot;&quot;&quot;Append a message to the conversation history.&quot;&quot;&quot;
+    msg = json.dumps({&quot;role&quot;: role, &quot;content&quot;: content, &quot;ts&quot;: time.time()})
+    client.rpush(f&quot;chat:{session_id}&quot;, msg)
+    # Keep only last 50 messages (sliding window)
+    client.ltrim(f&quot;chat:{session_id}&quot;, -50, -1)
+    # Set TTL for session cleanup (30 min inactivity)
+    client.expire(f&quot;chat:{session_id}&quot;, 1800)
+
+def get_history(session_id: str, last_n: int = 10) -&gt; list:
+    &quot;&quot;&quot;Retrieve recent conversation history.&quot;&quot;&quot;
+    raw = client.lrange(f&quot;chat:{session_id}&quot;, -last_n, -1)
+    return [json.loads(m) for m in raw]
+
+# Example conversation
+add_message(&quot;sess_001&quot;, &quot;user&quot;, &quot;What&#39;s your refund policy?&quot;)
+add_message(&quot;sess_001&quot;, &quot;assistant&quot;, &quot;Our refund policy allows returns within 30 days...&quot;)
+add_message(&quot;sess_001&quot;, &quot;user&quot;, &quot;Can I return an opened item?&quot;)
+
+history = get_history(&quot;sess_001&quot;)
+for msg in history:
+    print(f&quot;  {msg[&#39;role&#39;]}: {msg[&#39;content&#39;][:60]}...&quot;)
+</code></pre>
+<h2>Step 3: Store Tool Outputs</h2>
+<pre><code class="language-python">def store_tool_output(session_id: str, step: int, tool_name: str, result: dict):
+    &quot;&quot;&quot;Store the output of a tool call for context assembly.&quot;&quot;&quot;
+    key = f&quot;tool:{session_id}:step_{step}&quot;
+    client.hset(key, mapping={
+        &quot;tool&quot;: tool_name,
+        &quot;result&quot;: json.dumps(result),
+        &quot;timestamp&quot;: str(time.time()),
+    })
+    client.expire(key, 3600)  # 1 hour TTL
+
+def get_tool_outputs(session_id: str) -&gt; list:
+    &quot;&quot;&quot;Retrieve all tool outputs for this session.&quot;&quot;&quot;
+    keys = client.keys(f&quot;tool:{session_id}:step_*&quot;)
+    outputs = []
+    for key in sorted(keys):
+        data = client.hgetall(key)
+        outputs.append({
+            &quot;tool&quot;: data[&quot;tool&quot;],
+            &quot;result&quot;: json.loads(data[&quot;result&quot;]),
+        })
+    return outputs
+
+# Example: agent called the order lookup tool
+store_tool_output(&quot;sess_001&quot;, 1, &quot;check_order&quot;, {
+    &quot;order_id&quot;: &quot;ORD-12345&quot;,
+    &quot;status&quot;: &quot;delivered&quot;,
+    &quot;date&quot;: &quot;2025-03-15&quot;,
+})
+</code></pre>
+<h2>Step 4: Long-term User Memory</h2>
+<pre><code class="language-python">def remember(user_id: str, key: str, value: str):
+    &quot;&quot;&quot;Store a long-term memory about a user.&quot;&quot;&quot;
+    client.hset(f&quot;memory:{user_id}&quot;, key, value)
+    # No TTL — persists across sessions
+
+def recall(user_id: str) -&gt; dict:
+    &quot;&quot;&quot;Retrieve all memories about a user.&quot;&quot;&quot;
+    return client.hgetall(f&quot;memory:{user_id}&quot;)
+
+# Store user preferences
+remember(&quot;alice&quot;, &quot;preferred_language&quot;, &quot;English&quot;)
+remember(&quot;alice&quot;, &quot;tier&quot;, &quot;premium&quot;)
+remember(&quot;alice&quot;, &quot;last_issue&quot;, &quot;billing dispute on ORD-12345&quot;)
+
+memories = recall(&quot;alice&quot;)
+print(f&quot;Alice&#39;s memories: {memories}&quot;)
+</code></pre>
+<h2>The Pyramid Approach</h2>
+<p>Structure your context from general to specific — background first, then narrowing to the task:</p>
+<pre><code class="language-python"># Layer 1: System instructions (broadest)
+# Layer 2: User memory (preferences, history)
+# Layer 3: Retrieved knowledge (relevant docs)
+# Layer 4: Conversation history (recent context)
+# Layer 5: Current message + tool outputs (most specific)
+</code></pre>
+<blockquote>
+<p><strong>Reference:</strong> This approach is described in the <a href="https://redis.io/blog/context-engineering-best-practices-for-an-emerging-discipline/">Redis context engineering blog</a> and draws on guidance from Andrej Karpathy, Tobi Lutke (Shopify CEO), and Philipp Schmid (Google DeepMind).</p>
+</blockquote>
+
+
+<div class="nav-prev-next">
+<div></div>
+<a href="02-assembly-pipeline.html" class="next"><span class="label">Next →</span><span class="title">02 — Context Assembly Pipeline</span></a>
+</div>
+</article>
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg></button>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<script>function toggleTheme(){var b=document.body,l=b.classList.toggle("light");localStorage.setItem("theme",l?"light":"dark")}(function(){if(localStorage.getItem("theme")==="light")document.body.classList.add("light")})()</script>
+</body>
+</html>

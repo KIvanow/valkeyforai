@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>03 — Production Context Management — Valkey for AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../cookbook.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<style>
+body.light .nav{background:rgba(255,255,255,.9)!important}
+body.light pre{background:rgba(0,0,0,.03)!important;border-color:rgba(0,0,0,.08)!important}
+body.light code{color:#1d1d1f}
+body.light .callout{background:rgba(0,0,0,.02);border-color:rgba(0,0,0,.08)}
+body.light table{border-color:rgba(0,0,0,.08)}
+body.light th{background:rgba(0,0,0,.04)}
+body.light td{border-color:rgba(0,0,0,.06)}
+body.light{--bg:#fff;--bg-elevated:#f5f5f7;--bg-card:rgba(0,0,0,.03);--bg-card-hover:rgba(0,0,0,.06);--brd:rgba(0,0,0,.08);--t1:#1d1d1f;--t2:rgba(29,29,31,.6);--t3:rgba(29,29,31,.4)}
+.theme-toggle{background:rgba(128,128,128,.12);border:1px solid rgba(128,128,128,.2);border-radius:100px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;position:fixed;top:18px;right:24px;z-index:1001}
+pre{position:relative}
+pre code.hljs{background:transparent!important;padding:0}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="nav-inner"><a href="/" class="nav-logo"><img src="/valkey-logo.svg" alt="Valkey"><span class="accent">for ai</span></a><div class="nav-links"><a href="/#use-cases">Use Cases</a><a href="/#frameworks">Frameworks</a><a href="https://github.com/meet-bhagdev/valkeyforai/tree/main" target="_blank">GitHub</a></div></div></nav>
+<article>
+<div class="breadcrumb"><a href="/">Home</a> → <a href="/cookbooks/context-engineering/">Context Engineering</a> → 03 Production</div>
+<div class="meta"><span class="diff-hard">Advanced</span><span class="lang">Python</span><span class="lang">~25 min</span></div>
+<h1>Production Context <span class="gradient">Management</span></h1>
+<p class="lead">Short-term vs long-term memory, context pruning, multi-user isolation, monitoring, and the right Valkey data structure for each context type.</p>
+
+<h2>Short-term vs Long-term Memory</h2>
+<p>The memory layer is the foundation of context engineering at scale. Valkey supports both memory types through TTL management:</p>
+<pre><code class="language-python">import redis
+import json
+import time
+
+client = redis.Redis(host=&quot;localhost&quot;, port=6379, decode_responses=True)
+
+# Short-term memory: active session context (low TTL)
+def store_short_term(session_id: str, key: str, value: str, ttl: int = 1800):
+    &quot;&quot;&quot;Store session-scoped context that expires after inactivity.&quot;&quot;&quot;
+    client.hset(f&quot;session:{session_id}&quot;, key, value)
+    client.expire(f&quot;session:{session_id}&quot;, ttl)
+
+# Long-term memory: persists across sessions (no TTL or high TTL)
+def store_long_term(user_id: str, key: str, value: str):
+    &quot;&quot;&quot;Store cross-session user knowledge that persists indefinitely.&quot;&quot;&quot;
+    client.hset(f&quot;memory:{user_id}&quot;, key, value)
+    # No EXPIRE — this persists
+
+# Example
+store_short_term(&quot;sess_100&quot;, &quot;current_topic&quot;, &quot;billing&quot;)
+store_short_term(&quot;sess_100&quot;, &quot;escalation_level&quot;, &quot;0&quot;)
+store_long_term(&quot;alice&quot;, &quot;communication_style&quot;, &quot;prefers concise answers&quot;)
+store_long_term(&quot;alice&quot;, &quot;timezone&quot;, &quot;America/Los_Angeles&quot;)
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Memory Type</th>
+<th>TTL</th>
+<th>Valkey Key Pattern</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Short-term (session)</td>
+<td>30 min</td>
+<td><code>session:{session_id}</code></td>
+<td>Current task state, tool outputs</td>
+</tr>
+<tr>
+<td>Short-term (chat)</td>
+<td>30 min</td>
+<td><code>chat:{session_id}</code></td>
+<td>Conversation messages</td>
+</tr>
+<tr>
+<td>Long-term (user)</td>
+<td>None</td>
+<td><code>memory:{user_id}</code></td>
+<td>Preferences, past interactions</td>
+</tr>
+<tr>
+<td>Long-term (summary)</td>
+<td>30 days</td>
+<td><code>summary:{user_id}:{date}</code></td>
+<td>Session summaries for future reference</td>
+</tr>
+</tbody></table>
+<h2>Context Pruning</h2>
+<p>Not everything belongs in the context window. Prune aggressively:</p>
+<pre><code class="language-python">def prune_old_messages(session_id: str, max_messages: int = 20):
+    &quot;&quot;&quot;Keep only the most recent messages.&quot;&quot;&quot;
+    client.ltrim(f&quot;chat:{session_id}&quot;, -max_messages, -1)
+
+def summarize_and_store(user_id: str, session_id: str, summary: str):
+    &quot;&quot;&quot;After a session ends, store a summary for long-term recall.&quot;&quot;&quot;
+    date = time.strftime(&quot;%Y-%m-%d&quot;)
+    client.hset(f&quot;summary:{user_id}:{date}&quot;, mapping={
+        &quot;session_id&quot;: session_id,
+        &quot;summary&quot;: summary,
+        &quot;timestamp&quot;: str(time.time()),
+    })
+    client.expire(f&quot;summary:{user_id}:{date}&quot;, 86400 * 30)  # 30 days
+
+# Prune chat to last 20 messages
+prune_old_messages(&quot;sess_100&quot;)
+
+# Store session summary for future context
+summarize_and_store(&quot;alice&quot;, &quot;sess_100&quot;, 
+    &quot;User asked about billing. Resolved a refund request for order ORD-12345.&quot;)
+</code></pre>
+<blockquote>
+<p><strong>Key insight from Ankur Goyal (Braintrust):</strong> &quot;Good context engineering caches well. Bad context engineering is both slow and expensive.&quot;</p>
+</blockquote>
+<h2>Multi-User Context Isolation</h2>
+<p>In production, you must isolate context between users:</p>
+<pre><code class="language-python">def get_user_context(user_id: str, session_id: str) -&gt; dict:
+    &quot;&quot;&quot;Get all context for a specific user, properly isolated.&quot;&quot;&quot;
+    return {
+        &quot;memory&quot;: client.hgetall(f&quot;memory:{user_id}&quot;),
+        &quot;session&quot;: client.hgetall(f&quot;session:{session_id}&quot;),
+        &quot;history&quot;: [
+            json.loads(m) for m in 
+            client.lrange(f&quot;chat:{session_id}&quot;, -10, -1)
+        ],
+    }
+
+# Alice&#39;s context is completely separate from Bob&#39;s
+alice_ctx = get_user_context(&quot;alice&quot;, &quot;sess_alice_001&quot;)
+bob_ctx = get_user_context(&quot;bob&quot;, &quot;sess_bob_001&quot;)
+</code></pre>
+<h2>Monitoring Context Quality</h2>
+<p>Track how your context engineering system performs:</p>
+<pre><code class="language-python">def record_context_metrics(session_id: str, metrics: dict):
+    &quot;&quot;&quot;Track context assembly metrics.&quot;&quot;&quot;
+    client.hset(f&quot;metrics:context:{session_id}&quot;, mapping={
+        &quot;sources_used&quot;: str(metrics.get(&quot;sources_used&quot;, 0)),
+        &quot;total_tokens&quot;: str(metrics.get(&quot;total_tokens&quot;, 0)),
+        &quot;assembly_time_ms&quot;: str(metrics.get(&quot;assembly_time_ms&quot;, 0)),
+        &quot;pruned_messages&quot;: str(metrics.get(&quot;pruned_messages&quot;, 0)),
+        &quot;timestamp&quot;: str(time.time()),
+    })
+    client.expire(f&quot;metrics:context:{session_id}&quot;, 86400 * 7)  # 7 days
+
+# After assembling context
+record_context_metrics(&quot;sess_100&quot;, {
+    &quot;sources_used&quot;: 4,
+    &quot;total_tokens&quot;: 2850,
+    &quot;assembly_time_ms&quot;: 3.2,
+    &quot;pruned_messages&quot;: 5,
+})
+
+# Aggregate metrics
+def get_avg_assembly_time(pattern: str = &quot;metrics:context:*&quot;) -&gt; float:
+    &quot;&quot;&quot;Calculate average context assembly time.&quot;&quot;&quot;
+    keys = client.keys(pattern)
+    times = []
+    for key in keys[:100]:  # Sample last 100 sessions
+        t = client.hget(key, &quot;assembly_time_ms&quot;)
+        if t:
+            times.append(float(t))
+    return sum(times) / len(times) if times else 0.0
+</code></pre>
+<h2>Data Structure Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Context Type</th>
+<th>Valkey Type</th>
+<th>Key Pattern</th>
+<th>TTL</th>
+<th>Why This Structure</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Agent config</td>
+<td>Hash</td>
+<td><code>agent:config:{id}</code></td>
+<td>None</td>
+<td>Structured key-value pairs</td>
+</tr>
+<tr>
+<td>Chat history</td>
+<td>List</td>
+<td><code>chat:{session}</code></td>
+<td>30 min</td>
+<td>Ordered, appendable, trimmable</td>
+</tr>
+<tr>
+<td>Session state</td>
+<td>Hash</td>
+<td><code>session:{session}</code></td>
+<td>30 min</td>
+<td>Fast field-level access</td>
+</tr>
+<tr>
+<td>Tool outputs</td>
+<td>Hash</td>
+<td><code>tool:{session}:step_{n}</code></td>
+<td>1 hour</td>
+<td>Per-step structured data</td>
+</tr>
+<tr>
+<td>User memory</td>
+<td>Hash</td>
+<td><code>memory:{user_id}</code></td>
+<td>None</td>
+<td>Persistent preferences</td>
+</tr>
+<tr>
+<td>Session summaries</td>
+<td>Hash</td>
+<td><code>summary:{user}:{date}</code></td>
+<td>30 days</td>
+<td>Compressed long-term recall</td>
+</tr>
+<tr>
+<td>KB embeddings</td>
+<td>Hash + Vector</td>
+<td><code>kb:doc:{id}</code></td>
+<td>None</td>
+<td>Semantic search via FT.SEARCH</td>
+</tr>
+<tr>
+<td>Context metrics</td>
+<td>Hash</td>
+<td><code>metrics:context:{session}</code></td>
+<td>7 days</td>
+<td>Performance monitoring</td>
+</tr>
+</tbody></table>
+<h2>Production Checklist</h2>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Recommendation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Memory types</td>
+<td>Use short-term (TTL) + long-term (persistent) memory</td>
+</tr>
+<tr>
+<td>Pruning</td>
+<td>LTRIM chat to last 20-50 messages per session</td>
+</tr>
+<tr>
+<td>Isolation</td>
+<td>Key patterns must include user_id or session_id</td>
+</tr>
+<tr>
+<td>Token budget</td>
+<td>Count tokens before each LLM call, trim from oldest</td>
+</tr>
+<tr>
+<td>Monitoring</td>
+<td>Track sources_used, total_tokens, assembly_time_ms</td>
+</tr>
+<tr>
+<td>Summarization</td>
+<td>Summarize sessions on close for long-term recall</td>
+</tr>
+<tr>
+<td>Eviction</td>
+<td>Set <code>maxmemory-policy allkeys-lru</code> for graceful degradation</td>
+</tr>
+<tr>
+<td>Freshness</td>
+<td>Use EXPIRE to auto-clean stale context</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Reference:</strong> Based on best practices from the <a href="https://redis.io/blog/context-engineering-best-practices-for-an-emerging-discipline/">Redis context engineering blog</a>, drawing on insights from Andrej Karpathy, Lance Martin (LangChain), and Salvatore Sanfilippo (Redis founder).</p>
+</blockquote>
+
+
+<div class="nav-prev-next">
+<a href="02-assembly-pipeline.html" class="prev"><span class="label">← Previous</span><span class="title">02 — Assembly Pipeline</span></a>
+<div></div>
+</div>
+</article>
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg></button>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<script>function toggleTheme(){var b=document.body,l=b.classList.toggle("light");localStorage.setItem("theme",l?"light":"dark")}(function(){if(localStorage.getItem("theme")==="light")document.body.classList.add("light")})()</script>
+</body>
+</html>
