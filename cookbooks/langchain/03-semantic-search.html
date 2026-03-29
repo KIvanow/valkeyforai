@@ -37,7 +37,7 @@ pre code.hljs{background:transparent!important;padding:0}
 <li><strong>Real-time updates</strong> — new vectors are searchable immediately, no rebuild needed</li>
 </ul>
 <h2>Step 1: Configure ValkeyStore</h2>
-<pre><code>from langgraph_checkpoint_aws import ValkeyStore
+<pre><code class="language-python">from langgraph_checkpoint_aws import ValkeyStore
 from langchain_aws import BedrockEmbeddings
 
 # Amazon Titan embeddings — 1536 dimensions
@@ -62,7 +62,7 @@ store = ValkeyStore.from_conn_string(
 store.setup()  # Creates the FT index
 </code></pre>
 <h2>Step 2: Store Documents</h2>
-<pre><code># Store a document — embedding is generated automatically
+<pre><code class="language-python"># Store a document — embedding is generated automatically
 store.put(
     (&quot;help-desk&quot;, &quot;passwords&quot;),  # namespace
     &quot;q1&quot;,                          # key
@@ -82,7 +82,7 @@ store.put(
 )
 </code></pre>
 <h2>Step 3: Search by Meaning</h2>
-<pre><code># Search with a paraphrased query
+<pre><code class="language-python"># Search with a paraphrased query
 results = store.search(
     (&quot;help-desk&quot;,),  # namespace prefix
     query=&quot;I forgot my password, help!&quot;,
@@ -97,7 +97,7 @@ for r in results:
 # Score: 0.412 — How do I connect to the VPN?
 </code></pre>
 <p><strong>Valkey Commands Fired:</strong></p>
-<pre><code># Index creation (once)
+<pre><code class="language-python"># Index creation (once)
 FT.CREATE semantic_cache_idx ON JSON PREFIX 1 &quot;store:semantic_cache:&quot;
   SCHEMA $.text AS text TEXT
          $.embedding AS embedding VECTOR HNSW 6
@@ -143,7 +143,7 @@ FT.SEARCH semantic_cache_idx
 <td>Faster queries</td>
 </tr>
 </tbody></table>
-<pre><code># High-accuracy configuration
+<pre><code class="language-python"># High-accuracy configuration
 store = ValkeyStore.from_conn_string(
     &quot;valkey://localhost:6379&quot;,
     index={

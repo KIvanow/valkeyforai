@@ -31,7 +31,7 @@ pre code.hljs{background:transparent!important;padding:0}
 
 <h2>Pattern 1: Feature Freshness Monitoring</h2>
 <p>Every feature Hash includes an <code>_updated_at</code> timestamp. Use it to detect stale features before they poison your model:</p>
-<pre><code>import redis
+<pre><code class="language-python">import redis
 import time
 
 client = redis.Redis(host=&quot;localhost&quot;, port=6379, decode_responses=True)
@@ -58,7 +58,7 @@ print(result)
 # {&#39;status&#39;: &#39;fresh&#39;, &#39;age_seconds&#39;: 12.3, &#39;threshold&#39;: 60}
 </code></pre>
 <h3>Batch Freshness Check</h3>
-<pre><code>def batch_freshness_check(feature_view: str, entity_ids: list, threshold: float = 300):
+<pre><code class="language-python">def batch_freshness_check(feature_view: str, entity_ids: list, threshold: float = 300):
     &quot;&quot;&quot;Check freshness for multiple entities in one pipeline.&quot;&quot;&quot;
     pipe = client.pipeline(transaction=False)
     for eid in entity_ids:
@@ -86,7 +86,7 @@ print(report)
 # {&#39;fresh&#39;: 85, &#39;stale&#39;: 10, &#39;missing&#39;: 5, &#39;stale_entities&#39;: [...]}
 </code></pre>
 <h3>With the Library</h3>
-<pre><code>from src import ValkeyFeatureStore, Entity, FeatureView, Feature, FeatureType
+<pre><code class="language-python">from src import ValkeyFeatureStore, Entity, FeatureView, Feature, FeatureType
 
 store = ValkeyFeatureStore(host=&quot;localhost&quot;, port=6379)
 # ... register feature views ...
@@ -102,7 +102,7 @@ print(report)
 </code></pre>
 <h2>Pattern 2: Health Checks</h2>
 <p>Add health checks to your deployment to detect issues early:</p>
-<pre><code>def health_check() -&gt; dict:
+<pre><code class="language-python">def health_check() -&gt; dict:
     &quot;&quot;&quot;Full health check for the feature store.&quot;&quot;&quot;
     health = {&quot;status&quot;: &quot;healthy&quot;, &quot;checks&quot;: {}}
 
@@ -148,7 +148,7 @@ print(health_check())
 # {&#39;status&#39;: &#39;healthy&#39;, &#39;checks&#39;: {&#39;valkey_ping&#39;: {&#39;status&#39;: &#39;ok&#39;, &#39;latency_ms&#39;: 0.12}, ...}}
 </code></pre>
 <h3>With the Library</h3>
-<pre><code># Built-in health check
+<pre><code class="language-python"># Built-in health check
 health = store.health()
 print(health)
 
@@ -159,7 +159,7 @@ print(info)
 </code></pre>
 <h2>Pattern 3: Feature Versioning</h2>
 <p>When your feature schema changes, use versioned key prefixes to migrate safely:</p>
-<pre><code># Current: fs:v1:user_profile:user_001
+<pre><code class="language-python"># Current: fs:v1:user_profile:user_001
 # New:     fs:v2:user_profile:user_001
 
 # Step 1: Create v2 feature view with new schema
@@ -200,7 +200,7 @@ def dual_write(entity_id, features, features_v2):
 <p><strong>Zero-downtime migration:</strong> Because Valkey keys include the version prefix, v1 and v2 coexist safely. Dual-write during migration, switch readers, then let v1 expire. No data loss, no downtime.</p>
 <h2>Pattern 4: Connection Pooling</h2>
 <p>In production, always use connection pooling to avoid creating a new TCP connection per request:</p>
-<pre><code>import redis
+<pre><code class="language-python">import redis
 
 # Create a connection pool (once at app startup)
 pool = redis.ConnectionPool(
@@ -224,7 +224,7 @@ print(f&quot;Pool connections: {len(pool._available_connections)}&quot;)
 </code></pre>
 <h2>Pattern 5: Error Handling &amp; Fallbacks</h2>
 <p>Handle Valkey failures gracefully — don&#39;t let a cache miss crash your prediction:</p>
-<pre><code>def safe_read_features(store, view_name: str, entity_id: str, defaults: dict = None):
+<pre><code class="language-python">def safe_read_features(store, view_name: str, entity_id: str, defaults: dict = None):
     &quot;&quot;&quot;Read features with error handling and fallback defaults.&quot;&quot;&quot;
     try:
         features = store.read(view_name, entity_id)
@@ -248,7 +248,7 @@ features = safe_read_features(store, &quot;user_risk_profile&quot;, &quot;user_0
 </code></pre>
 <h2>Pattern 6: Observability Metrics</h2>
 <p>Track key metrics for your feature store in production:</p>
-<pre><code>def get_store_metrics() -&gt; dict:
+<pre><code class="language-python">def get_store_metrics() -&gt; dict:
     &quot;&quot;&quot;Collect feature store metrics for monitoring dashboards.&quot;&quot;&quot;
     info = client.info()
 

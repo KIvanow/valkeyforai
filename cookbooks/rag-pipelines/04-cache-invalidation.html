@@ -34,23 +34,112 @@ pre code.hljs{background:transparent!important;padding:0}
 <p>Keep your cache fresh with TTL, event-driven invalidation, and versioning strategies.</p>
 <h2>Strategy 1: TTL-Based Expiration</h2>
 <p>The simplest approach — let entries expire automatically:</p>
-<h1>Set TTL when storing HSET cache:query_abc123 query &quot;...&quot; response &quot;...&quot; EXPIRE cache:query_abc123 3600 # 1 hour # Or use Python helper def cache_with_ttl(key, data, ttl=3600): client.hset(key, mapping=data) client.expire(key, ttl)</h1>
+<pre><code class="language-bash"># Set TTL when storing
+HSET cache:query_abc123 query &quot;...&quot; response &quot;...&quot;
+EXPIRE cache:query_abc123 3600  # 1 hour
+</code></pre>
+<pre><code class="language-python"># Or use Python helper
+def cache_with_ttl(key, data, ttl=3600):
+    client.hset(key, mapping=data)
+    client.expire(key, ttl)
+</code></pre>
 <h4>Recommended TTLs by Content Type</h4>
 <p><strong>Static facts:</strong> 24 hours | <strong>Documentation:</strong> 6 hours | <strong>User data:</strong> 1 hour | <strong>Real-time:</strong> 1-5 minutes</p>
 <h2>Strategy 2: Version Tagging</h2>
 <p>Include version numbers in cache keys to invalidate all at once:</p>
-<h1>Store current version SET cache:version 42 # Include version in cache keys def get_cache_key(query): version = client.get(&quot;cache:version&quot;) query_hash = hashlib.sha256(query.encode()).hexdigest()[:16] return f&quot;cache:v{version}:{query_hash}&quot; # Invalidate ALL cache by bumping version def invalidate_all(): client.incr(&quot;cache:version&quot;) # Old keys will miss and eventually expire</h1>
+<pre><code class="language-python"># Store current version
+SET cache:version 42
+
+# Include version in cache keys
+def get_cache_key(query):
+    version = client.get(&quot;cache:version&quot;)
+    query_hash = hashlib.sha256(query.encode()).hexdigest()[:16]
+    return f&quot;cache:v{version}:{query_hash}&quot;
+
+# Invalidate ALL cache by bumping version
+def invalidate_all():
+    client.incr(&quot;cache:version&quot;)
+    # Old keys will miss and eventually expire
+</code></pre>
 <h2>Strategy 3: Event-Driven Invalidation</h2>
 <p>Invalidate cache when source documents change:</p>
-<h1>Track which cache entries depend on which documents def cache_response(query, response, source_docs): cache_key = get_cache_key(query) client.hset(cache_key, mapping={ &quot;query&quot;: query, &quot;response&quot;: response, &quot;sources&quot;: json.dumps(source_docs) }) # Track dependency: doc -&gt; cache entries for doc_id in source_docs: client.sadd(f&quot;doc_deps:{doc_id}&quot;, cache_key) # When a document is updated def on_document_update(doc_id): # Get all cache entries that depend on this doc cache_keys = client.smembers(f&quot;doc_deps:{doc_id}&quot;) # Delete them if cache_keys: client.delete(*cache_keys) # Clean up dependency tracking client.delete(f&quot;doc_deps:{doc_id}&quot;)</h1>
+<pre><code class="language-python"># Track which cache entries depend on which documents
+def cache_response(query, response, source_docs):
+    cache_key = get_cache_key(query)
+    client.hset(cache_key, mapping={
+        &quot;query&quot;: query,
+        &quot;response&quot;: response,
+        &quot;sources&quot;: json.dumps(source_docs)
+    })
+    # Track dependency: doc -&gt; cache entries
+    for doc_id in source_docs:
+        client.sadd(f&quot;doc_deps:{doc_id}&quot;, cache_key)
+
+# When a document is updated
+def on_document_update(doc_id):
+    # Get all cache entries that depend on this doc
+    cache_keys = client.smembers(f&quot;doc_deps:{doc_id}&quot;)
+    # Delete them
+    if cache_keys:
+        client.delete(*cache_keys)
+    # Clean up dependency tracking
+    client.delete(f&quot;doc_deps:{doc_id}&quot;)
+</code></pre>
 <h2>Strategy 4: Namespace-Based Invalidation</h2>
 <p>Organize cache by namespace for bulk invalidation:</p>
-<h1>Use namespaced prefixes cache:docs:technical:... cache:docs:support:... cache:faqs:billing:... # Invalidate an entire namespace def invalidate_namespace(namespace): pattern = f&quot;cache:{namespace}:*&quot; cursor = 0 while True: cursor, keys = client.scan(cursor, match=pattern, count=100) if keys: client.delete(*keys) if cursor == 0: break</h1>
+<pre><code class="language-python"># Use namespaced prefixes
+# cache:docs:technical:...
+# cache:docs:support:...
+# cache:faqs:billing:...
+
+# Invalidate an entire namespace
+def invalidate_namespace(namespace):
+    pattern = f&quot;cache:{namespace}:*&quot;
+    cursor = 0
+    while True:
+        cursor, keys = client.scan(cursor, match=pattern, count=100)
+        if keys:
+            client.delete(*keys)
+        if cursor == 0:
+            break
+</code></pre>
 <h2>Strategy 5: LRU with MAXMEMORY</h2>
 <p>Let Valkey automatically evict least-recently-used entries:</p>
-<h1>valkey.conf maxmemory 2gb maxmemory-policy allkeys-lru # Or volatile-lru to only evict keys with TTL set maxmemory-policy volatile-lru</h1>
+<pre><code class="language-bash"># valkey.conf
+maxmemory 2gb
+maxmemory-policy allkeys-lru
+
+# Or volatile-lru to only evict keys with TTL set
+maxmemory-policy volatile-lru
+</code></pre>
 <h2>Combined Approach</h2>
-<p>class SmartCache: def <strong>init</strong>(self, default_ttl=3600): self.client = valkey.Valkey() self.default_ttl = default_ttl def set(self, query, response, sources=None, ttl=None): version = self.client.get(&quot;cache:version&quot;) or &quot;1&quot; key = f&quot;cache:v{version}:{hash(query)}&quot; self.client.hset(key, mapping={ &quot;response&quot;: response, &quot;sources&quot;: json.dumps(sources or []) }) self.client.expire(key, ttl or self.default_ttl) # Track dependencies for src in (sources or []): self.client.sadd(f&quot;deps:{src}&quot;, key) def invalidate_source(self, source_id): keys = self.client.smembers(f&quot;deps:{source_id}&quot;) if keys: self.client.delete(*keys) self.client.delete(f&quot;deps:{source_id}&quot;) def invalidate_all(self): self.client.incr(&quot;cache:version&quot;)</p>
+<pre><code class="language-python">class SmartCache:
+    def __init__(self, default_ttl=3600):
+        self.client = redis.Redis()
+        self.default_ttl = default_ttl
+
+    def set(self, query, response, sources=None, ttl=None):
+        version = self.client.get(&quot;cache:version&quot;) or &quot;1&quot;
+        key = f&quot;cache:v{version}:{hash(query)}&quot;
+        self.client.hset(key, mapping={
+            &quot;response&quot;: response,
+            &quot;sources&quot;: json.dumps(sources or [])
+        })
+        self.client.expire(key, ttl or self.default_ttl)
+
+        # Track dependencies
+        for src in (sources or []):
+            self.client.sadd(f&quot;deps:{src}&quot;, key)
+
+    def invalidate_source(self, source_id):
+        keys = self.client.smembers(f&quot;deps:{source_id}&quot;)
+        if keys:
+            self.client.delete(*keys)
+        self.client.delete(f&quot;deps:{source_id}&quot;)
+
+    def invalidate_all(self):
+        self.client.incr(&quot;cache:version&quot;)
+</code></pre>
 <p><a href="03-vector-search.html">← Vector Search</a> <a href="05-scaling-production.html">Next: Scaling →</a></p>
 
 

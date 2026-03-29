@@ -30,7 +30,7 @@ pre code.hljs{background:transparent!important;padding:0}
 
 
 <h2>The Problem</h2>
-<pre><code>User makes 3 requests:
+<pre><code class="language-python">User makes 3 requests:
   Request 1: &quot;Hi&quot; → 5 tokens
   Request 2: &quot;Summarize this 200-page PDF&quot; → 45,000 tokens
   Request 3: &quot;Thanks&quot; → 3 tokens
@@ -38,7 +38,7 @@ pre code.hljs{background:transparent!important;padding:0}
 A request-based limiter treats all 3 the same. That&#39;s wrong.
 </code></pre>
 <h2>Step 1: Count Tokens Before Calling the LLM</h2>
-<pre><code>import tiktoken
+<pre><code class="language-python">import tiktoken
 
 def count_tokens(text: str, model: str = &quot;gpt-4&quot;) -&gt; int:
     &quot;&quot;&quot;Count tokens using tiktoken (OpenAI&#39;s tokenizer).&quot;&quot;&quot;
@@ -53,7 +53,7 @@ print(count_tokens(&quot;Hello world&quot;))           # ~2
 print(count_tokens(&quot;Explain quantum physics in detail&quot;))  # ~6
 </code></pre>
 <h2>Step 2: Token-Aware Fixed Window</h2>
-<pre><code>import redis
+<pre><code class="language-python">import redis
 import time
 
 client = redis.Redis(host=&quot;localhost&quot;, port=6379, decode_responses=True)
@@ -90,7 +90,7 @@ def check_token_limit(
 </code></pre>
 <h2>Step 3: Dual Limiting (Requests + Tokens)</h2>
 <p>Most production systems limit <strong>both</strong> — you don&#39;t want a user making 10,000 tiny requests either:</p>
-<pre><code>def dual_limit_check(
+<pre><code class="language-python">def dual_limit_check(
     identifier: str,
     tokens: int,
     max_requests: int = 60,
@@ -129,7 +129,7 @@ def check_token_limit(
 </code></pre>
 <h2>Step 4: Estimate Output Tokens</h2>
 <p>Input tokens are known. Output tokens aren&#39;t — but you can <strong>estimate</strong> them and adjust after:</p>
-<pre><code>OUTPUT_MULTIPLIERS = {
+<pre><code class="language-python">OUTPUT_MULTIPLIERS = {
     &quot;gpt-4&quot;: 1.5,
     &quot;gpt-4o&quot;: 1.2,
     &quot;gpt-3.5-turbo&quot;: 1.0,

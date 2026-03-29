@@ -31,7 +31,7 @@ pre code.hljs{background:transparent!important;padding:0}
 
 <h2>The MemoryRecord Model</h2>
 <p>Each memory is a structured record with content, scope, categories, importance, and an embedding vector:</p>
-<pre><code>from pydantic import BaseModel, Field
+<pre><code class="language-python">from pydantic import BaseModel, Field
 from datetime import datetime
 from uuid import uuid4
 
@@ -50,7 +50,7 @@ class MemoryRecord(BaseModel):
 </code></pre>
 <h2>Step 1: Serialization</h2>
 <p>Convert <code>MemoryRecord</code> to/from Valkey JSON documents:</p>
-<pre><code>import json
+<pre><code class="language-python">import json
 
 def serialize_record(record: MemoryRecord) -&gt; dict:
     return {
@@ -68,7 +68,7 @@ def serialize_record(record: MemoryRecord) -&gt; dict:
     }
 </code></pre>
 <h2>Step 2: Create the HNSW Index</h2>
-<pre><code>from glide import (
+<pre><code class="language-python">from glide import (
     ft, VectorField, VectorAlgorithm, VectorFieldAttributesHnsw,
     VectorType, DistanceMetricType, NumericField, TextField,
     FtCreateOptions, DataType,
@@ -103,7 +103,7 @@ async def ensure_index(client):
     )
 </code></pre>
 <p><strong>Valkey Command:</strong></p>
-<pre><code>FT.CREATE memory_idx ON JSON PREFIX 1 &quot;memory:&quot;
+<pre><code class="language-bash">FT.CREATE memory_idx ON JSON PREFIX 1 &quot;memory:&quot;
   SCHEMA $.scope AS scope TEXT
          $.categories_str AS categories_str TEXT
          $.importance AS importance NUMERIC
@@ -112,7 +112,7 @@ async def ensure_index(client):
            TYPE FLOAT32 DIM 1536 DISTANCE_METRIC COSINE
 </code></pre>
 <h2>Step 3: Store a Memory</h2>
-<pre><code>from glide import glide_json
+<pre><code class="language-python">from glide import glide_json
 
 async def store(client, record: MemoryRecord, ttl: int = 3600):
     key = f&quot;{KEY_PREFIX}{record.id}&quot;
@@ -121,11 +121,11 @@ async def store(client, record: MemoryRecord, ttl: int = 3600):
     await client.expire(key, ttl)
 </code></pre>
 <p><strong>Valkey Commands:</strong></p>
-<pre><code>JSON.SET memory:abc-123-def $ &#39;{&quot;id&quot;:&quot;abc-123-def&quot;,&quot;content&quot;:&quot;Always check for null...&quot;,&quot;embedding&quot;:[0.12,-0.45,...],...}&#39;
+<pre><code class="language-python">JSON.SET memory:abc-123-def $ &#39;{&quot;id&quot;:&quot;abc-123-def&quot;,&quot;content&quot;:&quot;Always check for null...&quot;,&quot;embedding&quot;:[0.12,-0.45,...],...}&#39;
 EXPIRE memory:abc-123-def 3600
 </code></pre>
 <h2>Step 4: Recall by Semantic Similarity</h2>
-<pre><code>import struct
+<pre><code class="language-python">import struct
 
 async def recall(client, query_embedding: list[float], limit: int = 5):
     # Pack embedding to bytes for FT.SEARCH
@@ -148,13 +148,13 @@ async def recall(client, query_embedding: list[float], limit: int = 5):
     return sorted(memories, key=lambda x: x[1], reverse=True)
 </code></pre>
 <p><strong>Valkey Command:</strong></p>
-<pre><code>FT.SEARCH memory_idx
+<pre><code class="language-bash">FT.SEARCH memory_idx
   &quot;(*)==&gt;[KNN 5 @embedding $vec AS score]&quot;
   PARAMS 2 vec &lt;binary_vector_6144_bytes&gt;
   SORTBY score ASC LIMIT 0 5
 </code></pre>
 <h2>Step 5: Filtered Search</h2>
-<pre><code>async def search(client, query_embedding, scope: str = None, categories: list = None, limit: int = 5):
+<pre><code class="language-python">async def search(client, query_embedding, scope: str = None, categories: list = None, limit: int = 5):
     # Build filter expression
     filters = []
     if scope:

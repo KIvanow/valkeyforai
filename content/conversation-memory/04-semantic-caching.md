@@ -8,122 +8,127 @@ LLM API calls are expensive ($0.01-$0.10+ per call) and slow (1-10 seconds). Use
 Exact-match caching (`GET cache:{hash}`) misses these. Semantic caching uses vector similarity to match by meaning.
 
 ## Architecture
-    
-    
-    User: "Can you explain Valkey?"
-            │
-            ▼
-       Embed query → [0.12, -0.45, ...]
-            │
-            ▼
-       FT.SEARCH cache_idx KNN 1 → score 0.95
-            │
-            ├── score ≥ 0.90 → ✅ Cache HIT → return cached response
-            └── score < 0.90 → ❌ Cache MISS → call LLM → cache result
+
+```python
+User: "Can you explain Valkey?"
+        │
+        ▼
+   Embed query → [0.12, -0.45, ...]
+        │
+        ▼
+   FT.SEARCH cache_idx KNN 1 → score 0.95
+        │
+        ├── score ≥ 0.90 → ✅ Cache HIT → return cached response
+        └── score < 0.90 → ❌ Cache MISS → call LLM → cache result
+```
 
 ## Step 1: Create the Cache Index
-    
-    
-    from glide import (
-        ft, VectorField, VectorAlgorithm, VectorFieldAttributesHnsw,
-        VectorType, DistanceMetricType, NumericField,
-        FtCreateOptions, DataType,
+
+```python
+from glide import (
+    ft, VectorField, VectorAlgorithm, VectorFieldAttributesHnsw,
+    VectorType, DistanceMetricType, NumericField,
+    FtCreateOptions, DataType,
+)
+
+async def create_cache_index(client):
+    existing = await ft.list(client)
+    if b"cache_idx" in existing:
+        return
+
+    hnsw = VectorFieldAttributesHnsw(
+        dimensions=1536,
+        distance_metric=DistanceMetricType.COSINE,
+        type=VectorType.FLOAT32,
     )
-    
-    async def create_cache_index(client):
-        existing = await ft.list(client)
-        if b"cache_idx" in existing:
-            return
-    
-        hnsw = VectorFieldAttributesHnsw(
-            dimensions=1536,
-            distance_metric=DistanceMetricType.COSINE,
-            type=VectorType.FLOAT32,
-        )
-        await ft.create(
-            client, "cache_idx",
-            schema=[
-                NumericField("$.created_at", alias="created_at"),
-                VectorField("$.embedding", VectorAlgorithm.HNSW,
-                            alias="embedding", attributes=hnsw),
-            ],
-            options=FtCreateOptions(data_type=DataType.JSON, prefixes=["llmcache:"]),
-        )
+    await ft.create(
+        client, "cache_idx",
+        schema=[
+            NumericField("$.created_at", alias="created_at"),
+            VectorField("$.embedding", VectorAlgorithm.HNSW,
+                        alias="embedding", attributes=hnsw),
+        ],
+        options=FtCreateOptions(data_type=DataType.JSON, prefixes=["llmcache:"]),
+    )
+```
 
 ## Step 2: The Cache Lookup
-    
-    
-    import json, struct, hashlib, time
-    from glide import glide_json, FtSearchOptions
-    
-    SIMILARITY_THRESHOLD = 0.90  # Tune this: higher = stricter matching
-    
-    async def cache_lookup(client, query_embedding):
-        """Check if a semantically similar query was already answered."""
-        vec_bytes = struct.pack(f"<{len(query_embedding)}f", *query_embedding)
-    
-        result = await ft.search(
-            client, "cache_idx",
-            "(*)==>[KNN 1 @embedding $vec AS score]",
-            options=FtSearchOptions(params={"vec": vec_bytes}),
-        )
-    
-        if result and len(result) >= 2 and result[1]:
-            for key, fields in result[1].items():
-                score = 1.0 - float(fields[b"score"])
-                if score >= SIMILARITY_THRESHOLD:
-                    doc = json.loads(fields[b"$"])
-                    return {"hit": True, "response": doc["response"], "score": score}
-    
-        return {"hit": False}
+
+```python
+import json, struct, hashlib, time
+from glide import glide_json, FtSearchOptions
+
+SIMILARITY_THRESHOLD = 0.90  # Tune this: higher = stricter matching
+
+async def cache_lookup(client, query_embedding):
+    """Check if a semantically similar query was already answered."""
+    vec_bytes = struct.pack(f"<{len(query_embedding)}f", *query_embedding)
+
+    result = await ft.search(
+        client, "cache_idx",
+        "(*)==>[KNN 1 @embedding $vec AS score]",
+        options=FtSearchOptions(params={"vec": vec_bytes}),
+    )
+
+    if result and len(result) >= 2 and result[1]:
+        for key, fields in result[1].items():
+            score = 1.0 - float(fields[b"score"])
+            if score >= SIMILARITY_THRESHOLD:
+                doc = json.loads(fields[b"$"])
+                return {"hit": True, "response": doc["response"], "score": score}
+
+    return {"hit": False}
+```
 
 ## Step 3: Store a Cache Entry
-    
-    
-    async def cache_store(client, query, response, embedding, ttl=3600):
-        """Cache an LLM response with its query embedding."""
-        cache_id = hashlib.md5(query.encode()).hexdigest()[:12]
-        key = f"llmcache:{cache_id}"
-    
-        doc = {
-            "query": query,
-            "response": response,
-            "embedding": embedding,
-            "created_at": time.time(),
-        }
-        await glide_json.set(client, key, "$", json.dumps(doc))
-        await client.expire(key, ttl)  # Auto-expire stale cache
+
+```python
+async def cache_store(client, query, response, embedding, ttl=3600):
+    """Cache an LLM response with its query embedding."""
+    cache_id = hashlib.md5(query.encode()).hexdigest()[:12]
+    key = f"llmcache:{cache_id}"
+
+    doc = {
+        "query": query,
+        "response": response,
+        "embedding": embedding,
+        "created_at": time.time(),
+    }
+    await glide_json.set(client, key, "$", json.dumps(doc))
+    await client.expire(key, ttl)  # Auto-expire stale cache
+```
 
 ## Step 4: The Complete Cache-Aware Chat Function
-    
-    
-    async def chat_with_cache(client, user_message):
-        # 1. Embed the query
-        embedding = get_embedding(user_message)
-    
-        # 2. Check semantic cache
-        cached = await cache_lookup(client, embedding)
-        if cached["hit"]:
-            print(f"⚡ Cache HIT (similarity: {cached['score']:.3f})")
-            return cached["response"]
-    
-        # 3. Cache miss — call the LLM
-        print("🔄 Cache MISS — calling LLM...")
-        response = call_llm(user_message)  # your LLM call here
-    
-        # 4. Store in cache for next time
-        await cache_store(client, user_message, response, embedding)
-    
-        return response
-    
-    
-    # First call: cache miss, calls LLM (~2 seconds)
-    await chat_with_cache(client, "What is Valkey?")
-    # 🔄 Cache MISS — calling LLM...
-    
-    # Second call: cache hit, instant (~3ms)
-    await chat_with_cache(client, "Can you explain Valkey?")
-    # ⚡ Cache HIT (similarity: 0.953)
+
+```python
+async def chat_with_cache(client, user_message):
+    # 1. Embed the query
+    embedding = get_embedding(user_message)
+
+    # 2. Check semantic cache
+    cached = await cache_lookup(client, embedding)
+    if cached["hit"]:
+        print(f"⚡ Cache HIT (similarity: {cached['score']:.3f})")
+        return cached["response"]
+
+    # 3. Cache miss — call the LLM
+    print("🔄 Cache MISS — calling LLM...")
+    response = call_llm(user_message)  # your LLM call here
+
+    # 4. Store in cache for next time
+    await cache_store(client, user_message, response, embedding)
+
+    return response
+
+
+# First call: cache miss, calls LLM (~2 seconds)
+await chat_with_cache(client, "What is Valkey?")
+# 🔄 Cache MISS — calling LLM...
+
+# Second call: cache hit, instant (~3ms)
+await chat_with_cache(client, "Can you explain Valkey?")
+# ⚡ Cache HIT (similarity: 0.953)
+```
 
 ## Tuning the Similarity Threshold
 

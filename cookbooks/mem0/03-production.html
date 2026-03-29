@@ -31,7 +31,7 @@ pre code.hljs{background:transparent!important;padding:0}
 
 <h2>Step 1: ElastiCache for Valkey 8.2+</h2>
 <p>ElastiCache for Valkey 8.2 includes built-in vector search at no additional cost. Create a cluster via the AWS Console or CLI, then use the cluster endpoint as your Valkey URL.</p>
-<pre><code>from mem0 import Memory
+<pre><code class="language-python">from mem0 import Memory
 
 config = {
     &quot;vector_store&quot;: {
@@ -87,7 +87,7 @@ memory = Memory.from_config(config)
 </tr>
 </tbody></table>
 <h2>Step 3: TLS for ElastiCache</h2>
-<pre><code># ElastiCache with TLS enabled
+<pre><code class="language-python"># ElastiCache with TLS enabled
 config = {
     &quot;vector_store&quot;: {
         &quot;provider&quot;: &quot;valkey&quot;,
@@ -101,7 +101,7 @@ config = {
 }
 </code></pre>
 <h2>Step 4: Monitoring</h2>
-<pre><code>import valkey
+<pre><code class="language-python">import valkey
 
 # Connect directly to check index health
 client = valkey.from_url(&quot;valkey://your-cluster:6379&quot;)

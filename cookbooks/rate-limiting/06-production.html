@@ -31,7 +31,7 @@ pre code.hljs{background:transparent!important;padding:0}
 
 <h2>Pattern 1: Retry-After Headers</h2>
 <p>Always tell clients <strong>when</strong> to retry:</p>
-<pre><code>from fastapi import FastAPI, Response, HTTPException
+<pre><code class="language-python">from fastapi import FastAPI, Response, HTTPException
 
 app = FastAPI()
 
@@ -53,7 +53,7 @@ async def chat(prompt: str, response: Response):
 </code></pre>
 <h2>Pattern 2: Graceful Degradation</h2>
 <p>Don&#39;t hard-fail — degrade gracefully through model tiers, cache, then queue:</p>
-<pre><code>async def smart_llm_call(prompt, user_id):
+<pre><code class="language-python">async def smart_llm_call(prompt, user_id):
     # Tier 1: Preferred model
     result = limiter.check(user_id, model=&quot;gpt-4&quot;)
     if result.allowed:
@@ -75,7 +75,7 @@ async def chat(prompt: str, response: Response):
 </code></pre>
 <h2>Pattern 3: Circuit Breaker</h2>
 <p>If Valkey goes down, fail-open (allow requests) rather than blocking everything:</p>
-<pre><code>class RateLimiterWithCircuitBreaker:
+<pre><code class="language-python">class RateLimiterWithCircuitBreaker:
     def __init__(self):
         self.failure_count = 0
         self.failure_threshold = 3
@@ -95,7 +95,7 @@ async def chat(prompt: str, response: Response):
             return {&quot;allowed&quot;: True, &quot;source&quot;: &quot;fallback&quot;}
 </code></pre>
 <h2>Pattern 4: Request Queuing with Streams</h2>
-<pre><code>def enqueue_request(user_id, prompt, model=&quot;gpt-4&quot;):
+<pre><code class="language-python">def enqueue_request(user_id, prompt, model=&quot;gpt-4&quot;):
     client.xadd(&quot;llm:queue&quot;, {
         &quot;user_id&quot;: user_id,
         &quot;prompt&quot;: prompt,
@@ -116,7 +116,7 @@ async def chat(prompt: str, response: Response):
 <li><strong>Lua scripts</strong> — atomic check-and-increment for correctness</li>
 </ul>
 <h2>Valkey Configuration</h2>
-<pre><code># valkey.conf optimizations for rate limiting
+<pre><code class="language-python"># valkey.conf optimizations for rate limiting
 maxmemory 256mb
 maxmemory-policy allkeys-lru
 hz 100

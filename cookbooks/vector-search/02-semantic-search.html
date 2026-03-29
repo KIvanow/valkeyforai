@@ -30,14 +30,14 @@ pre code.hljs{background:transparent!important;padding:0}
 
 
 <h2>The Architecture</h2>
-<pre><code># 1. Embed documents with OpenAI → store in Valkey
+<pre><code class="language-python"># 1. Embed documents with OpenAI → store in Valkey
 # 2. User query → embed query → FT.SEARCH KNN → return matches
 #
 #  Document → OpenAI embed → HSET doc:1 embedding [binary] content &quot;...&quot;
 #  Query    → OpenAI embed → FT.SEARCH idx &quot;*=&gt;[KNN 5 @embedding $vec]&quot;
 </code></pre>
 <h2>Step 1: Setup</h2>
-<pre><code>pip install redis openai numpy
+<pre><code class="language-bash">pip install redis openai numpy
 
 
 import redis
@@ -51,7 +51,7 @@ EMBEDDING_MODEL = &quot;text-embedding-3-small&quot;
 EMBEDDING_DIM = 1536  # text-embedding-3-small outputs 1536 dimensions
 </code></pre>
 <h2>Step 2: Create Index for 1536-dim Vectors</h2>
-<pre><code>try:
+<pre><code class="language-python">try:
     client.execute_command(
         &quot;FT.CREATE&quot;, &quot;semantic_idx&quot;,
         &quot;SCHEMA&quot;,
@@ -66,7 +66,7 @@ except redis.ResponseError:
     print(&quot;Index already exists&quot;)
 </code></pre>
 <h2>Step 3: Embed and Store Documents</h2>
-<pre><code>def get_embedding(text: str) -&gt; bytes:
+<pre><code class="language-python">def get_embedding(text: str) -&gt; bytes:
     &quot;&quot;&quot;Get embedding from OpenAI and return as binary FLOAT32.&quot;&quot;&quot;
     response = openai_client.embeddings.create(
         model=EMBEDDING_MODEL,
@@ -99,7 +99,7 @@ for i, text in enumerate(docs):
 print(f&quot;\nStored {len(docs)} documents with embeddings&quot;)
 </code></pre>
 <h2>Step 4: Search by Meaning</h2>
-<pre><code>def semantic_search(query: str, k: int = 3):
+<pre><code class="language-python">def semantic_search(query: str, k: int = 3):
     &quot;&quot;&quot;Search for documents semantically similar to the query.&quot;&quot;&quot;
 
     # Embed the query
@@ -139,7 +139,7 @@ for q in queries:
         print(f&quot;  → {m[&#39;content&#39;]} (score: {m[&#39;score&#39;]})&quot;)
 </code></pre>
 <p><strong>Expected output:</strong></p>
-<pre><code>Query: &#39;What is Valkey?&#39;
+<pre><code class="language-python">Query: &#39;What is Valkey?&#39;
   → Valkey is an open-source in-memory data store forked from Redis (score: 0.15)
   → Vector similarity search finds documents by semantic meaning (score: 0.42)
 

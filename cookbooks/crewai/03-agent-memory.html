@@ -30,7 +30,7 @@ pre code.hljs{background:transparent!important;padding:0}
 
 
 <h2>Step 1: Configure Memory with Bedrock</h2>
-<pre><code>import boto3
+<pre><code class="language-python">import boto3
 from crewai.memory.unified_memory import Memory
 from valkey_storage import ValkeyStorage
 
@@ -49,7 +49,7 @@ def build_memory() -&gt; Memory:
     )
 </code></pre>
 <h2>Step 2: Create an Agent with Memory</h2>
-<pre><code>from crewai import Agent, Crew, Task
+<pre><code class="language-python">from crewai import Agent, Crew, Task
 
 memory = build_memory()
 
@@ -62,7 +62,7 @@ reviewer = Agent(
 )
 </code></pre>
 <h2>Step 3: Store Patterns — First Execution</h2>
-<pre><code># First crew run — agent learns patterns
+<pre><code class="language-python"># First crew run — agent learns patterns
 learn_task = Task(
     description=&quot;&quot;&quot;Review this code and remember the patterns you find:
     
@@ -86,11 +86,11 @@ print(result)
 # Agent identifies: SQL injection risk, no input validation, no error handling
 </code></pre>
 <p><strong>Valkey Commands Fired (store):</strong></p>
-<pre><code>JSON.SET memory:7f3a-b2c1 $ &#39;{&quot;content&quot;:&quot;SQL injection risk in get_user...&quot;,&quot;scope&quot;:&quot;/code-review&quot;,&quot;embedding&quot;:[0.12,-0.45,...],...}&#39;
+<pre><code class="language-python">JSON.SET memory:7f3a-b2c1 $ &#39;{&quot;content&quot;:&quot;SQL injection risk in get_user...&quot;,&quot;scope&quot;:&quot;/code-review&quot;,&quot;embedding&quot;:[0.12,-0.45,...],...}&#39;
 EXPIRE memory:7f3a-b2c1 3600
 </code></pre>
 <h2>Step 4: Recall Patterns — Later Execution</h2>
-<pre><code># Later crew run — agent recalls what it learned
+<pre><code class="language-python"># Later crew run — agent recalls what it learned
 recall_task = Task(
     description=&quot;&quot;&quot;Review this new code. Use your memory of past reviews:
     
@@ -115,7 +115,7 @@ print(result2)
 # &quot;I&#39;ve seen this pattern before — f-string SQL is vulnerable to injection...&quot;
 </code></pre>
 <p><strong>Valkey Commands Fired (recall):</strong></p>
-<pre><code>FT.SEARCH memory_idx
+<pre><code class="language-bash">FT.SEARCH memory_idx
   &quot;(*)==&gt;[KNN 5 @embedding $vec AS score]&quot;
   PARAMS 2 vec &lt;binary_vector&gt;
 

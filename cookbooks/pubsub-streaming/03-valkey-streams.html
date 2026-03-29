@@ -65,7 +65,7 @@ pre code.hljs{background:transparent!important;padding:0}
 </tr>
 </tbody></table>
 <h2>Step 1: Add Messages</h2>
-<pre><code>import redis, json, time
+<pre><code class="language-python">import redis, json, time
 client = redis.Redis(host=&quot;localhost&quot;, port=6379, decode_responses=True)
 
 # XADD — append to stream
@@ -80,7 +80,7 @@ print(f&quot;Added: {entry_id}&quot;)
 client.xadd(&quot;ai:tasks&quot;, {&quot;type&quot;: &quot;completion&quot;}, maxlen=10000)
 </code></pre>
 <h2>Step 2: Read Messages</h2>
-<pre><code># XREAD — blocking read for new messages
+<pre><code class="language-python"># XREAD — blocking read for new messages
 entries = client.xread({&quot;ai:tasks&quot;: &quot;0-0&quot;}, count=10, block=5000)
 for stream, messages in entries:
     for msg_id, data in messages:
@@ -93,12 +93,12 @@ messages = client.xrange(&quot;ai:tasks&quot;, min=&quot;-&quot;, max=&quot;+&qu
 latest = client.xrevrange(&quot;ai:tasks&quot;, max=&quot;+&quot;, min=&quot;-&quot;, count=1)
 </code></pre>
 <h2>Step 3: Stream Management</h2>
-<pre><code>length = client.xlen(&quot;ai:tasks&quot;)
+<pre><code class="language-python">length = client.xlen(&quot;ai:tasks&quot;)
 info = client.xinfo_stream(&quot;ai:tasks&quot;)
 client.xtrim(&quot;ai:tasks&quot;, maxlen=1000)
 </code></pre>
 <h2>Step 4: Consumer Loop</h2>
-<pre><code>def consume(stream_key):
+<pre><code class="language-python">def consume(stream_key):
     last_id = &quot;$&quot;  # Only new messages
     while True:
         entries = client.xread({stream_key: last_id}, count=10, block=2000)

@@ -32,7 +32,7 @@ pre code.hljs{background:transparent!important;padding:0}
 <h2>The Problem</h2>
 <p>Cookbook 01 stored messages in a LIST. But in production you also need to know: <em>who</em> is this session for? <em>How many tokens</em> have been used? <em>Which model</em>? <em>When</em> was the last activity? Storing this metadata alongside the conversation enables session management, billing, and debugging.</p>
 <h2>Data Model: Two Keys Per Session</h2>
-<pre><code># Messages — LIST (same as cookbook 01)
+<pre><code class="language-python"># Messages — LIST (same as cookbook 01)
 chat:sess_abc123          → [&quot;{&quot;role&quot;:&quot;user&quot;,...}&quot;, ...]
 
 # Metadata — HASH (new)
@@ -48,7 +48,7 @@ meta:sess_abc123          → {
 </code></pre>
 <p><strong>Key Insight:</strong> Valkey Hashes are perfect for metadata — each field is independently readable and writable. <code>HINCRBY</code> atomically increments token counts without read-modify-write races. <code>HSET</code> updates individual fields without touching others.</p>
 <h2>Pattern 1: Create a Session with Metadata</h2>
-<pre><code>import asyncio, json, time
+<pre><code class="language-python">import asyncio, json, time
 from glide import GlideClient, GlideClientConfiguration, NodeAddress
 
 
@@ -67,7 +67,7 @@ async def create_session(client, session_id, user_id, model=&quot;claude-3-haiku
     await client.expire(f&quot;chat:{session_id}&quot;, 86400)
 </code></pre>
 <h2>Pattern 2: Add Message with Token Tracking</h2>
-<pre><code>async def add_message(client, session_id, role, content, tokens_used=0):
+<pre><code class="language-python">async def add_message(client, session_id, role, content, tokens_used=0):
     chat_key = f&quot;chat:{session_id}&quot;
     meta_key = f&quot;meta:{session_id}&quot;
 
@@ -81,7 +81,7 @@ async def create_session(client, session_id, user_id, model=&quot;claude-3-haiku
 </code></pre>
 <h2>Pattern 3: Sliding Window — Keep Last N Messages</h2>
 <p>Long conversations eat context windows. Use <code>LTRIM</code> to keep only the most recent messages:</p>
-<pre><code>async def add_message_windowed(client, session_id, role, content, max_messages=50):
+<pre><code class="language-python">async def add_message_windowed(client, session_id, role, content, max_messages=50):
     chat_key = f&quot;chat:{session_id}&quot;
 
     # Append
@@ -92,7 +92,7 @@ async def create_session(client, session_id, user_id, model=&quot;claude-3-haiku
 </code></pre>
 <p><strong>Why LTRIM?</strong> Unlike deleting and re-inserting, <code>LTRIM</code> removes elements from the head of the list in-place. Combined with <code>RPUSH</code>, it creates a fixed-size sliding window with zero overhead.</p>
 <h2>Pattern 4: List Active Sessions for a User</h2>
-<pre><code>async def list_user_sessions(client, user_id):
+<pre><code class="language-python">async def list_user_sessions(client, user_id):
     &quot;&quot;&quot;Find all active sessions for a user using SCAN.&quot;&quot;&quot;
     sessions = []
     cursor = &quot;0&quot;
@@ -111,7 +111,7 @@ async def create_session(client, session_id, user_id, model=&quot;claude-3-haiku
 </code></pre>
 <p><strong>Production tip:</strong> For large-scale deployments, maintain a per-user session index with a SET: <code>SADD user_sessions:{user_id} {session_id}</code>. This avoids scanning all keys.</p>
 <h2>Pattern 5: Get Session Summary</h2>
-<pre><code>async def get_session_info(client, session_id):
+<pre><code class="language-python">async def get_session_info(client, session_id):
     meta = await client.hgetall(f&quot;meta:{session_id}&quot;)
     msg_count = await client.llen(f&quot;chat:{session_id}&quot;)
     ttl = await client.ttl(f&quot;meta:{session_id}&quot;)

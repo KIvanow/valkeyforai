@@ -42,15 +42,120 @@ pre code.hljs{background:transparent!important;padding:0}
 <h4>Connected Clients</h4>
 <p>Monitor for connection leaks</p>
 <h2>Built-in INFO Command</h2>
-<h1>Get all stats INFO # Specific sections INFO memory INFO stats INFO clients # Search module stats FT.INFO idx:docs</h1>
+<pre><code class="language-bash"># Get all stats
+INFO
+
+# Specific sections
+INFO memory
+INFO stats
+INFO clients
+
+# Search module stats
+FT.INFO idx:docs
+</code></pre>
 <h2>Application-Level Metrics</h2>
-<p>import time from dataclasses import dataclass, field @dataclass class CacheMetrics: hits: int = 0 misses: int = 0 hit_latencies: list = field(default_factory=list) miss_latencies: list = field(default_factory=list) @property def hit_rate(self): total = self.hits + self.misses return self.hits / total if total &gt; 0 else 0 @property def avg_hit_latency(self): return sum(self.hit_latencies) / len(self.hit_latencies) if self.hit_latencies else 0 metrics = CacheMetrics() async def cached_query(query): start = time.perf_counter() result = await cache.lookup(query) latency = (time.perf_counter() - start) * 1000 if result: metrics.hits += 1 metrics.hit_latencies.append(latency) else: metrics.misses += 1 metrics.miss_latencies.append(latency) return result</p>
+<pre><code class="language-python">import time
+from dataclasses import dataclass, field
+
+@dataclass
+class CacheMetrics:
+    hits: int = 0
+    misses: int = 0
+    hit_latencies: list = field(default_factory=list)
+    miss_latencies: list = field(default_factory=list)
+
+    @property
+    def hit_rate(self):
+        total = self.hits + self.misses
+        return self.hits / total if total &gt; 0 else 0
+
+    @property
+    def avg_hit_latency(self):
+        return sum(self.hit_latencies) / len(self.hit_latencies) if self.hit_latencies else 0
+
+metrics = CacheMetrics()
+
+async def cached_query(query):
+    start = time.perf_counter()
+    result = await cache.lookup(query)
+    latency = (time.perf_counter() - start) * 1000
+
+    if result:
+        metrics.hits += 1
+        metrics.hit_latencies.append(latency)
+    else:
+        metrics.misses += 1
+        metrics.miss_latencies.append(latency)
+
+    return result
+</code></pre>
 <h2>Prometheus Integration</h2>
-<p>from prometheus_client import Counter, Histogram, Gauge # Define metrics cache_hits = Counter(&#39;rag_cache_hits_total&#39;, &#39;Cache hits&#39;) cache_misses = Counter(&#39;rag_cache_misses_total&#39;, &#39;Cache misses&#39;) search_latency = Histogram( &#39;rag_search_seconds&#39;, &#39;Search latency&#39;, buckets=[.001, .005, .01, .05, .1, .5, 1] ) vector_count = Gauge(&#39;rag_vectors_total&#39;, &#39;Total vectors&#39;) # Usage with search_latency.time(): results = await vector_store.search(query) if cache_hit: cache_hits.inc() else: cache_misses.inc()</p>
+<pre><code class="language-python">from prometheus_client import Counter, Histogram, Gauge
+
+# Define metrics
+cache_hits = Counter(&#39;rag_cache_hits_total&#39;, &#39;Cache hits&#39;)
+cache_misses = Counter(&#39;rag_cache_misses_total&#39;, &#39;Cache misses&#39;)
+search_latency = Histogram(
+    &#39;rag_search_seconds&#39;, &#39;Search latency&#39;,
+    buckets=[.001, .005, .01, .05, .1, .5, 1]
+)
+vector_count = Gauge(&#39;rag_vectors_total&#39;, &#39;Total vectors&#39;)
+
+# Usage
+with search_latency.time():
+    results = await vector_store.search(query)
+
+if cache_hit:
+    cache_hits.inc()
+else:
+    cache_misses.inc()
+</code></pre>
 <h2>Logging Best Practices</h2>
-<p>import structlog log = structlog.get_logger() async def search_with_logging(query, user_id): start = time.perf_counter() try: results = await cache.lookup(query) latency_ms = (time.perf_counter() - start) * 1000 log.info( &quot;cache_lookup&quot;, user_id=user_id, query_length=len(query), cache_hit=results is not None, latency_ms=round(latency_ms, 2), result_count=len(results) if results else 0 ) return results except Exception as e: log.error(&quot;cache_error&quot;, error=str(e), query=query[:50]) raise</p>
+<pre><code class="language-python">import structlog
+
+log = structlog.get_logger()
+
+async def search_with_logging(query, user_id):
+    start = time.perf_counter()
+
+    try:
+        results = await cache.lookup(query)
+        latency_ms = (time.perf_counter() - start) * 1000
+
+        log.info(
+            &quot;cache_lookup&quot;,
+            user_id=user_id,
+            query_length=len(query),
+            cache_hit=results is not None,
+            latency_ms=round(latency_ms, 2),
+            result_count=len(results) if results else 0
+        )
+        return results
+
+    except Exception as e:
+        log.error(&quot;cache_error&quot;, error=str(e), query=query[:50])
+        raise
+</code></pre>
 <h2>Health Check Endpoint</h2>
-<p>@app.get(&quot;/health&quot;) async def health_check(): try: # Check Valkey connection client.ping() # Check index exists info = client.ft(&quot;idx:docs&quot;).info() return { &quot;status&quot;: &quot;healthy&quot;, &quot;valkey&quot;: &quot;connected&quot;, &quot;index_docs&quot;: info[&quot;num_docs&quot;], &quot;cache_hit_rate&quot;: f&quot;{metrics.hit_rate:.1%}&quot;, &quot;avg_latency_ms&quot;: round(metrics.avg_hit_latency, 2) } except Exception as e: return {&quot;status&quot;: &quot;unhealthy&quot;, &quot;error&quot;: str(e)}</p>
+<pre><code class="language-python">@app.get(&quot;/health&quot;)
+async def health_check():
+    try:
+        # Check Valkey connection
+        client.ping()
+
+        # Check index exists
+        info = client.ft(&quot;idx:docs&quot;).info()
+
+        return {
+            &quot;status&quot;: &quot;healthy&quot;,
+            &quot;valkey&quot;: &quot;connected&quot;,
+            &quot;index_docs&quot;: info[&quot;num_docs&quot;],
+            &quot;cache_hit_rate&quot;: f&quot;{metrics.hit_rate:.1%}&quot;,
+            &quot;avg_latency_ms&quot;: round(metrics.avg_hit_latency, 2)
+        }
+    except Exception as e:
+        return {&quot;status&quot;: &quot;unhealthy&quot;, &quot;error&quot;: str(e)}
+</code></pre>
 <h2>Alert Thresholds</h2>
 <table>
 <thead>

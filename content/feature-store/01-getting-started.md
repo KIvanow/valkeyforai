@@ -13,121 +13,128 @@ ML models need features at inference time. A feature store bridges offline train
   * Python 3.9+
 
 ## Step 1: Start Valkey
-    
-    
-    docker run -d --name valkey -p 6379:6379 valkey/valkey:latest
+
+```bash
+docker run -d --name valkey -p 6379:6379 valkey/valkey:latest
+```
 
 Verify it's running:
-    
-    
-    valkey-cli ping
-    # PONG
+
+```bash
+valkey-cli ping
+# PONG
+```
 
 ## Step 2: Install Dependencies
-    
-    
-    pip install redis
+
+```bash
+pip install redis
+```
 
 The `redis` Python package works with Valkey out of the box — no special drivers needed.
 
 ## Step 3: Understand the Data Model
 
 Every entity's features are stored as a **Valkey Hash** :
-    
-    
-    # Key format: fs:v1:{feature_view_name}:{entity_id}
-    # Example:
-    fs:v1:user_profile:user_123 → {
-        age: "28",
-        lifetime_value: "1250.50",
-        segment: "premium",
-        _updated_at: "1710000000.0",
-        _feature_view: "user_profile"
-    }
+
+```python
+# Key format: fs:v1:{feature_view_name}:{entity_id}
+# Example:
+fs:v1:user_profile:user_123 → {
+    age: "28",
+    lifetime_value: "1250.50",
+    segment: "premium",
+    _updated_at: "1710000000.0",
+    _feature_view: "user_profile"
+}
+```
 
 **Key Insight:** Valkey Hashes map perfectly to feature vectors. Each field is a feature, each key is an entity. One `HGETALL` returns the full feature vector. One `HMGET` returns selective features. Both complete in ~0.1ms.
 
 ## Step 4: Write Features with Raw Valkey Commands
 
 Let's start with raw Valkey commands to understand what's happening under the hood:
-    
-    
-    import redis
-    import time
-    
-    client = redis.Redis(host="localhost", port=6379, decode_responses=True)
-    
-    # Write features for a user
-    key = "fs:v1:user_profile:user_001"
-    features = {
-        "age": "28",
-        "lifetime_value": "1250.50",
-        "segment": "premium",
-        "_updated_at": str(time.time()),
-        "_feature_view": "user_profile",
-    }
-    
-    # HSET — write all features atomically
-    client.hset(key, mapping=features)
-    
-    # Set TTL — features expire after 1 hour
-    client.expire(key, 3600)
-    
-    print("✅ Features written")
+
+```python
+import redis
+import time
+
+client = redis.Redis(host="localhost", port=6379, decode_responses=True)
+
+# Write features for a user
+key = "fs:v1:user_profile:user_001"
+features = {
+    "age": "28",
+    "lifetime_value": "1250.50",
+    "segment": "premium",
+    "_updated_at": str(time.time()),
+    "_feature_view": "user_profile",
+}
+
+# HSET — write all features atomically
+client.hset(key, mapping=features)
+
+# Set TTL — features expire after 1 hour
+client.expire(key, 3600)
+
+print("✅ Features written")
+```
 
 ## Step 5: Read Features Back
-    
-    
-    # HGETALL — read all features for an entity
-    result = client.hgetall("fs:v1:user_profile:user_001")
-    print(result)
-    # {'age': '28', 'lifetime_value': '1250.50', 'segment': 'premium', ...}
-    
-    # HMGET — read only specific features
-    age, ltv = client.hmget("fs:v1:user_profile:user_001", ["age", "lifetime_value"])
-    print(f"age={age}, ltv={ltv}")
-    # age=28, ltv=1250.50
+
+```python
+# HGETALL — read all features for an entity
+result = client.hgetall("fs:v1:user_profile:user_001")
+print(result)
+# {'age': '28', 'lifetime_value': '1250.50', 'segment': 'premium', ...}
+
+# HMGET — read only specific features
+age, ltv = client.hmget("fs:v1:user_profile:user_001", ["age", "lifetime_value"])
+print(f"age={age}, ltv={ltv}")
+# age=28, ltv=1250.50
+```
 
 ## Step 6: Use the Library
 
 Now let's do the same thing with the feature store library, which handles serialization, TTL, and metadata for you:
-    
-    
-    from src import ValkeyFeatureStore, Entity, FeatureView, Feature, FeatureType
-    
-    # Connect
-    store = ValkeyFeatureStore(host="localhost", port=6379)
-    
-    # Define an entity
-    user = Entity(name="user", join_keys=["user_id"])
-    
-    # Define a feature view (schema for this entity's features)
-    user_features = FeatureView(
-        name="user_profile",
-        entity=user,
-        features=[
-            Feature("age", FeatureType.INT),
-            Feature("lifetime_value", FeatureType.FLOAT),
-            Feature("segment", FeatureType.STRING),
-        ],
-        ttl=3600,  # 1 hour
-    )
-    
-    # Register it with the store
-    store.register(user_features)
-    
-    # Write — automatically serializes, sets TTL, adds metadata
-    store.write("user_profile", "user_001", {
-        "age": 28,
-        "lifetime_value": 1250.50,
-        "segment": "premium",
-    })
-    
-    # Read — automatically deserializes to correct Python types
-    features = store.read("user_profile", "user_001")
-    print(features)
-    # {'age': 28, 'lifetime_value': 1250.5, 'segment': 'premium'}
-    # Note: age is int, ltv is float — types are preserved!
+
+```python
+from src import ValkeyFeatureStore, Entity, FeatureView, Feature, FeatureType
+
+# Connect
+store = ValkeyFeatureStore(host="localhost", port=6379)
+
+# Define an entity
+user = Entity(name="user", join_keys=["user_id"])
+
+# Define a feature view (schema for this entity's features)
+user_features = FeatureView(
+    name="user_profile",
+    entity=user,
+    features=[
+        Feature("age", FeatureType.INT),
+        Feature("lifetime_value", FeatureType.FLOAT),
+        Feature("segment", FeatureType.STRING),
+    ],
+    ttl=3600,  # 1 hour
+)
+
+# Register it with the store
+store.register(user_features)
+
+# Write — automatically serializes, sets TTL, adds metadata
+store.write("user_profile", "user_001", {
+    "age": 28,
+    "lifetime_value": 1250.50,
+    "segment": "premium",
+})
+
+# Read — automatically deserializes to correct Python types
+features = store.read("user_profile", "user_001")
+print(features)
+# {'age': 28, 'lifetime_value': 1250.5, 'segment': 'premium'}
+# Note: age is int, ltv is float — types are preserved!
+```
 
 ## How It Works Under the Hood
 

@@ -43,19 +43,19 @@ pre code.hljs{background:transparent!important;padding:0}
 <li>Python 3.9+</li>
 </ul>
 <h2>Step 1: Start Valkey</h2>
-<pre><code>docker run -d --name valkey -p 6379:6379 valkey/valkey:latest
+<pre><code class="language-bash">docker run -d --name valkey -p 6379:6379 valkey/valkey:latest
 </code></pre>
 <p>Verify it&#39;s running:</p>
-<pre><code>docker exec valkey valkey-cli PING
+<pre><code class="language-bash">docker exec valkey valkey-cli PING
 # PONGG
 </code></pre>
 <h2>Step 2: Install GLIDE</h2>
-<pre><code>pip install valkey-glide
+<pre><code class="language-bash">pip install valkey-glide
 </code></pre>
 <p>GLIDE is the official Valkey client — Rust core with Python bindings. It works with both standalone Valkey and ElastiCache for Valkey clusters.</p>
 <h2>Step 3: Understand the Data Model</h2>
 <p>Each conversation is stored as a <strong>Valkey List</strong> :</p>
-<pre><code># Key format: chat:{session_id}
+<pre><code class="language-python"># Key format: chat:{session_id}
 # Each element is a JSON-encoded message
 
 chat:sess_abc123 → [
@@ -67,7 +67,7 @@ chat:sess_abc123 → [
 </code></pre>
 <p><strong>Key Insight:</strong> Valkey Lists are doubly-linked lists optimized for push/pop at both ends. <code>RPUSH</code> appends in O(1). <code>LRANGE -N -1</code> retrieves the last N messages in O(N). This maps perfectly to conversation history — always appending, always reading the tail.</p>
 <h2>Step 4: Connect and Store Messages</h2>
-<pre><code>import asyncio
+<pre><code class="language-python">import asyncio
 import json
 from glide import GlideClient, GlideClientConfiguration, NodeAddress
 
@@ -100,7 +100,7 @@ async def main():
 asyncio.run(main())
 </code></pre>
 <h2>Step 5: Retrieve Conversation History</h2>
-<pre><code>async def get_history(client, session_id, last_n=50):
+<pre><code class="language-python">async def get_history(client, session_id, last_n=50):
     &quot;&quot;&quot;Retrieve the last N messages from a conversation.&quot;&quot;&quot;
     key = f&quot;chat:{session_id}&quot;
 
@@ -122,7 +122,7 @@ for msg in history:
 </code></pre>
 <h2>Step 6: Feed History to an LLM</h2>
 <p>The conversation history is already in the format LLMs expect — a list of <code>{&quot;role&quot;, &quot;content&quot;}</code> dicts:</p>
-<pre><code>import boto3, json
+<pre><code class="language-python">import boto3, json
 
 async def chat(client, session_id, user_message):
     # 1. Save the user message
@@ -194,7 +194,7 @@ async def chat(client, session_id, user_message):
 </tbody></table>
 <h2>ElastiCache for Valkey</h2>
 <p>To use ElastiCache instead of local Docker, just change the connection:</p>
-<pre><code># Local Docker
+<pre><code class="language-python"># Local Docker
 config = GlideClientConfiguration([NodeAddress(&quot;localhost&quot;, 6379)])
 
 # ElastiCache for Valkey

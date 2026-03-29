@@ -39,7 +39,7 @@ pre code.hljs{background:transparent!important;padding:0}
 <h2>Pattern 1: Sliding Window Count</h2>
 <p>Count events in a sliding time window — e.g., &quot;transactions in the last hour.&quot;</p>
 <p>We use a <strong>Sorted Set</strong> where each member is a unique event ID and the score is the timestamp:</p>
-<pre><code>import redis
+<pre><code class="language-python">import redis
 import time
 import uuid
 
@@ -82,7 +82,7 @@ for i in range(5):
 <p><strong>How it works:</strong> <code>ZADD</code> adds the event, <code>ZREMRANGEBYSCORE</code> prunes expired events, <code>ZCARD</code> counts the remainder. All three commands execute atomically in one pipeline round-trip (~0.2ms).</p>
 <h2>Pattern 2: Running Average</h2>
 <p>Track a rolling average — e.g., &quot;average transaction amount&quot; — using two atomic counters:</p>
-<pre><code>def update_running_average(user_id: str, amount: float):
+<pre><code class="language-python">def update_running_average(user_id: str, amount: float):
     &quot;&quot;&quot;Update running average and return new value.&quot;&quot;&quot;
     sum_key = f&quot;fs:agg:txn_sum:{user_id}&quot;
     count_key = f&quot;fs:agg:txn_count_total:{user_id}&quot;
@@ -136,7 +136,7 @@ for amt in amounts:
 </tbody></table>
 <h2>Pattern 3: Unique Count (Cardinality)</h2>
 <p>Count unique values — e.g., &quot;unique merchants this user transacted with in 24h.&quot; <strong>HyperLogLog</strong> gives you approximate cardinality using only 12KB of memory per counter:</p>
-<pre><code>def record_unique_merchant(user_id: str, merchant_id: str):
+<pre><code class="language-python">def record_unique_merchant(user_id: str, merchant_id: str):
     &quot;&quot;&quot;Track unique merchants and return approximate count.&quot;&quot;&quot;
     key = f&quot;fs:agg:unique_merchants:{user_id}&quot;
 
@@ -163,7 +163,7 @@ for m in merchants:
 <p><strong>HyperLogLog trade-off:</strong> Uses only 12KB regardless of cardinality (vs. storing all values in a Set). The count has ~0.81% standard error — perfectly acceptable for ML features where approximate cardinality is fine.</p>
 <h2>Pattern 4: Materialize Aggregations to Feature Store</h2>
 <p>The patterns above compute aggregations on the fly. To serve them as regular features, materialize back to the feature store Hash:</p>
-<pre><code>def materialize_user_features(user_id: str):
+<pre><code class="language-python">def materialize_user_features(user_id: str):
     &quot;&quot;&quot;Compute aggregations and write to the feature store Hash.&quot;&quot;&quot;
     pipe = client.pipeline(transaction=False)
 

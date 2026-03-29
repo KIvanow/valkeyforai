@@ -32,26 +32,23 @@ pre code.hljs{background:transparent!important;padding:0}
 <h2>The Architecture</h2>
 <p>Instead of writing features directly to Hashes, publish them to a Valkey Stream. A consumer reads the stream and writes to the online store. This decouples producers from consumers and enables:</p>
 <ul>
-<li><p><strong>Fan-in</strong> — Multiple services publish to one stream</p>
-</li>
-<li><p><strong>Replay</strong> — Re-process historical updates if needed</p>
-</li>
-<li><p><strong>Backpressure</strong> — Stream <code>MAXLEN</code> prevents unbounded growth</p>
-</li>
-<li><p><strong>Distributed processing</strong> — Consumer groups for parallel workers</p>
-<h1>Architecture:</h1>
-<h1>Service A  ──┐</h1>
-<h1>Service B  ──┼──▶  Valkey Stream  ──▶  Consumer  ──▶  Valkey Hash</h1>
-<h1>Service C  ──┘     (XADD)              (XREAD)        (HSET)</h1>
-<h1></h1>
-<h1>Stream key: fs:stream:{feature_view_name}</h1>
-<h1>Message:    {entity_id, features (JSON), timestamp}</h1>
-</li>
+<li><strong>Fan-in</strong> — Multiple services publish to one stream</li>
+<li><strong>Replay</strong> — Re-process historical updates if needed</li>
+<li><strong>Backpressure</strong> — Stream <code>MAXLEN</code> prevents unbounded growth</li>
+<li><strong>Distributed processing</strong> — Consumer groups for parallel workers</li>
 </ul>
+<pre><code class="language-python"># Architecture:
+#   Service A  ──┐
+#   Service B  ──┼──▶  Valkey Stream  ──▶  Consumer  ──▶  Valkey Hash
+#   Service C  ──┘     (XADD)              (XREAD)        (HSET)
+#
+# Stream key: fs:stream:{feature_view_name}
+# Message:    {entity_id, features (JSON), timestamp}
+</code></pre>
 <h2>Step 1: Publish Feature Updates</h2>
 <p>Any service can publish feature updates using <code>XADD</code>:</p>
 <h3>Raw Valkey</h3>
-<pre><code>import redis
+<pre><code class="language-python">import redis
 import json
 import time
 
@@ -72,7 +69,7 @@ print(f&quot;Published: {entry_id}&quot;)
 # Published: 1710000000000-0
 </code></pre>
 <h3>With the Library</h3>
-<pre><code>from src import ValkeyFeatureStore, Entity, FeatureView, Feature, FeatureType
+<pre><code class="language-python">from src import ValkeyFeatureStore, Entity, FeatureView, Feature, FeatureType
 
 store = ValkeyFeatureStore(host=&quot;localhost&quot;, port=6379)
 
@@ -100,7 +97,7 @@ print(f&quot;Published: {entry_id}&quot;)
 <h2>Step 2: Consume and Materialize</h2>
 <p>A consumer reads the stream and writes features to the online store Hash:</p>
 <h3>Raw Valkey</h3>
-<pre><code>def consume_features(stream_key: str, last_id: str = &quot;0-0&quot;):
+<pre><code class="language-python">def consume_features(stream_key: str, last_id: str = &quot;0-0&quot;):
     &quot;&quot;&quot;Read stream entries and write to online store.&quot;&quot;&quot;
     entries = client.xread({stream_key: last_id}, count=100, block=1000)
 
@@ -133,7 +130,7 @@ while True:
     last_id = consume_features(&quot;fs:stream:user_profile&quot;, last_id)
 </code></pre>
 <h3>With the Library</h3>
-<pre><code># One-shot consume: read pending entries and write to Hashes
+<pre><code class="language-python"># One-shot consume: read pending entries and write to Hashes
 last_id = store.streaming.consume_once(
     user_features,
     last_id=&quot;0-0&quot;,   # Start from beginning
@@ -151,7 +148,7 @@ store.streaming.stop_consumer()
 <p><strong>How it works:</strong> <code>consume_once()</code> calls <code>XREAD</code> to fetch stream entries, deserializes the JSON features, then calls <code>write_batch()</code> which uses a pipeline of <code>HSET</code> commands to materialize all entities in one round-trip.</p>
 <h2>Step 3: Batch Publishing</h2>
 <p>For high-throughput producers, publish multiple entities in one pipeline:</p>
-<pre><code># Publish 1000 entities in one pipeline
+<pre><code class="language-python"># Publish 1000 entities in one pipeline
 entity_features = {
     f&quot;user_{i:03d}&quot;: {&quot;age&quot;: 20 + i % 50, &quot;segment&quot;: &quot;premium&quot;}
     for i in range(1000)
@@ -166,7 +163,7 @@ print(f&quot;Published {count} entities to stream&quot;)
 # Published 1000 entities to stream
 </code></pre>
 <h2>Step 4: Stream Management</h2>
-<pre><code># Check stream info
+<pre><code class="language-bash"># Check stream info
 info = store.streaming.stream_info(user_features)
 print(info)
 # {&#39;length&#39;: 1001, &#39;first_entry&#39;: ..., &#39;last_entry&#39;: ...}
@@ -181,7 +178,7 @@ print(f&quot;Stream length: {length}&quot;)
 </code></pre>
 <h2>Consumer Groups (Distributed Processing)</h2>
 <p>For production, use consumer groups to distribute work across multiple workers:</p>
-<pre><code># Create a consumer group
+<pre><code class="language-python"># Create a consumer group
 stream_key = &quot;fs:stream:user_profile&quot;
 try:
     client.xgroup_create(stream_key, &quot;feature_writers&quot;, id=&quot;0&quot;, mkstream=True)

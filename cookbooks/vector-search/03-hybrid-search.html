@@ -32,7 +32,7 @@ pre code.hljs{background:transparent!important;padding:0}
 <h2>Why Hybrid Search?</h2>
 <p>Pure vector search returns the most similar items globally. But often you need to filter first — &quot;find similar articles, but only in the <em>tech</em> category&quot; or &quot;similar products under $50.&quot; Hybrid search lets you combine vector KNN with traditional filters in a single query.</p>
 <h2>Step 1: Create an Index with Multiple Field Types</h2>
-<pre><code>import redis
+<pre><code class="language-python">import redis
 import numpy as np
 
 client = redis.Redis(host=&quot;localhost&quot;, port=6379)
@@ -58,7 +58,7 @@ except redis.ResponseError as e:
     print(f&quot;Index exists: {e}&quot;)
 </code></pre>
 <h2>Step 2: Store Documents with Metadata</h2>
-<pre><code># Articles with category tags, year, and embeddings
+<pre><code class="language-python"># Articles with category tags, year, and embeddings
 articles = [
     {&quot;key&quot;: &quot;art:1&quot;, &quot;title&quot;: &quot;Introduction to Vector Databases&quot;,
      &quot;category&quot;: &quot;tech&quot;, &quot;year&quot;: &quot;2024&quot;,
@@ -87,7 +87,7 @@ print(f&quot;Stored {len(articles)} articles&quot;)
 </code></pre>
 <h2>Step 3: TAG Filter + Vector Search</h2>
 <p>Find similar articles, but <strong>only in the &quot;tech&quot; category</strong> :</p>
-<pre><code>query_vec = vec_to_bytes([0.88, 0.1, 0.2, 0.35])
+<pre><code class="language-python">query_vec = vec_to_bytes([0.88, 0.1, 0.2, 0.35])
 
 # TAG filter: @category:{tech}
 # Combined with KNN: @category:{tech}=&gt;[KNN 3 @embedding $query_vec]
@@ -108,7 +108,7 @@ for i in range(1, len(results), 2):
 </code></pre>
 <h2>Step 4: NUMERIC Range + Vector Search</h2>
 <p>Find similar articles from <strong>2024 or later</strong> :</p>
-<pre><code># NUMERIC filter: @year:[2024 +inf]
+<pre><code class="language-python"># NUMERIC filter: @year:[2024 +inf]
 results = client.execute_command(
     &quot;FT.SEARCH&quot;, &quot;articles_idx&quot;,
     &quot;@year:[2024 +inf]=&gt;[KNN 3 @embedding $query_vec]&quot;,
@@ -124,7 +124,7 @@ for i in range(1, len(results), 2):
 </code></pre>
 <h2>Step 5: Combined TAG + NUMERIC + Vector</h2>
 <p>Find similar <strong>tech articles from 2024+</strong> :</p>
-<pre><code># Combine multiple filters
+<pre><code class="language-python"># Combine multiple filters
 results = client.execute_command(
     &quot;FT.SEARCH&quot;, &quot;articles_idx&quot;,
     &quot;(@category:{tech} @year:[2024 +inf])=&gt;[KNN 3 @embedding $query_vec]&quot;,

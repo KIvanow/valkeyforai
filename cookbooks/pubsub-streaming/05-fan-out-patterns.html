@@ -30,7 +30,7 @@ pre code.hljs{background:transparent!important;padding:0}
 
 
 <h2>Pattern 1: Pub/Sub Fan-Out (Live)</h2>
-<pre><code>import redis, json, time
+<pre><code class="language-python">import redis, json, time
 client = redis.Redis(host=&quot;localhost&quot;, port=6379, decode_responses=True)
 
 def broadcast_agent_event(agent_id, event_type, payload):
@@ -44,7 +44,7 @@ def broadcast_agent_event(agent_id, event_type, payload):
 broadcast_agent_event(&quot;agent-1&quot;, &quot;tool_call&quot;, {&quot;tool&quot;: &quot;search&quot;, &quot;query&quot;: &quot;valkey&quot;})
 </code></pre>
 <h2>Pattern 2: Stream Fan-Out (Durable)</h2>
-<pre><code># Multiple consumer groups on the SAME stream
+<pre><code class="language-python"># Multiple consumer groups on the SAME stream
 # Each group gets ALL messages independently
 client.xgroup_create(&quot;ai:events&quot;, &quot;loggers&quot;, id=&quot;0&quot;, mkstream=True)
 client.xgroup_create(&quot;ai:events&quot;, &quot;metrics&quot;, id=&quot;0&quot;, mkstream=True)
@@ -55,7 +55,7 @@ client.xadd(&quot;ai:events&quot;, {&quot;event&quot;: &quot;model_prediction&qu
 # All 3 groups get the message independently
 </code></pre>
 <h2>Pattern 3: Hybrid — Stream + Pub/Sub</h2>
-<pre><code>def publish_with_durability(event):
+<pre><code class="language-python">def publish_with_durability(event):
     &quot;&quot;&quot;Write to Stream (durable) AND Pub/Sub (live).&quot;&quot;&quot;
     payload = json.dumps(event)
     client.xadd(&quot;ai:events&quot;, {&quot;data&quot;: payload}, maxlen=50000)

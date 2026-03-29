@@ -30,7 +30,7 @@ pre code.hljs{background:transparent!important;padding:0}
 
 
 <h2>The Problem</h2>
-<pre><code>Acme Corp (org):     1,000,000 tokens/hour
+<pre><code class="language-python">Acme Corp (org):     1,000,000 tokens/hour
   ├─ Engineering:      500,000 tokens/hour
   │   ├─ alice:        100,000 tokens/hour
   │   │   ├─ agent-1:   25,000 tokens/hour
@@ -45,7 +45,7 @@ Alice&#39;s agent-1 calls GPT-4. We check:
   4. Is agent-1 under 25K? ❌ → DENIED
 </code></pre>
 <h2>Step 1: Define Tiers</h2>
-<pre><code>from dataclasses import dataclass
+<pre><code class="language-python">from dataclasses import dataclass
 
 @dataclass
 class Tier:
@@ -64,7 +64,7 @@ tiers = [
 </code></pre>
 <h2>Step 2: Cascading Check with Pipeline</h2>
 <p>The key insight: use a <strong>Valkey pipeline</strong> to check all tiers in a single round-trip:</p>
-<pre><code>def hierarchical_check(tiers: list, tokens: int) -&gt; dict:
+<pre><code class="language-python">def hierarchical_check(tiers: list, tokens: int) -&gt; dict:
     now = time.time()
 
     # Phase 1: Read all counters in one pipeline

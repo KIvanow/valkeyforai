@@ -31,14 +31,14 @@ pre code.hljs{background:transparent!important;padding:0}
 
 <h2>The Prediction Pipeline</h2>
 <p>At inference time, your model needs a feature vector. The pipeline looks like:</p>
-<pre><code># Request → Fetch Features → Build Vector → Model.predict() → Response
+<pre><code class="language-python"># Request → Fetch Features → Build Vector → Model.predict() → Response
 #              ↑                                    ↑
 #        Valkey (~0.1ms)                    scikit-learn (~1ms)
 </code></pre>
 <p>The goal: keep feature fetching so fast that it&#39;s invisible compared to model inference.</p>
 <h2>Example 1: Fraud Detection with scikit-learn</h2>
 <p>A fraud model trained on 4 features. At inference, we fetch them from Valkey and predict:</p>
-<pre><code>import numpy as np
+<pre><code class="language-python">import numpy as np
 from src import ValkeyFeatureStore, Entity, FeatureView, Feature, FeatureType
 
 # Setup store (same as Cookbook 01)
@@ -110,7 +110,7 @@ print(result)
 </code></pre>
 <h2>Example 2: Multi-View Feature Vector</h2>
 <p>A recommendation model needs features from both user and item views:</p>
-<pre><code># Register item features
+<pre><code class="language-python"># Register item features
 item = Entity(name=&quot;item&quot;, join_keys=[&quot;item_id&quot;])
 item_features = FeatureView(
     name=&quot;item_catalog&quot;,
@@ -161,7 +161,7 @@ print(ranked)
 </code></pre>
 <h2>Example 3: FastAPI Prediction Endpoint</h2>
 <p>Serve predictions via a REST API with feature fetching built in:</p>
-<pre><code>from fastapi import FastAPI, HTTPException
+<pre><code class="language-python">from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import time
 
@@ -210,7 +210,7 @@ async def predict_fraud_endpoint(user_id: str):
 </code></pre>
 <h2>Example 4: LLM Context Enrichment</h2>
 <p>Fetch user features to personalize LLM prompts:</p>
-<pre><code>def build_personalized_prompt(user_id: str, question: str) -&gt; str:
+<pre><code class="language-python">def build_personalized_prompt(user_id: str, question: str) -&gt; str:
     &quot;&quot;&quot;Fetch user features and build a personalized LLM prompt.&quot;&quot;&quot;
 
     # Fetch user context from Valkey
@@ -239,7 +239,7 @@ print(prompt)
 </code></pre>
 <h2>Embedding Vectors</h2>
 <p>The feature store supports <code>FeatureType.VECTOR</code> for storing and retrieving embeddings:</p>
-<pre><code># Define a view with vector features
+<pre><code class="language-python"># Define a view with vector features
 embedding_view = FeatureView(
     name=&quot;user_embeddings&quot;,
     entity=user,

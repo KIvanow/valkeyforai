@@ -41,9 +41,37 @@ pre code.hljs{background:transparent!important;padding:0}
 </ul>
 <p>Semantic caching matches by meaning, so all three queries hit the same cached response.</p>
 <h2>Create a Cache Index</h2>
-<p>FT.CREATE idx:llm_cache ON HASH PREFIX 1 &quot;cache:&quot; SCHEMA query TEXT response TEXT embedding VECTOR HNSW 6 TYPE FLOAT32 DIM 1536 DISTANCE_METRIC COSINE</p>
+<pre><code class="language-bash">FT.CREATE idx:llm_cache ON HASH PREFIX 1 &quot;cache:&quot;
+  SCHEMA
+    query TAG
+    response TAG
+    embedding VECTOR HNSW 6
+      TYPE FLOAT32
+      DIM 1536
+      DISTANCE_METRIC COSINE
+</code></pre>
 <h2>Cache Lookup Pattern</h2>
-<p>async def semantic_cache_lookup(query: str, threshold: float = 0.92): # Embed the query query_embedding = await get_embedding(query) query_bytes = np.array(query_embedding, dtype=np.float32).tobytes() # Search for similar cached queries results = client.execute_command( &#39;FT.SEARCH&#39;, &#39;idx:llm_cache&#39;, &#39;*=&gt;[KNN 1 @embedding $vec AS score]&#39;, &#39;PARAMS&#39;, &#39;2&#39;, &#39;vec&#39;, query_bytes, &#39;SORTBY&#39;, &#39;score&#39;, &#39;RETURN&#39;, &#39;2&#39;, &#39;response&#39;, &#39;score&#39;, &#39;DIALECT&#39;, &#39;2&#39; ) if results[0] &gt; 0: similarity = 1 - float(results[2][3]) # Convert distance to similarity if similarity &gt;= threshold: return results[2][1] # Return cached response return None # Cache miss</p>
+<pre><code class="language-python">async def semantic_cache_lookup(query: str, threshold: float = 0.92):
+    # Embed the query
+    query_embedding = await get_embedding(query)
+    query_bytes = np.array(query_embedding, dtype=np.float32).tobytes()
+
+    # Search for similar cached queries
+    results = client.execute_command(
+        &#39;FT.SEARCH&#39;, &#39;idx:llm_cache&#39;,
+        &#39;*=&gt;[KNN 1 @embedding $vec AS score]&#39;,
+        &#39;PARAMS&#39;, &#39;2&#39;, &#39;vec&#39;, query_bytes,
+        &#39;RETURN&#39;, &#39;2&#39;, &#39;response&#39;, &#39;score&#39;,
+        &#39;DIALECT&#39;, &#39;2&#39;
+    )
+
+    if results[0] &gt; 0:
+        similarity = 1 - float(results[2][3])  # Convert distance to similarity
+        if similarity &gt;= threshold:
+            return results[2][1]  # Return cached response
+
+    return None  # Cache miss
+</code></pre>
 <h2>Similarity Threshold Tuning</h2>
 <p>The threshold determines how similar queries must be to trigger a cache hit:</p>
 <table>
@@ -78,9 +106,74 @@ pre code.hljs{background:transparent!important;padding:0}
 <p><strong>💡 Tip:</strong> Start with 0.92 and adjust based on your cache hit rate and answer quality. Monitor false positives closely. </p>
 <h2>TTL Strategies</h2>
 <p>Different content needs different cache lifetimes:</p>
-<h1>Store with TTL def cache_response(query, response, ttl_seconds=3600): key = f&quot;cache:{hash(query)[:16]}&quot; embedding = get_embedding(query) client.hset(key, mapping={ &quot;query&quot;: query, &quot;response&quot;: response, &quot;embedding&quot;: np.array(embedding, dtype=np.float32).tobytes() }) client.expire(key, ttl_seconds) # Different TTLs by content type TTL_CONFIG = { &quot;factual&quot;: 86400, # 24 hours - stable facts &quot;news&quot;: 3600, # 1 hour - current events &quot;weather&quot;: 1800, # 30 min - frequently changes &quot;stock&quot;: 60, # 1 min - real-time data }</h1>
+<pre><code class="language-python"># Store with TTL
+def cache_response(query, response, ttl_seconds=3600):
+    key = f&quot;cache:{hash(query)[:16]}&quot;
+    embedding = get_embedding(query)
+    client.hset(key, mapping={
+        &quot;query&quot;: query,
+        &quot;response&quot;: response,
+        &quot;embedding&quot;: np.array(embedding, dtype=np.float32).tobytes()
+    })
+    client.expire(key, ttl_seconds)
+
+# Different TTLs by content type
+TTL_CONFIG = {
+    &quot;factual&quot;: 86400,   # 24 hours - stable facts
+    &quot;news&quot;: 3600,        # 1 hour - current events
+    &quot;weather&quot;: 1800,     # 30 min - frequently changes
+    &quot;stock&quot;: 60,         # 1 min - real-time data
+}
+</code></pre>
 <h2>Complete Caching Class</h2>
-<p>class SemanticCache: def <strong>init</strong>(self, threshold=0.92, default_ttl=3600): self.client = valkey.Valkey(decode_responses=False) self.threshold = threshold self.default_ttl = default_ttl self._create_index() def _create_index(self): try: self.client.execute_command( &#39;FT.CREATE&#39;, &#39;idx:cache&#39;, &#39;ON&#39;, &#39;HASH&#39;, &#39;PREFIX&#39;, &#39;1&#39;, &#39;cache:&#39;, &#39;SCHEMA&#39;, &#39;query&#39;, &#39;TEXT&#39;, &#39;response&#39;, &#39;TEXT&#39;, &#39;embedding&#39;, &#39;VECTOR&#39;, &#39;HNSW&#39;, &#39;6&#39;, &#39;TYPE&#39;, &#39;FLOAT32&#39;, &#39;DIM&#39;, &#39;1536&#39;, &#39;DISTANCE_METRIC&#39;, &#39;COSINE&#39; ) except: pass async def get(self, query: str) -&gt; str | None: emb = await get_embedding(query) vec = np.array(emb, dtype=np.float32).tobytes() results = self.client.execute_command( &#39;FT.SEARCH&#39;, &#39;idx:cache&#39;, &#39;*=&gt;[KNN 1 @embedding $v AS s]&#39;, &#39;PARAMS&#39;, &#39;2&#39;, &#39;v&#39;, vec, &#39;DIALECT&#39;, &#39;2&#39; ) if results[0] &gt; 0 and (1 - float(results[2][3])) &gt;= self.threshold: return results[2][1].decode() return None async def set(self, query: str, response: str, ttl: int = None): key = f&quot;cache:{hashlib.sha256(query.encode()).hexdigest()[:16]}&quot; emb = await get_embedding(query) self.client.hset(key, mapping={ &quot;query&quot;: query, &quot;response&quot;: response, &quot;embedding&quot;: np.array(emb, dtype=np.float32).tobytes() }) self.client.expire(key, ttl or self.default_ttl)</p>
+<pre><code class="language-python">class SemanticCache:
+    def __init__(self, threshold=0.92, default_ttl=3600):
+        self.client = redis.Redis(decode_responses=False)
+        self.threshold = threshold
+        self.default_ttl = default_ttl
+        self._create_index()
+
+    def _create_index(self):
+        try:
+            self.client.execute_command(
+                &#39;FT.CREATE&#39;, &#39;idx:cache&#39;,
+                &#39;ON&#39;, &#39;HASH&#39;, &#39;PREFIX&#39;, &#39;1&#39;, &#39;cache:&#39;,
+                &#39;SCHEMA&#39;,
+                &#39;query&#39;, &#39;TAG&#39;,
+                &#39;response&#39;, &#39;TAG&#39;,
+                &#39;embedding&#39;, &#39;VECTOR&#39;, &#39;HNSW&#39;, &#39;6&#39;,
+                &#39;TYPE&#39;, &#39;FLOAT32&#39;,
+                &#39;DIM&#39;, &#39;1536&#39;,
+                &#39;DISTANCE_METRIC&#39;, &#39;COSINE&#39;
+            )
+        except:
+            pass
+
+    async def get(self, query: str) -&gt; str | None:
+        emb = await get_embedding(query)
+        vec = np.array(emb, dtype=np.float32).tobytes()
+
+        results = self.client.execute_command(
+            &#39;FT.SEARCH&#39;, &#39;idx:cache&#39;,
+            &#39;*=&gt;[KNN 1 @embedding $v AS s]&#39;,
+            &#39;PARAMS&#39;, &#39;2&#39;, &#39;v&#39;, vec,
+            &#39;DIALECT&#39;, &#39;2&#39;
+        )
+
+        if results[0] &gt; 0 and (1 - float(results[2][3])) &gt;= self.threshold:
+            return results[2][1].decode()
+        return None
+
+    async def set(self, query: str, response: str, ttl: int = None):
+        key = f&quot;cache:{hashlib.sha256(query.encode()).hexdigest()[:16]}&quot;
+        emb = await get_embedding(query)
+        self.client.hset(key, mapping={
+            &quot;query&quot;: query,
+            &quot;response&quot;: response,
+            &quot;embedding&quot;: np.array(emb, dtype=np.float32).tobytes()
+        })
+        self.client.expire(key, ttl or self.default_ttl)
+</code></pre>
 <p><strong>⚠️ Watch out:</strong> Semantic caching can return cached answers for queries that seem similar but need different responses. Always validate with real user queries before production. </p>
 <p><a href="01-getting-started.html">← Getting Started</a> <a href="03-vector-search.html">Next: Vector Search →</a></p>
 

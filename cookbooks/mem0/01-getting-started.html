@@ -33,15 +33,15 @@ pre code.hljs{background:transparent!important;padding:0}
 <p><a href="https://github.com/mem0ai/mem0">Mem0</a> (&quot;mem-zero&quot;) is an open-source memory layer for AI applications (YC S24). It has a <strong>dedicated Valkey connector</strong> (<code>provider: &quot;valkey&quot;</code>) that uses the <code>valkey</code> Python client with native <code>FT.CREATE</code>/<code>FT.SEARCH</code> for vector-based memory storage and retrieval.</p>
 <p><strong>Mem0 has a first-class Valkey integration</strong> — not just Redis compatibility. The <code>valkey.py</code> connector in Mem0&#39;s source uses the native <code>valkey</code> Python package and supports HNSW/FLAT indexing with configurable parameters.</p>
 <h2>Step 1: Install</h2>
-<pre><code>pip install mem0ai
+<pre><code class="language-bash">pip install mem0ai
 </code></pre>
 <p>The <code>valkey</code> Python client is included as a core dependency — no separate install needed.</p>
 <h2>Step 2: Start Valkey with Search Module</h2>
-<pre><code># Valkey with valkey-search module loaded
+<pre><code class="language-python"># Valkey with valkey-search module loaded
 valkey-server --loadmodule /usr/lib/valkey/libsearch.so
 </code></pre>
 <h2>Step 3: Configure Mem0 with Valkey</h2>
-<pre><code>from mem0 import Memory
+<pre><code class="language-python">from mem0 import Memory
 
 config = {
     &quot;vector_store&quot;: {
@@ -59,7 +59,7 @@ memory = Memory.from_config(config)
 print(&quot;Mem0 connected to Valkey!&quot;)
 </code></pre>
 <h2>Step 4: Add Memories</h2>
-<pre><code># Add memories from a conversation
+<pre><code class="language-python"># Add memories from a conversation
 messages = [
     {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;I love Italian food, especially pasta carbonara.&quot;},
     {&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: &quot;Great choice! Carbonara is a classic Roman dish.&quot;},
@@ -75,7 +75,7 @@ messages2 = [
 memory.add(messages2, user_id=&quot;user_001&quot;)
 </code></pre>
 <h2>Step 5: Search Memories</h2>
-<pre><code># Search for relevant memories
+<pre><code class="language-python"># Search for relevant memories
 results = memory.search(
     query=&quot;What food does this user like?&quot;,
     user_id=&quot;user_001&quot;,
@@ -93,13 +93,13 @@ for entry in results[&quot;results&quot;]:
 # Score: 0.62
 </code></pre>
 <h2>Step 6: Get All Memories for a User</h2>
-<pre><code># Retrieve all memories for a user
+<pre><code class="language-python"># Retrieve all memories for a user
 all_memories = memory.get_all(user_id=&quot;user_001&quot;)
 for m in all_memories[&quot;results&quot;]:
     print(f&quot;  - {m[&#39;memory&#39;]}&quot;)
 </code></pre>
 <h2>Step 7: Use Memories in a Chatbot</h2>
-<pre><code>from openai import OpenAI
+<pre><code class="language-python">from openai import OpenAI
 
 openai_client = OpenAI()
 

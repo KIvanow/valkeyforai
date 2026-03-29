@@ -30,7 +30,7 @@ pre code.hljs{background:transparent!important;padding:0}
 
 
 <h2>The Problem</h2>
-<pre><code>Agent &quot;research-bot&quot; has a plan:
+<pre><code class="language-python">Agent &quot;research-bot&quot; has a plan:
   1. Search the web (1 API call)
   2. Read 15 pages (15 API calls)
   3. Summarize each page (15 LLM calls × 2000 tokens each)
@@ -40,7 +40,7 @@ Total: 32 calls, ~38,000 tokens — in 30 seconds.
 </code></pre>
 <h2>Step 1: Per-Agent Token Bucket</h2>
 <p>Token bucket is ideal for agents — it allows bursts (agents work in bursts) while enforcing a steady-state rate:</p>
-<pre><code>TOKEN_BUCKET_SCRIPT = &quot;&quot;&quot;
+<pre><code class="language-python">TOKEN_BUCKET_SCRIPT = &quot;&quot;&quot;
 local key = KEYS[1]
 local capacity = tonumber(ARGV[1])
 local refill_rate = tonumber(ARGV[2])
@@ -74,7 +74,7 @@ end
 </code></pre>
 <h2>Step 2: Tool-Specific Costs</h2>
 <p>Different tools have different costs. A web search is cheap; code execution is expensive:</p>
-<pre><code>TOOL_COSTS = {
+<pre><code class="language-python">TOOL_COSTS = {
     &quot;web_search&quot;: 1,
     &quot;read_page&quot;: 1,
     &quot;llm_call&quot;: 3,       # LLM calls cost 3x
@@ -91,7 +91,7 @@ def agent_tool_check(agent_id: str, tool_name: str) -&gt; dict:
 </code></pre>
 <h2>Step 3: Concurrent Agent Limit</h2>
 <p>Limit how many agents can run simultaneously per user using a Sorted Set with TTL:</p>
-<pre><code>def acquire_agent_slot(user_id: str, agent_id: str, max_concurrent: int = 3, ttl: int = 300) -&gt; bool:
+<pre><code class="language-python">def acquire_agent_slot(user_id: str, agent_id: str, max_concurrent: int = 3, ttl: int = 300) -&gt; bool:
     key = f&quot;concurrent:{user_id}&quot;
     now = time.time()
     client.zremrangebyscore(key, &quot;-inf&quot;, now)  # Clean expired
@@ -103,7 +103,7 @@ def agent_tool_check(agent_id: str, tool_name: str) -&gt; dict:
     return True
 </code></pre>
 <h2>Step 4: Agent Budget Tracking</h2>
-<pre><code>def track_agent_spend(agent_id: str, tokens: int, model: str = &quot;gpt-4&quot;):
+<pre><code class="language-python">def track_agent_spend(agent_id: str, tokens: int, model: str = &quot;gpt-4&quot;):
     cost_per_1k = {&quot;gpt-4&quot;: 0.03, &quot;gpt-4o&quot;: 0.005}
     cost = (tokens / 1000) * cost_per_1k.get(model, 0.01)
     pipe = client.pipeline()

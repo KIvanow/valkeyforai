@@ -32,7 +32,7 @@ pre code.hljs{background:transparent!important;padding:0}
 <h2>The Problem</h2>
 <p>Cookbook 01-02 gave us ordered chat history. But what if a user asks &quot;How do I deploy?&quot; and three weeks ago they discussed deployment in a different session? <code>LRANGE</code> can&#39;t find that — it only reads the current session. You need <strong>semantic search</strong> : finding messages by meaning, not position.</p>
 <h2>Architecture</h2>
-<pre><code>User asks: &quot;How do I deploy?&quot;
+<pre><code class="language-python">User asks: &quot;How do I deploy?&quot;
         │
         ▼
    Embed query → [0.12, -0.45, 0.78, ...]
@@ -49,11 +49,11 @@ pre code.hljs{background:transparent!important;padding:0}
 <li>An embedding model (we use Amazon Bedrock Titan, but any works)</li>
 </ul>
 <h2>Step 1: Start Valkey with Search Module</h2>
-<pre><code>docker run -d --name valkey -p 6379:6379 valkey/valkey-bundle:latest
+<pre><code class="language-bash">docker run -d --name valkey -p 6379:6379 valkey/valkey-bundle:latest
 </code></pre>
 <p>The <code>valkey-bundle</code> image includes valkey-search for vector similarity search and valkey-json for JSON document storage.</p>
 <h2>Step 2: Create the Vector Index</h2>
-<pre><code>from glide import (
+<pre><code class="language-python">from glide import (
     GlideClient, GlideClientConfiguration, NodeAddress,
     ft, TagField, NumericField,
     VectorField, VectorAlgorithm, VectorFieldAttributesHnsw,
@@ -90,7 +90,7 @@ async def create_memory_index(client):
 </code></pre>
 <p><strong>Key Insight:</strong> <code>FT.CREATE ON JSON</code> indexes fields inside JSON documents. The HNSW algorithm provides approximate nearest-neighbor search with ~99% recall at sub-millisecond latency. Once created, the index automatically updates as you add/remove documents.</p>
 <h2>Step 3: Store Messages with Embeddings</h2>
-<pre><code>import json, struct, time, uuid, boto3
+<pre><code class="language-python">import json, struct, time, uuid, boto3
 from glide import glide_json
 
 def get_embedding(text):
@@ -121,7 +121,7 @@ async def store_memory(client, session_id, user_id, role, content):
     return doc_id
 </code></pre>
 <h2>Step 4: Search by Meaning</h2>
-<pre><code>async def search_memory(client, query, limit=5, user_id=None):
+<pre><code class="language-python">async def search_memory(client, query, limit=5, user_id=None):
     &quot;&quot;&quot;Find semantically similar messages across all sessions.&quot;&quot;&quot;
     from glide import FtSearchOptions
 
@@ -155,7 +155,7 @@ async def store_memory(client, session_id, user_id, role, content):
     return memories
 </code></pre>
 <h2>Step 5: Put It Together</h2>
-<pre><code>async def demo():
+<pre><code class="language-python">async def demo():
     config = GlideClientConfiguration([NodeAddress(&quot;localhost&quot;, 6379)])
     client = await GlideClient.create(config)
 
@@ -218,7 +218,7 @@ async def store_memory(client, session_id, user_id, role, content):
 </tbody></table>
 <h2>Filtering: Scope + Semantic</h2>
 <p>Combine vector search with metadata filters in a single query:</p>
-<pre><code># Only search alice&#39;s messages
+<pre><code class="language-python"># Only search alice&#39;s messages
 &quot;(@user_id:{alice})==&gt;[KNN 5 @embedding $vec AS score]&quot;
 
 # Only search assistant responses

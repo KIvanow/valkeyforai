@@ -31,13 +31,13 @@ pre code.hljs{background:transparent!important;padding:0}
 
 <h2>The Problem</h2>
 <p>When streaming from an LLM (OpenAI, Anthropic, etc.), tokens arrive one at a time. If you have multiple clients watching the same response, you need to fan out each token to all of them. Valkey Pub/Sub is perfect for this:</p>
-<pre><code># Architecture:
+<pre><code class="language-python"># Architecture:
 #   LLM API  ──▶  Your Server  ──▶  Valkey PUBLISH  ──▶  Client A
 #                    (token)       channel: llm:{id}  ──▶  Client B
 #                                                     ──▶  Client C
 </code></pre>
 <h2>Step 1: Token Publisher (Server Side)</h2>
-<pre><code>import redis
+<pre><code class="language-python">import redis
 import json
 import time
 import uuid
@@ -89,7 +89,7 @@ rid = stream_llm_response(&quot;What is Valkey?&quot;)
 print(f&quot;Streamed response: {rid}&quot;)
 </code></pre>
 <h2>Step 2: Token Subscriber (Client Side)</h2>
-<pre><code>import redis
+<pre><code class="language-python">import redis
 import json
 
 client = redis.Redis(host=&quot;localhost&quot;, port=6379, decode_responses=True)
@@ -129,7 +129,7 @@ def watch_stream(request_id: str):
 </code></pre>
 <h2>Step 3: OpenAI Integration</h2>
 <p>Here&#39;s the real-world version with the OpenAI API:</p>
-<pre><code>from openai import OpenAI
+<pre><code class="language-python">from openai import OpenAI
 
 openai_client = OpenAI()
 

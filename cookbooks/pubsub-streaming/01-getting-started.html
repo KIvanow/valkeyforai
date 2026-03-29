@@ -43,13 +43,13 @@ pre code.hljs{background:transparent!important;padding:0}
 <li>Python 3.9+</li>
 </ul>
 <h2>Step 1: Start Valkey</h2>
-<pre><code>docker run -d --name valkey -p 6379:6379 valkey/valkey:latest
+<pre><code class="language-bash">docker run -d --name valkey -p 6379:6379 valkey/valkey:latest
 </code></pre>
 <h2>Step 2: Install Dependencies</h2>
-<pre><code>pip install redis
+<pre><code class="language-bash">pip install redis
 </code></pre>
 <h2>Step 3: Create a Publisher</h2>
-<pre><code>import redis
+<pre><code class="language-python">import redis
 import time
 import json
 
@@ -74,7 +74,7 @@ publish_message(&quot;ai:events&quot;, {
 </code></pre>
 <h2>Step 4: Create a Subscriber</h2>
 <p>Run this in a <strong>separate terminal</strong> — subscribers block while waiting for messages:</p>
-<pre><code>import redis
+<pre><code class="language-python">import redis
 import json
 
 client = redis.Redis(host=&quot;localhost&quot;, port=6379, decode_responses=True)
@@ -97,7 +97,7 @@ for message in pubsub.listen():
 </code></pre>
 <h2>Step 5: Pattern Subscriptions</h2>
 <p>Subscribe to multiple channels using glob patterns:</p>
-<pre><code># Subscribe to ALL ai:* channels at once
+<pre><code class="language-python"># Subscribe to ALL ai:* channels at once
 pubsub.psubscribe(&quot;ai:*&quot;)
 
 # This matches:
@@ -114,7 +114,7 @@ for message in pubsub.listen():
 </code></pre>
 <h2>Step 6: Non-Blocking Subscriber</h2>
 <p>For applications that need to do other work while listening:</p>
-<pre><code>import threading
+<pre><code class="language-python">import threading
 
 def message_handler(message):
     &quot;&quot;&quot;Called for each message received.&quot;&quot;&quot;

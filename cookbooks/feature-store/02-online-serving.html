@@ -31,7 +31,7 @@ pre code.hljs{background:transparent!important;padding:0}
 
 <h2>The Inference-Time Challenge</h2>
 <p>When your ML model gets a prediction request, it needs a feature vector <em>fast</em>. The typical flow:</p>
-<pre><code># Prediction request arrives
+<pre><code class="language-python"># Prediction request arrives
 user_id = &quot;user_123&quot;
 
 # 1. Fetch features from online store  ← This must be FAST
@@ -43,7 +43,7 @@ user_id = &quot;user_123&quot;
 <h2>Pattern 1: Single Entity Lookup</h2>
 <p>The simplest pattern — fetch all features for one entity:</p>
 <h3>Raw Valkey: HGETALL</h3>
-<pre><code>import redis
+<pre><code class="language-python">import redis
 
 client = redis.Redis(host=&quot;localhost&quot;, port=6379, decode_responses=True)
 
@@ -57,12 +57,12 @@ features = {k: v for k, v in raw.items() if not k.startswith(&quot;_&quot;)}
 </code></pre>
 <h3>Raw Valkey: HMGET (selective fields)</h3>
 <p>If you only need 2 of 20 features, <code>HMGET</code> is more efficient:</p>
-<pre><code># Fetch only age and lifetime_value
+<pre><code class="language-python"># Fetch only age and lifetime_value
 age, ltv = client.hmget(&quot;fs:v1:user_profile:user_123&quot;, [&quot;age&quot;, &quot;lifetime_value&quot;])
 # age=&#39;28&#39;, ltv=&#39;1250.50&#39;
 </code></pre>
 <h3>With the Library</h3>
-<pre><code>from src import ValkeyFeatureStore, Entity, FeatureView, Feature, FeatureType
+<pre><code class="language-python">from src import ValkeyFeatureStore, Entity, FeatureView, Feature, FeatureType
 
 store = ValkeyFeatureStore(host=&quot;localhost&quot;, port=6379)
 # ... register feature views ...
@@ -78,7 +78,7 @@ features = store.read(&quot;user_profile&quot;, &quot;user_123&quot;, [&quot;age
 <h2>Pattern 2: Batch Entity Lookup</h2>
 <p>In recommendation systems, you often need features for 100+ candidate items in one request. Making 100 individual calls would be slow. Instead, use <strong>Valkey pipelines</strong> :</p>
 <h3>Raw Valkey: Pipelined HGETALL</h3>
-<pre><code>entity_ids = [f&quot;user_{i:03d}&quot; for i in range(100)]
+<pre><code class="language-python">entity_ids = [f&quot;user_{i:03d}&quot; for i in range(100)]
 
 # Pipeline sends all commands in ONE round-trip
 pipe = client.pipeline(transaction=False)
@@ -97,7 +97,7 @@ for eid, raw in zip(entity_ids, results):
 print(f&quot;Fetched features for {len(batch)} entities&quot;)
 </code></pre>
 <h3>With the Library</h3>
-<pre><code># Batch read — uses pipeline internally
+<pre><code class="language-python"># Batch read — uses pipeline internally
 entity_ids = [f&quot;user_{i:03d}&quot; for i in range(100)]
 batch = store.read_batch(&quot;user_profile&quot;, entity_ids)
 
@@ -107,7 +107,7 @@ print(f&quot;Fetched {len(batch)} entities&quot;)
 <h2>Pattern 3: Multi-View Feature Vector</h2>
 <p>ML models often need features from multiple views. For example, a fraud model needs both user profile features and transaction features:</p>
 <h3>Raw Valkey: Pipelined cross-view</h3>
-<pre><code>user_id = &quot;user_123&quot;
+<pre><code class="language-python">user_id = &quot;user_123&quot;
 
 pipe = client.pipeline(transaction=False)
 # Fetch from user_profile view
@@ -120,7 +120,7 @@ results = pipe.execute()
 # results[1] = [&#39;0.05&#39;, &#39;12&#39;]           ← from user_risk_profile
 </code></pre>
 <h3>With the Library</h3>
-<pre><code># get_feature_vector fetches from multiple views in one pipeline
+<pre><code class="language-python"># get_feature_vector fetches from multiple views in one pipeline
 vector = store.get_feature_vector(
     &quot;user_123&quot;,
     [
@@ -183,7 +183,7 @@ vector = store.get_feature_vector(
 </tbody></table>
 <h2>TTL-Based Feature Expiry</h2>
 <p>Features go stale. A user&#39;s click-through rate from 2 days ago isn&#39;t useful for real-time ranking. Use <code>EXPIRE</code> to auto-clean:</p>
-<pre><code># Set during write (the library does this automatically)
+<pre><code class="language-python"># Set during write (the library does this automatically)
 pipe = client.pipeline(transaction=True)
 pipe.hset(key, mapping=features)
 pipe.expire(key, 3600)  # 1 hour TTL

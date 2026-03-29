@@ -43,19 +43,19 @@ pre code.hljs{background:transparent!important;padding:0}
 <li>Python 3.10+</li>
 </ul>
 <h2>Step 1: Start Valkey</h2>
-<pre><code>docker run -d --name valkey -p 6379:6379 valkey/valkey-bundle:latest
+<pre><code class="language-bash">docker run -d --name valkey -p 6379:6379 valkey/valkey-bundle:latest
 </code></pre>
 <p>The <code>valkey-bundle</code> image includes JSON and Search modules needed for ValkeyStore. Verify:</p>
-<pre><code>docker exec valkey valkey-cli PING
+<pre><code class="language-bash">docker exec valkey valkey-cli PING
 # PONG
 </code></pre>
 <h2>Step 2: Install the Package</h2>
-<pre><code>pip install &#39;langgraph-checkpoint-aws[valkey]&#39; langchain-aws
+<pre><code class="language-bash">pip install &#39;langgraph-checkpoint-aws[valkey]&#39; langchain-aws
 </code></pre>
 <p>This installs <code>ValkeySaver</code>, <code>ValkeyStore</code>, <code>ValkeyCache</code>, and the Bedrock integrations.</p>
 <h2>Step 3: Understand the Data Model</h2>
 <p><code>ValkeySaver</code> stores each checkpoint as a JSON document in Valkey:</p>
-<pre><code># Key format: checkpoint:{thread_id}:{checkpoint_ns}:{checkpoint_id}
+<pre><code class="language-python"># Key format: checkpoint:{thread_id}:{checkpoint_ns}:{checkpoint_id}
 # Each checkpoint contains:
 {
     &quot;v&quot;: 1,
@@ -67,7 +67,7 @@ pre code.hljs{background:transparent!important;padding:0}
 </code></pre>
 <p><strong>Under the Hood:</strong> <code>ValkeySaver</code> uses Valkey JSON (<code>JSON.SET</code>) for structured storage and RediSearch (<code>FT.CREATE</code>, <code>FT.SEARCH</code>) for indexing checkpoints by thread ID and namespace. TTL is applied via <code>EXPIRE</code>.</p>
 <h2>Step 4: Persist a LangGraph Agent</h2>
-<pre><code>from langgraph.graph import StateGraph, MessagesState
+<pre><code class="language-python">from langgraph.graph import StateGraph, MessagesState
 from langgraph_checkpoint_aws import ValkeySaver
 from langchain_aws import ChatBedrockConverse
 from langchain_core.messages import HumanMessage
@@ -112,7 +112,7 @@ with ValkeySaver.from_conn_string(
 </code></pre>
 <h2>Step 5: Verify Persistence</h2>
 <p>Stop and restart your script — the conversation state is still in Valkey:</p>
-<pre><code># In a NEW Python process:
+<pre><code class="language-python"># In a NEW Python process:
 with ValkeySaver.from_conn_string(&quot;valkey://localhost:6379&quot;) as checkpointer:
     graph = builder.compile(checkpointer=checkpointer)
     config = {&quot;configurable&quot;: {&quot;thread_id&quot;: &quot;session-1&quot;}}
@@ -122,7 +122,7 @@ with ValkeySaver.from_conn_string(&quot;valkey://localhost:6379&quot;) as checkp
         print(cp.metadata)  # Shows previous conversation
 </code></pre>
 <p><strong>Valkey Commands Fired:</strong></p>
-<pre><code>JSON.SET checkpoint:session-1:__empty__:abc123 $ &#39;{...}&#39;
+<pre><code class="language-python">JSON.SET checkpoint:session-1:__empty__:abc123 $ &#39;{...}&#39;
 EXPIRE checkpoint:session-1:__empty__:abc123 3600
 FT.SEARCH checkpoints_idx &#39;@thread_id:{session-1}&#39; SORTBY ts DESC LIMIT 0 1
 </code></pre>

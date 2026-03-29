@@ -44,18 +44,18 @@ pre code.hljs{background:transparent!important;padding:0}
 <li>AWS credentials for Bedrock (for later guides)</li>
 </ul>
 <h2>Step 1: Start Valkey</h2>
-<pre><code>docker run -d --name valkey -p 6379:6379 valkey/valkey-bundle:latest
+<pre><code class="language-bash">docker run -d --name valkey -p 6379:6379 valkey/valkey-bundle:latest
 </code></pre>
 <p>The <code>valkey-bundle</code> image includes JSON and Search modules. Verify:</p>
-<pre><code>docker exec valkey valkey-cli PING
+<pre><code class="language-bash">docker exec valkey valkey-cli PING
 # PONG
 </code></pre>
 <h2>Step 2: Install Dependencies</h2>
-<pre><code>pip install crewai valkey-glide boto3
+<pre><code class="language-bash">pip install crewai valkey-glide boto3
 </code></pre>
 <p><strong>Why GLIDE?</strong> Valkey GLIDE is the official Valkey client with a Rust core for high performance. It supports both standalone Valkey and ElastiCache for Valkey clusters. Unlike <code>redis-py</code>, GLIDE is purpose-built for Valkey and supports all Valkey-specific features including <code>FT.*</code> search commands.</p>
 <h2>Step 3: Connection Configuration</h2>
-<pre><code>from dataclasses import dataclass
+<pre><code class="language-python">from dataclasses import dataclass
 import os
 
 @dataclass(frozen=True)
@@ -74,7 +74,7 @@ def get_valkey_config() -&gt; ValkeyConfig:
     )
 </code></pre>
 <h2>Step 4: Connect and Test</h2>
-<pre><code>import asyncio
+<pre><code class="language-python">import asyncio
 from glide import GlideClient, GlideClientConfiguration, NodeAddress
 
 async def test_connection():
@@ -97,7 +97,7 @@ asyncio.run(test_connection())
 # ✅ Connected! Got: world
 </code></pre>
 <p><strong>Valkey Commands Fired:</strong></p>
-<pre><code>SET test:hello &quot;world&quot;
+<pre><code class="language-bash">SET test:hello &quot;world&quot;
 GET test:hello
 DEL test:hello
 </code></pre>

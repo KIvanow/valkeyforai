@@ -37,7 +37,7 @@ pre code.hljs{background:transparent!important;padding:0}
 <li><strong>Activity log</strong> — ordered record of what happened and when</li>
 </ul>
 <h2>Three Valkey Patterns, One Agent</h2>
-<pre><code>┌─────────────────────────────────────────────────────────┐
+<pre><code class="language-python">┌─────────────────────────────────────────────────────────┐
 │                    Valkey Server                        │
 │                                                         │
 │  HASH  agent:state:{run_id}  → Checkpoint (current step,│
@@ -52,7 +52,7 @@ pre code.hljs{background:transparent!important;padding:0}
 </code></pre>
 <h2>Pattern 1: Agent Checkpointing with HASH</h2>
 <p>Save the agent&#39;s state after each step. If it crashes, resume from the last checkpoint.</p>
-<pre><code>import json
+<pre><code class="language-python">import json
 from glide import GlideClient, GlideClientConfiguration, NodeAddress
 
 async def save_checkpoint(client, run_id, step, data):
@@ -81,7 +81,7 @@ async def mark_complete(client, run_id):
 </code></pre>
 <h2>Pattern 2: Tool Result Caching with STRING</h2>
 <p>Cache expensive tool outputs (API calls, web searches, database queries) so the agent doesn&#39;t repeat them.</p>
-<pre><code>import hashlib
+<pre><code class="language-python">import hashlib
 
 async def cached_tool_call(client, tool_name, args, tool_fn, ttl=300):
     &quot;&quot;&quot;Call a tool, caching the result in Valkey.&quot;&quot;&quot;
@@ -117,7 +117,7 @@ result = await cached_tool_call(
 <p><strong>Key Insight:</strong> <code>SET key value EX ttl</code> is the simplest caching pattern in Valkey. For tool results, the TTL should match how quickly the data goes stale — 5 minutes for web searches, 1 hour for database queries, 24 hours for static lookups.</p>
 <h2>Pattern 3: Activity Log with STREAM</h2>
 <p>Log every agent action to a Valkey Stream. This creates an ordered, persistent audit trail for debugging and replay.</p>
-<pre><code>async def log_action(client, run_id, action, details):
+<pre><code class="language-python">async def log_action(client, run_id, action, details):
     &quot;&quot;&quot;Append an action to the agent&#39;s activity log.&quot;&quot;&quot;
     stream_key = f&quot;agent:log:{run_id}&quot;
     await client.xadd(stream_key, [
@@ -144,7 +144,7 @@ async def get_action_log(client, run_id):
     return entries
 </code></pre>
 <h2>Putting It All Together: A Resumable Agent</h2>
-<pre><code>async def run_agent(client, run_id, query):
+<pre><code class="language-python">async def run_agent(client, run_id, query):
     # Check for existing checkpoint
     checkpoint = await load_checkpoint(client, run_id)
     start_step = int(checkpoint[&quot;current_step&quot;]) + 1 if checkpoint else 1
@@ -176,7 +176,7 @@ async def get_action_log(client, run_id):
     return response
 </code></pre>
 <h2>Debugging: Inspect the Activity Log</h2>
-<pre><code>log = await get_action_log(client, &quot;run_001&quot;)
+<pre><code class="language-python">log = await get_action_log(client, &quot;run_001&quot;)
 for entry in log:
     print(f&quot;  [{entry[&#39;id&#39;]}] {entry[&#39;action&#39;]}: {entry[&#39;details&#39;]}&quot;)
 

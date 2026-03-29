@@ -37,7 +37,7 @@ pre code.hljs{background:transparent!important;padding:0}
 </ul>
 <p>Exact-match caching (<code>GET cache:{hash}</code>) misses these. Semantic caching uses vector similarity to match by meaning.</p>
 <h2>Architecture</h2>
-<pre><code>User: &quot;Can you explain Valkey?&quot;
+<pre><code class="language-python">User: &quot;Can you explain Valkey?&quot;
         │
         ▼
    Embed query → [0.12, -0.45, ...]
@@ -49,7 +49,7 @@ pre code.hljs{background:transparent!important;padding:0}
         └── score &lt; 0.90 → ❌ Cache MISS → call LLM → cache result
 </code></pre>
 <h2>Step 1: Create the Cache Index</h2>
-<pre><code>from glide import (
+<pre><code class="language-python">from glide import (
     ft, VectorField, VectorAlgorithm, VectorFieldAttributesHnsw,
     VectorType, DistanceMetricType, NumericField,
     FtCreateOptions, DataType,
@@ -76,7 +76,7 @@ async def create_cache_index(client):
     )
 </code></pre>
 <h2>Step 2: The Cache Lookup</h2>
-<pre><code>import json, struct, hashlib, time
+<pre><code class="language-python">import json, struct, hashlib, time
 from glide import glide_json, FtSearchOptions
 
 SIMILARITY_THRESHOLD = 0.90  # Tune this: higher = stricter matching
@@ -101,7 +101,7 @@ async def cache_lookup(client, query_embedding):
     return {&quot;hit&quot;: False}
 </code></pre>
 <h2>Step 3: Store a Cache Entry</h2>
-<pre><code>async def cache_store(client, query, response, embedding, ttl=3600):
+<pre><code class="language-python">async def cache_store(client, query, response, embedding, ttl=3600):
     &quot;&quot;&quot;Cache an LLM response with its query embedding.&quot;&quot;&quot;
     cache_id = hashlib.md5(query.encode()).hexdigest()[:12]
     key = f&quot;llmcache:{cache_id}&quot;
@@ -116,7 +116,7 @@ async def cache_lookup(client, query_embedding):
     await client.expire(key, ttl)  # Auto-expire stale cache
 </code></pre>
 <h2>Step 4: The Complete Cache-Aware Chat Function</h2>
-<pre><code>async def chat_with_cache(client, user_message):
+<pre><code class="language-python">async def chat_with_cache(client, user_message):
     # 1. Embed the query
     embedding = get_embedding(user_message)
 

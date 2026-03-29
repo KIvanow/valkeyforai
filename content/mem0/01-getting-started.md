@@ -5,123 +5,130 @@
 **Mem0 has a first-class Valkey integration** — not just Redis compatibility. The `valkey.py` connector in Mem0's source uses the native `valkey` Python package and supports HNSW/FLAT indexing with configurable parameters.
 
 ## Step 1: Install
-    
-    
-    pip install mem0ai
+
+```bash
+pip install mem0ai
+```
 
 The `valkey` Python client is included as a core dependency — no separate install needed.
 
 ## Step 2: Start Valkey with Search Module
-    
-    
-    # Valkey with valkey-search module loaded
-    valkey-server --loadmodule /usr/lib/valkey/libsearch.so
+
+```python
+# Valkey with valkey-search module loaded
+valkey-server --loadmodule /usr/lib/valkey/libsearch.so
+```
 
 ## Step 3: Configure Mem0 with Valkey
-    
-    
-    from mem0 import Memory
-    
-    config = {
-        "vector_store": {
-            "provider": "valkey",
-            "config": {
-                "valkey_url": "valkey://localhost:6379",
-                "collection_name": "mem0",
-                "embedding_model_dims": 1536,
-                "index_type": "hnsw",
-            }
+
+```python
+from mem0 import Memory
+
+config = {
+    "vector_store": {
+        "provider": "valkey",
+        "config": {
+            "valkey_url": "valkey://localhost:6379",
+            "collection_name": "mem0",
+            "embedding_model_dims": 1536,
+            "index_type": "hnsw",
         }
     }
-    
-    memory = Memory.from_config(config)
-    print("Mem0 connected to Valkey!")
+}
+
+memory = Memory.from_config(config)
+print("Mem0 connected to Valkey!")
+```
 
 ## Step 4: Add Memories
-    
-    
-    # Add memories from a conversation
-    messages = [
-        {"role": "user", "content": "I love Italian food, especially pasta carbonara."},
-        {"role": "assistant", "content": "Great choice! Carbonara is a classic Roman dish."},
-    ]
-    result = memory.add(messages, user_id="user_001")
-    print(f"Added: {result}")
-    
-    # Add more context
-    messages2 = [
-        {"role": "user", "content": "I'm allergic to shellfish and prefer spicy food."},
-        {"role": "assistant", "content": "Noted! I'll keep that in mind for recommendations."},
-    ]
-    memory.add(messages2, user_id="user_001")
+
+```python
+# Add memories from a conversation
+messages = [
+    {"role": "user", "content": "I love Italian food, especially pasta carbonara."},
+    {"role": "assistant", "content": "Great choice! Carbonara is a classic Roman dish."},
+]
+result = memory.add(messages, user_id="user_001")
+print(f"Added: {result}")
+
+# Add more context
+messages2 = [
+    {"role": "user", "content": "I'm allergic to shellfish and prefer spicy food."},
+    {"role": "assistant", "content": "Noted! I'll keep that in mind for recommendations."},
+]
+memory.add(messages2, user_id="user_001")
+```
 
 ## Step 5: Search Memories
-    
-    
-    # Search for relevant memories
-    results = memory.search(
-        query="What food does this user like?",
-        user_id="user_001",
-        limit=3,
-    )
-    
-    for entry in results["results"]:
-        print(f"Memory: {entry['memory']}")
-        print(f"Score: {entry.get('score', 'N/A')}\n")
-    
-    # Output:
-    # Memory: Loves Italian food, especially pasta carbonara
-    # Score: 0.87
-    # Memory: Allergic to shellfish, prefers spicy food
-    # Score: 0.62
+
+```python
+# Search for relevant memories
+results = memory.search(
+    query="What food does this user like?",
+    user_id="user_001",
+    limit=3,
+)
+
+for entry in results["results"]:
+    print(f"Memory: {entry['memory']}")
+    print(f"Score: {entry.get('score', 'N/A')}\n")
+
+# Output:
+# Memory: Loves Italian food, especially pasta carbonara
+# Score: 0.87
+# Memory: Allergic to shellfish, prefers spicy food
+# Score: 0.62
+```
 
 ## Step 6: Get All Memories for a User
-    
-    
-    # Retrieve all memories for a user
-    all_memories = memory.get_all(user_id="user_001")
-    for m in all_memories["results"]:
-        print(f"  - {m['memory']}")
+
+```python
+# Retrieve all memories for a user
+all_memories = memory.get_all(user_id="user_001")
+for m in all_memories["results"]:
+    print(f"  - {m['memory']}")
+```
 
 ## Step 7: Use Memories in a Chatbot
-    
-    
-    from openai import OpenAI
-    
-    openai_client = OpenAI()
-    
-    def chat_with_memory(message: str, user_id: str) -> str:
-        # 1. Retrieve relevant memories
-        relevant = memory.search(query=message, user_id=user_id, limit=3)
-        memories_str = "\n".join(
-            f"- {entry['memory']}" for entry in relevant["results"]
-        )
-    
-        # 2. Build prompt with memories
-        system = f"You are a helpful AI. Use these memories about the user:\n{memories_str}"
-        messages = [
-            {"role": "system", "content": system},
-            {"role": "user", "content": message},
-        ]
-    
-        # 3. Generate response
-        response = openai_client.chat.completions.create(
-            model="gpt-4", messages=messages,
-        )
-        answer = response.choices[0].message.content
-    
-        # 4. Save new memories from this conversation
-        memory.add(
-            [{"role": "user", "content": message},
-             {"role": "assistant", "content": answer}],
-            user_id=user_id,
-        )
-        return answer
-    
-    # Usage
-    response = chat_with_memory("Recommend me a restaurant", "user_001")
-    print(response)
-    # Will recommend Italian restaurants, avoid shellfish, suggest spicy options!
+
+```python
+from openai import OpenAI
+
+openai_client = OpenAI()
+
+def chat_with_memory(message: str, user_id: str) -> str:
+    # 1. Retrieve relevant memories
+    relevant = memory.search(query=message, user_id=user_id, limit=3)
+    memories_str = "\n".join(
+        f"- {entry['memory']}" for entry in relevant["results"]
+    )
+
+    # 2. Build prompt with memories
+    system = f"You are a helpful AI. Use these memories about the user:\n{memories_str}"
+    messages = [
+        {"role": "system", "content": system},
+        {"role": "user", "content": message},
+    ]
+
+    # 3. Generate response
+    response = openai_client.chat.completions.create(
+        model="gpt-4", messages=messages,
+    )
+    answer = response.choices[0].message.content
+
+    # 4. Save new memories from this conversation
+    memory.add(
+        [{"role": "user", "content": message},
+         {"role": "assistant", "content": answer}],
+        user_id=user_id,
+    )
+    return answer
+
+# Usage
+response = chat_with_memory("Recommend me a restaurant", "user_001")
+print(response)
+# Will recommend Italian restaurants, avoid shellfish, suggest spicy options!
+```
 
 ## How It Works Under the Hood
 

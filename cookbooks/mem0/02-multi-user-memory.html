@@ -56,7 +56,7 @@ pre code.hljs{background:transparent!important;padding:0}
 </tr>
 </tbody></table>
 <h2>Step 1: Setup</h2>
-<pre><code>from mem0 import Memory
+<pre><code class="language-python">from mem0 import Memory
 
 config = {
     &quot;vector_store&quot;: {
@@ -71,7 +71,7 @@ config = {
 memory = Memory.from_config(config)
 </code></pre>
 <h2>Step 2: Per-User Memories</h2>
-<pre><code># User Alice
+<pre><code class="language-python"># User Alice
 memory.add(
     [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;I prefer dark mode and Python.&quot;}],
     user_id=&quot;alice&quot;,
@@ -95,7 +95,7 @@ print(&quot;Bob:&quot;, [r[&quot;memory&quot;] for r in bob_results[&quot;result
 </code></pre>
 <p><strong>How isolation works:</strong> In Valkey, each memory is stored as a Hash with a <code>user_id</code> TAG field. When you search with <code>user_id=&quot;alice&quot;</code>, Mem0 adds a TAG filter <code>@user_id:{alice}</code> to the <code>FT.SEARCH</code> query — ensuring Bob&#39;s memories are never returned.</p>
 <h2>Step 3: Per-Agent Memories</h2>
-<pre><code># Support agent knowledge
+<pre><code class="language-python"># Support agent knowledge
 memory.add(
     [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Our refund policy is 30 days for unused items.&quot;}],
     agent_id=&quot;support_bot&quot;,
@@ -112,7 +112,7 @@ support_results = memory.search(&quot;What is the refund policy?&quot;, agent_id
 sales_results = memory.search(&quot;Any promotions?&quot;, agent_id=&quot;sales_bot&quot;)
 </code></pre>
 <h2>Step 4: Combined User + Agent</h2>
-<pre><code># Add a memory scoped to both user AND agent
+<pre><code class="language-python"># Add a memory scoped to both user AND agent
 memory.add(
     [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;I had an issue with order #12345.&quot;}],
     user_id=&quot;alice&quot;,
@@ -127,7 +127,7 @@ results = memory.search(
 )
 </code></pre>
 <h2>Valkey Data Model</h2>
-<pre><code># Each memory is stored as a Valkey Hash at:
+<pre><code class="language-python"># Each memory is stored as a Valkey Hash at:
 #   mem0:multi_user_app:{memory_id}
 #
 # Fields:

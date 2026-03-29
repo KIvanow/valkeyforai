@@ -1,27 +1,28 @@
 ## Step 1: ElastiCache for Valkey 8.2+
 
 ElastiCache for Valkey 8.2 includes built-in vector search at no additional cost. Create a cluster via the AWS Console or CLI, then use the cluster endpoint as your Valkey URL.
-    
-    
-    from mem0 import Memory
-    
-    config = {
-        "vector_store": {
-            "provider": "valkey",
-            "config": {
-                # Use your ElastiCache cluster endpoint
-                "valkey_url": "valkey://your-cluster.xxxxx.use1.cache.amazonaws.com:6379",
-                "collection_name": "prod_memories",
-                "embedding_model_dims": 1536,
-                "index_type": "hnsw",
-                # HNSW tuning parameters
-                "hnsw_m": 16,              # connections per node
-                "hnsw_ef_construction": 200, # build-time search width
-                "hnsw_ef_runtime": 10,      # query-time search width
-            }
+
+```python
+from mem0 import Memory
+
+config = {
+    "vector_store": {
+        "provider": "valkey",
+        "config": {
+            # Use your ElastiCache cluster endpoint
+            "valkey_url": "valkey://your-cluster.xxxxx.use1.cache.amazonaws.com:6379",
+            "collection_name": "prod_memories",
+            "embedding_model_dims": 1536,
+            "index_type": "hnsw",
+            # HNSW tuning parameters
+            "hnsw_m": 16,              # connections per node
+            "hnsw_ef_construction": 200, # build-time search width
+            "hnsw_ef_runtime": 10,      # query-time search width
         }
     }
-    memory = Memory.from_config(config)
+}
+memory = Memory.from_config(config)
+```
 
 ## Step 2: HNSW Parameter Tuning
 
@@ -33,44 +34,46 @@ Parameter| Default| Effect| Recommendation
 `index_type`| hnsw| HNSW=fast approximate, FLAT=exact| HNSW for >1000 memories, FLAT for small sets  
   
 ## Step 3: TLS for ElastiCache
-    
-    
-    # ElastiCache with TLS enabled
-    config = {
-        "vector_store": {
-            "provider": "valkey",
-            "config": {
-                "valkey_url": "valkeys://your-cluster.xxxxx.use1.cache.amazonaws.com:6379",
-                # Note: valkeys:// (with 's') enables TLS
-                "collection_name": "prod_memories",
-                "embedding_model_dims": 1536,
-            }
+
+```python
+# ElastiCache with TLS enabled
+config = {
+    "vector_store": {
+        "provider": "valkey",
+        "config": {
+            "valkey_url": "valkeys://your-cluster.xxxxx.use1.cache.amazonaws.com:6379",
+            # Note: valkeys:// (with 's') enables TLS
+            "collection_name": "prod_memories",
+            "embedding_model_dims": 1536,
         }
     }
+}
+```
 
 ## Step 4: Monitoring
-    
-    
-    import valkey
-    
-    # Connect directly to check index health
-    client = valkey.from_url("valkey://your-cluster:6379")
-    
-    # Check index info
-    info = client.execute_command("FT.INFO", "prod_memories")
-    print(info)
-    
-    # Check memory usage
-    mem_info = client.info("memory")
-    print(f"Used: {mem_info['used_memory_human']}")
-    
-    # Count memories per user
-    results = client.execute_command(
-        "FT.SEARCH", "prod_memories",
-        "@user_id:{alice}",
-        "LIMIT", "0", "0",  # count only
-    )
-    print(f"Alice has {results[0]} memories")
+
+```python
+import valkey
+
+# Connect directly to check index health
+client = valkey.from_url("valkey://your-cluster:6379")
+
+# Check index info
+info = client.execute_command("FT.INFO", "prod_memories")
+print(info)
+
+# Check memory usage
+mem_info = client.info("memory")
+print(f"Used: {mem_info['used_memory_human']}")
+
+# Count memories per user
+results = client.execute_command(
+    "FT.SEARCH", "prod_memories",
+    "@user_id:{alice}",
+    "LIMIT", "0", "0",  # count only
+)
+print(f"Alice has {results[0]} memories")
+```
 
 ## Production Checklist
 
