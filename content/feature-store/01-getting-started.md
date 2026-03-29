@@ -20,7 +20,7 @@ ML models need features at inference time. A feature store bridges offline train
 Verify it's running:
     
     
-    docker exec valkey valkey-cli ping
+    valkey-cli ping
     # PONG
 
 ## Step 2: Install Dependencies

@@ -58,7 +58,7 @@ import hashlib
 import time
 from openai import OpenAI
 
-client = redis.Redis(host=&quot;localhost&quot;, port=6379, decode_responses=True)
+client = redis.Redis(host=&quot;localhost&quot;, port=6379)
 openai_client = OpenAI()
 
 EMBEDDING_MODEL = &quot;text-embedding-3-small&quot;

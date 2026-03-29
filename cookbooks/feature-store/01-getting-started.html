@@ -46,7 +46,7 @@ pre code.hljs{background:transparent!important;padding:0}
 <pre><code>docker run -d --name valkey -p 6379:6379 valkey/valkey:latest
 </code></pre>
 <p>Verify it&#39;s running:</p>
-<pre><code>docker exec valkey valkey-cli ping
+<pre><code>valkey-cli ping
 # PONG
 </code></pre>
 <h2>Step 2: Install Dependencies</h2>

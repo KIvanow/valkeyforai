@@ -1,7 +1,7 @@
 ## Prerequisites
 
   * Valkey server with the **valkey-search** module loaded
-  * Python 3.9+ with the `redis` and `numpy` packages
+  * Python 3.9+ with the `redis` package
 
 ## Step 1: Start Valkey with Search Module
     
@@ -18,7 +18,7 @@ Verify the module is loaded:
 ## Step 2: Install Python Client
     
     
-    pip install redis numpy
+    pip install redis
 
 We use the standard `redis` Python client. Module commands like `FT.CREATE` are called via `execute_command()`.
 
@@ -26,6 +26,7 @@ We use the standard `redis` Python client. Module commands like `FT.CREATE` are 
     
     
     import redis
+    import struct
     import numpy as np
     
     client = redis.Redis(host="localhost", port=6379)
