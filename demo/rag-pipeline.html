@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RAG Pipeline Interactive Demo — Valkey for AI</title>
+<title>RAG Pipeline Interactive Demo - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -96,7 +96,7 @@ a{color:inherit;text-decoration:none}
 <div class="container">
 <div class="header">
 <h1>Interactive <span>RAG Pipeline</span> Demo</h1>
-<p>Explore semantic caching, vector search, and RAG patterns — all simulated in your browser.</p>
+<p>Explore semantic caching, vector search, and RAG patterns - all simulated in your browser.</p>
 </div>
 
 <div class="tabs">
@@ -397,7 +397,7 @@ function addFaqLog(q, isHit, score) {
   const ts = new Date().toLocaleTimeString('en-US', {hour12:false});
   const entry = document.createElement('div');
   entry.className = `log-entry ${isHit ? 'hit' : 'miss'}`;
-  entry.innerHTML = `<span class="ts">${ts}</span> ${isHit ? '✅ HIT' : '⚠️ MISS'} — "${q.substring(0,30)}..." (${(score*100).toFixed(1)}%)`;
+  entry.innerHTML = `<span class="ts">${ts}</span> ${isHit ? '✅ HIT' : '⚠️ MISS'} - "${q.substring(0,30)}..." (${(score*100).toFixed(1)}%)`;
   log.prepend(entry);
 }
 

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Strands + Valkey Demo — Valkey for AI</title>
+<title>Strands + Valkey Demo - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -96,7 +96,7 @@ a{color:inherit;text-decoration:none}
 
 <div class="demo-hero">
 <h1>Strands Agents + <span>Valkey</span></h1>
-<p>Using <code>strands-valkey-session-manager</code> — the official community package. <code>ValkeySessionManager</code> persists conversation history, session metadata, and agent state to Valkey automatically.</p>
+<p>Using <code>strands-valkey-session-manager</code> - the official community package. <code>ValkeySessionManager</code> persists conversation history, session metadata, and agent state to Valkey automatically.</p>
 </div>
 
 <div class="demo-shell">
@@ -175,12 +175,12 @@ function uuid() {
 const RESPONSES = {
   default: [
     "That's a great question. Based on our conversation history, I can give you a more tailored answer. Valkey's sub-millisecond reads make it ideal for session-backed agents like this one.",
-    "Good point. Since my session state is persisted in Valkey via ValkeySessionManager, I can pick up exactly where we left off — even across restarts.",
+    "Good point. Since my session state is persisted in Valkey via ValkeySessionManager, I can pick up exactly where we left off - even across restarts.",
     "Interesting. I've stored this exchange as a message in Valkey. You can inspect it directly using session_manager.list_messages().",
     "That's exactly the kind of use case the strands-valkey-session-manager package is designed for. Each turn is stored under your session ID.",
   ],
-  rag: "Retrieval-Augmented Generation (RAG) combines a retrieval system with a generative LLM. Instead of relying solely on training data, RAG first retrieves relevant documents from a knowledge base — like a Valkey vector store — then passes them as context to the LLM. This grounds responses in real, up-to-date information and reduces hallucinations.",
-  embedding: "For semantic search, sentence-transformers/all-mpnet-base-v2 is a solid choice — 768 dimensions, strong performance on asymmetric search tasks, and it runs locally without an API key.",
+  rag: "Retrieval-Augmented Generation (RAG) combines a retrieval system with a generative LLM. Instead of relying solely on training data, RAG first retrieves relevant documents from a knowledge base - like a Valkey vector store - then passes them as context to the LLM. This grounds responses in real, up-to-date information and reduces hallucinations.",
+  embedding: "For semantic search, sentence-transformers/all-mpnet-base-v2 is a solid choice - 768 dimensions, strong performance on asymmetric search tasks, and it runs locally without an API key.",
   sessionStorage: "Your session is stored in Valkey as three types of objects: session metadata (key: session:{id}), agent state (key: session:{id}:agent:{agent_id}), and individual message objects (key: session:{id}:agent:{agent_id}:message:{msg_id}). ValkeySessionManager handles all reads and writes automatically.",
   recall: function(t) {
     if (t > 0) return 'Based on our conversation history (' + t + ' turns stored in Valkey), I can see we have been discussing your RAG pipeline project. ValkeySessionManager loaded all ' + (t*2) + ' messages from Valkey when this agent was initialized.';
@@ -189,7 +189,7 @@ const RESPONSES = {
   intro: function(name, project) {
     var n = name ? ', ' + name : '';
     var p = project ? " I'll keep your work on \"" + project + "\" in context for the rest of our session." : '';
-    return 'Nice to meet you' + n + '! I have stored this exchange as a message in Valkey.' + p + ' My session state is persisted via ValkeySessionManager — so I will remember this even if the process restarts.';
+    return 'Nice to meet you' + n + '! I have stored this exchange as a message in Valkey.' + p + ' My session state is persisted via ValkeySessionManager - so I will remember this even if the process restarts.';
   }
 };
 

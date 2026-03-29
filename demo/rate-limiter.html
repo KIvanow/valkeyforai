@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rate Limiter Interactive Demo — Valkey for AI</title>
+<title>Rate Limiter Interactive Demo - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -71,7 +71,7 @@ a{color:inherit;text-decoration:none}
 <div class="container">
 <div class="header">
 <h1>Interactive <span>Rate Limiter</span> Demo</h1>
-<p>Simulate rate limiting algorithms in your browser. No backend needed — all logic runs client-side.</p>
+<p>Simulate rate limiting algorithms in your browser. No backend needed - all logic runs client-side.</p>
 </div>
 
 <div class="grid">
@@ -102,7 +102,7 @@ a{color:inherit;text-decoration:none}
 </div>
 
 <div class="algo-info" id="algoInfo">
-<strong>Fixed Window:</strong> Counts requests within a fixed time window. Simple and fast — uses <code>INCR</code> + <code>EXPIRE</code>. Drawback: can allow 2x burst at window boundaries.
+<strong>Fixed Window:</strong> Counts requests within a fixed time window. Simple and fast - uses <code>INCR</code> + <code>EXPIRE</code>. Drawback: can allow 2x burst at window boundaries.
 </div>
 </div>
 
@@ -139,9 +139,9 @@ let bucketTokens = 10, lastRefill = Date.now();
 
 const algoDescriptions = {
   fixed: '<strong>Fixed Window:</strong> Counts requests within a fixed time window. Uses <code>INCR</code> + <code>EXPIRE</code>. Simple, fast, ~0.2ms per check. Drawback: can allow 2x burst at window boundaries.',
-  sliding: '<strong>Sliding Window:</strong> Counts requests in a rolling window using <code>ZRANGEBYSCORE</code>. Smoother than fixed window — no boundary burst issue. Slightly more Valkey commands per check.',
+  sliding: '<strong>Sliding Window:</strong> Counts requests in a rolling window using <code>ZRANGEBYSCORE</code>. Smoother than fixed window - no boundary burst issue. Slightly more Valkey commands per check.',
   token: '<strong>Token Bucket:</strong> Tokens refill at a steady rate. Each request consumes tokens. Allows controlled bursts. Implemented as a Lua script with <code>HMSET</code> for atomicity.',
-  leaky: '<strong>Leaky Bucket:</strong> Requests fill a bucket that "leaks" at a constant rate. Enforces a strict output rate — great for API gateways. Uses <code>HMSET</code> with timestamps.',
+  leaky: '<strong>Leaky Bucket:</strong> Requests fill a bucket that "leaks" at a constant rate. Enforces a strict output rate - great for API gateways. Uses <code>HMSET</code> with timestamps.',
 };
 
 $$('.algo-tab').forEach(t => t.addEventListener('click', () => {
@@ -235,7 +235,7 @@ function updateUI(ok, now) {
   const ts = new Date(now).toLocaleTimeString('en-US', {hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit'});
   const entry = document.createElement('div');
   entry.className = `log-entry ${ok ? 'allow' : 'deny'}`;
-  entry.innerHTML = `<span class="ts">${ts}</span> ${ok ? '✅ ALLOWED' : '❌ DENIED'} — request #${total} (cost=${cost})${!ok ? ' — rate limit exceeded' : ''}`;
+  entry.innerHTML = `<span class="ts">${ts}</span> ${ok ? '✅ ALLOWED' : '❌ DENIED'} - request #${total} (cost=${cost})${!ok ? ' - rate limit exceeded' : ''}`;
   log.prepend(entry);
 }
 

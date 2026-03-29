@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LangChain Integration Demo — Valkey for AI</title>
+<title>LangChain Integration Demo - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -66,7 +66,7 @@ input[type=text]::placeholder{color:var(--t3)}
 <div class="container">
 <div class="header">
 <h1>Interactive <span>LangChain + Valkey</span> Demo</h1>
-<p>IT Help Desk with semantic caching — watch ValkeyStore, ValkeyCache, and ValkeySaver fire in real-time. No backend — all simulated client-side.</p>
+<p>IT Help Desk with semantic caching - watch ValkeyStore, ValkeyCache, and ValkeySaver fire in real-time. No backend - all simulated client-side.</p>
 </div>
 
 <div class="stats">
@@ -174,16 +174,16 @@ async function processQuestion(q,answer,isOriginal){
   if(isOriginal){
     // Cache miss
     const latency=3000+Math.random()*2000;
-    addCmd('→ Score: 0.00 — <span class="badge-miss">MISS</span>','miss');
+    addCmd('→ Score: 0.00 - <span class="badge-miss">MISS</span>','miss');
     await sleep(200);
-    addCmd('ChatBedrockConverse.invoke() — calling Claude...','miss');
+    addCmd('ChatBedrockConverse.invoke() - calling Claude...','miss');
     await sleep(latency);
     addChat('assistant',answer,' · <span class="badge-miss">MISS</span> · '+Math.round(latency)+'ms · $0.003');
     addCmd('ValkeyStore.put(("helpdesk",), "'+q.substring(0,20)+'...", {...})','');
     await sleep(100);
     addCmd('→ JSON.SET store:helpdesk_cache:... $ \'{...}\'','');
     addCmd('→ EXPIRE store:helpdesk_cache:... 3600','');
-    addCmd('ValkeySaver.put() — checkpoint conversation','');
+    addCmd('ValkeySaver.put() - checkpoint conversation','');
     await sleep(100);
     addCmd('→ JSON.SET checkpoint:user-42:... $ \'{...}\'','');
     totalLatency+=latency;
@@ -192,10 +192,10 @@ async function processQuestion(q,answer,isOriginal){
     // Cache hit
     const score=(0.88+Math.random()*0.10).toFixed(3);
     const latency=1+Math.random()*3;
-    addCmd('→ Score: '+score+' ≥ 0.90 — <span class="badge-hit">HIT</span> <span class="latency">'+latency.toFixed(1)+'ms</span>','hit');
+    addCmd('→ Score: '+score+' ≥ 0.90 - <span class="badge-hit">HIT</span> <span class="latency">'+latency.toFixed(1)+'ms</span>','hit');
     await sleep(100);
     addChat('assistant',answer,' · <span class="badge-hit">HIT</span> · '+latency.toFixed(1)+'ms · $0.000');
-    addCmd('ValkeySaver.put() — checkpoint conversation','');
+    addCmd('ValkeySaver.put() - checkpoint conversation','');
     addCmd('→ JSON.SET checkpoint:user-42:... $ \'{...}\'','');
     totalLatency+=latency;
     hits++;

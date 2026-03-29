@@ -1,5 +1,5 @@
 // ============================================
-// VALKEY FOR AI — Interactions & Animations
+// VALKEY FOR AI - Interactions & Animations
 // ============================================
 
 // --- Theme Toggle (Light/Dark) ---

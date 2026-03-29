@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CrewAI Agent Orchestration Demo — Valkey for AI</title>
+<title>CrewAI Agent Orchestration Demo - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -77,7 +77,7 @@ button:hover{transform:translateY(-1px);filter:brightness(1.1)}
 <div class="container">
 <div class="header">
 <h1>Interactive <span>CrewAI + Valkey</span> Demo</h1>
-<p>Watch AI agents store knowledge, share memories, and recall patterns — all backed by Valkey vector search. No backend — simulated client-side.</p>
+<p>Watch AI agents store knowledge, share memories, and recall patterns - all backed by Valkey vector search. No backend - simulated client-side.</p>
 </div>
 
 <div class="stats">
@@ -116,16 +116,16 @@ button:hover{transform:translateY(-1px);filter:brightness(1.1)}
 let agentEl,cmdEl,memCount=0,searchCount=0,totalScore=0,totalLatency=0,cmdTotal=0,eventTotal=0,running=false;
 
 const SCENARIOS=[
-  {name:"Code Reviewer — Learn & Recall",agents:[{name:"CodeReviewer",role:"reviewer"}],phases:[
+  {name:"Code Reviewer - Learn & Recall",agents:[{name:"CodeReviewer",role:"reviewer"}],phases:[
     {type:"task",agent:"CodeReviewer",text:"Review this async code for performance issues:\nasync def fetch_all(urls):\n    results = []\n    for url in urls:\n        result = await fetch(url)\n        results.append(result)\n    return results"},
-    {type:"work",agent:"CodeReviewer",text:"Identified: Sequential await in loop — should use asyncio.gather() for parallel execution. This is a common async anti-pattern."},
+    {type:"work",agent:"CodeReviewer",text:"Identified: Sequential await in loop - should use asyncio.gather() for parallel execution. This is a common async anti-pattern."},
     {type:"store",agent:"CodeReviewer",memory:"Sequential await anti-pattern: using 'for url in urls: await fetch(url)' instead of asyncio.gather(). Fix: results = await asyncio.gather(*[fetch(u) for u in urls])",scope:"/code-review/async"},
     {type:"store",agent:"CodeReviewer",memory:"Performance pattern: always prefer asyncio.gather() or asyncio.as_completed() over sequential awaits when tasks are independent.",scope:"/code-review/performance"},
     {type:"task",agent:"CodeReviewer",text:"Now review this new code:\nasync def process_batch(items):\n    for item in items:\n        await transform(item)\n        await save(item)"},
     {type:"recall",agent:"CodeReviewer",query:"async sequential await performance",expectScore:0.94,expectMemory:"Sequential await anti-pattern"},
-    {type:"work",agent:"CodeReviewer",text:"🧠 Recalled past pattern! This has the same sequential await issue. Recommending asyncio.gather() — I've seen this before in a previous review."},
+    {type:"work",agent:"CodeReviewer",text:"🧠 Recalled past pattern! This has the same sequential await issue. Recommending asyncio.gather() - I've seen this before in a previous review."},
   ]},
-  {name:"Research Team — Shared Knowledge",agents:[{name:"Researcher",role:"researcher"},{name:"Analyst",role:"analyst"}],phases:[
+  {name:"Research Team - Shared Knowledge",agents:[{name:"Researcher",role:"researcher"},{name:"Analyst",role:"analyst"}],phases:[
     {type:"task",agent:"Researcher",text:"Research the key benefits of Valkey for vector search compared to traditional databases. Focus on performance and scalability."},
     {type:"work",agent:"Researcher",text:"Findings: Valkey delivers sub-millisecond vector search via HNSW indexing, supports billions of vectors with 99%+ recall, and provides real-time index updates without rebuilds."},
     {type:"store",agent:"Researcher",memory:"Valkey vector search: sub-ms latency, HNSW indexing, 99%+ recall at billion scale, real-time updates without index rebuilds.",scope:"/research/valkey"},
@@ -134,7 +134,7 @@ const SCENARIOS=[
     {type:"recall",agent:"Analyst",query:"Valkey vector search performance benefits",expectScore:0.91,expectMemory:"Valkey vector search: sub-ms latency"},
     {type:"work",agent:"Analyst",text:"🧠 Found research from Researcher! Based on the sub-ms latency and billion-scale support, strongly recommend adopting Valkey for our AI memory system."},
   ]},
-  {name:"DevOps Agent — Incident Runbook",agents:[{name:"DevOps",role:"reviewer"}],phases:[
+  {name:"DevOps Agent - Incident Runbook",agents:[{name:"DevOps",role:"reviewer"}],phases:[
     {type:"task",agent:"DevOps",text:"Document the steps to resolve a Redis connection timeout in production."},
     {type:"work",agent:"DevOps",text:"Runbook: 1) Check ElastiCache CloudWatch metrics 2) Verify security group rules 3) Test connectivity from app subnet 4) Check max-connections limit 5) Review slow log"},
     {type:"store",agent:"DevOps",memory:"Redis/Valkey connection timeout runbook: check CloudWatch CurrConnections, verify SG rules allow port 6379, test from app subnet with valkey-cli, check maxclients config, review SLOWLOG.",scope:"/runbooks/connectivity"},
