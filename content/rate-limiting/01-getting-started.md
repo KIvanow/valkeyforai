@@ -11,7 +11,7 @@
 Verify it's running:
     
     
-    valkey-cli ping
+    docker exec valkey valkey-cli ping
     # PONG
 
 ## Step 2: Install Dependencies

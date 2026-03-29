@@ -32,7 +32,7 @@ pre code.hljs{background:transparent!important;padding:0}
 <h2>Prerequisites</h2>
 <ul>
 <li>Valkey server with the <strong>valkey-search</strong> module loaded</li>
-<li>Python 3.9+ with the <code>redis</code> package</li>
+<li>Python 3.9+ with the <code>redis</code> and <code>numpy</code> packages</li>
 </ul>
 <h2>Step 1: Start Valkey with Search Module</h2>
 <pre><code># Start Valkey with the search module loaded
@@ -43,12 +43,11 @@ valkey-server --loadmodule /usr/lib/valkey/libsearch.so
 # Should show &quot;search&quot; in the output
 </code></pre>
 <h2>Step 2: Install Python Client</h2>
-<pre><code>pip install redis
+<pre><code>pip install redis numpy
 </code></pre>
 <p>We use the standard <code>redis</code> Python client. Module commands like <code>FT.CREATE</code> are called via <code>execute_command()</code>.</p>
 <h2>Step 3: Create a Vector Index</h2>
 <pre><code>import redis
-import struct
 import numpy as np
 
 client = redis.Redis(host=&quot;localhost&quot;, port=6379)
