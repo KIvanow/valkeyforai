@@ -7,12 +7,12 @@ Agent "research-bot" has a plan:
   3. Summarize each page (15 LLM calls × 2000 tokens each)
   4. Write final report (1 LLM call × 8000 tokens)
 
-Total: 32 calls, ~38,000 tokens — in 30 seconds.
+Total: 32 calls, ~38,000 tokens - in 30 seconds.
 ```
 
 ## Step 1: Per-Agent Token Bucket
 
-Token bucket is ideal for agents — it allows bursts (agents work in bursts) while enforcing a steady-state rate:
+Token bucket is ideal for agents - it allows bursts (agents work in bursts) while enforcing a steady-state rate:
 
 ```python
 TOKEN_BUCKET_SCRIPT = """

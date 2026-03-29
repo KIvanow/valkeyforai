@@ -146,7 +146,7 @@ def stream_openai_to_valkey(prompt: str, request_id: str):
 
 ## Multi-Client Fan-Out
 
-**Key Insight:** Every `PUBLISH` is delivered to ALL subscribers on that channel simultaneously. If 100 clients are watching the same LLM response, all 100 receive each token at the same time — with zero additional cost. This is pure O(N) fan-out handled entirely by Valkey.
+**What makes this work:** Every `PUBLISH` is delivered to ALL subscribers on that channel simultaneously. If 100 clients are watching the same LLM response, all 100 receive each token at the same time - with zero additional cost. This is pure O(N) fan-out handled entirely by Valkey.
 
 Metric| Value  
 ---|---  

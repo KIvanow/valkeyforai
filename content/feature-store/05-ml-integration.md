@@ -272,4 +272,4 @@ Recommendation (2 views)| ~0.15ms| ~0.5ms| ~0.65ms
 Batch scoring (100 entities)| ~0.3ms| ~10ms| ~10.3ms  
 LLM context (user profile)| ~0.1ms| ~500ms (LLM)| ~500ms  
   
-**What's Next:** Learn production patterns — feature freshness monitoring, versioning, health checks, and observability.
+**Next up:** Learn production patterns - feature freshness monitoring, versioning, health checks, and observability.

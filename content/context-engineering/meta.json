@@ -11,7 +11,10 @@
       "breadcrumb": "Fundamentals",
       "difficulty": "Beginner",
       "time": "20 min",
-      "next": { "file": "02-assembly-pipeline.html", "title": "02 — Context Assembly Pipeline" }
+      "next": {
+        "file": "02-assembly-pipeline.html",
+        "title": "02 - Context Assembly Pipeline"
+      }
     },
     {
       "num": "02",
@@ -23,8 +26,14 @@
       "breadcrumb": "Assembly Pipeline",
       "difficulty": "Intermediate",
       "time": "25 min",
-      "prev": { "file": "01-fundamentals.html", "title": "01 — Fundamentals" },
-      "next": { "file": "03-production.html", "title": "03 — Production Context Management" }
+      "prev": {
+        "file": "01-fundamentals.html",
+        "title": "01 - Fundamentals"
+      },
+      "next": {
+        "file": "03-production.html",
+        "title": "03 - Production Context Management"
+      }
     },
     {
       "num": "03",
@@ -36,7 +45,10 @@
       "breadcrumb": "Production",
       "difficulty": "Advanced",
       "time": "25 min",
-      "prev": { "file": "02-assembly-pipeline.html", "title": "02 — Assembly Pipeline" }
+      "prev": {
+        "file": "02-assembly-pipeline.html",
+        "title": "02 - Assembly Pipeline"
+      }
     }
   ]
 }

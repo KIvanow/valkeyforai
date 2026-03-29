@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>03 — Production Context Management — Valkey for AI</title>
+<title>03 - Production Context Management - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../cookbook.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
@@ -47,7 +47,7 @@ def store_short_term(session_id: str, key: str, value: str, ttl: int = 1800):
 def store_long_term(user_id: str, key: str, value: str):
     &quot;&quot;&quot;Store cross-session user knowledge that persists indefinitely.&quot;&quot;&quot;
     client.hset(f&quot;memory:{user_id}&quot;, key, value)
-    # No EXPIRE — this persists
+    # No EXPIRE - this persists
 
 # Example
 store_short_term(&quot;sess_100&quot;, &quot;current_topic&quot;, &quot;billing&quot;)
@@ -279,7 +279,7 @@ def get_avg_assembly_time(pattern: str = &quot;metrics:context:*&quot;) -&gt; fl
 
 
 <div class="nav-prev-next">
-<a href="02-assembly-pipeline.html" class="prev"><span class="label">← Previous</span><span class="title">02 — Assembly Pipeline</span></a>
+<a href="02-assembly-pipeline.html" class="prev"><span class="label">← Previous</span><span class="title">02 - Assembly Pipeline</span></a>
 <div></div>
 </div>
 </article>

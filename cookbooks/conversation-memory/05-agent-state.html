@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>05 — Agent State — Valkey for AI</title>
+<title>05 - Agent State - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../cookbook.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
@@ -32,9 +32,9 @@ pre code.hljs{background:transparent!important;padding:0}
 <h2>The Problem</h2>
 <p>AI agents run multi-step workflows: plan → search → analyze → respond. If the process crashes at step 3, you lose everything and start over. Worse, if the agent calls the same expensive tool twice, you pay double. You need:</p>
 <ul>
-<li><strong>Checkpointing</strong> — save state after each step, resume on failure</li>
-<li><strong>Tool result caching</strong> — don&#39;t call the same API twice</li>
-<li><strong>Activity log</strong> — ordered record of what happened and when</li>
+<li><strong>Checkpointing</strong> - save state after each step, resume on failure</li>
+<li><strong>Tool result caching</strong> - don&#39;t call the same API twice</li>
+<li><strong>Activity log</strong> - ordered record of what happened and when</li>
 </ul>
 <h2>Three Valkey Patterns, One Agent</h2>
 <pre><code class="language-python">┌─────────────────────────────────────────────────────────┐
@@ -95,8 +95,8 @@ async def cached_tool_call(client, tool_name, args, tool_fn, ttl=300):
         print(f&quot;⚡ Tool cache HIT: {tool_name}&quot;)
         return json.loads(cached)
 
-    # Cache miss — call the tool
-    print(f&quot;🔄 Tool cache MISS: {tool_name} — calling...&quot;)
+    # Cache miss - call the tool
+    print(f&quot;🔄 Tool cache MISS: {tool_name} - calling...&quot;)
     result = tool_fn(**args)
 
     # Store with TTL
@@ -114,7 +114,7 @@ result = await cached_tool_call(
     ttl=600,  # cache for 10 minutes
 )
 </code></pre>
-<p><strong>Key Insight:</strong> <code>SET key value EX ttl</code> is the simplest caching pattern in Valkey. For tool results, the TTL should match how quickly the data goes stale — 5 minutes for web searches, 1 hour for database queries, 24 hours for static lookups.</p>
+<p><strong>Worth knowing:</strong> <code>SET key value EX ttl</code> is the simplest caching pattern in Valkey. For tool results, the TTL should match how quickly the data goes stale - 5 minutes for web searches, 1 hour for database queries, 24 hours for static lookups.</p>
 <h2>Pattern 3: Activity Log with STREAM</h2>
 <p>Log every agent action to a Valkey Stream. This creates an ordered, persistent audit trail for debugging and replay.</p>
 <pre><code class="language-python">async def log_action(client, run_id, action, details):
@@ -266,7 +266,7 @@ for entry in log:
 
 
 <div class="nav-prev-next">
-<a href="04-semantic-caching.html" class="prev"><span class="label">← Previous</span><span class="title">04 — Semantic Caching</span></a>
+<a href="04-semantic-caching.html" class="prev"><span class="label">← Previous</span><span class="title">04 - Semantic Caching</span></a>
 <div></div>
 </div>
 </article>

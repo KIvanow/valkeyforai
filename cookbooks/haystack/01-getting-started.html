@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>01 — Getting Started with Haystack + Valkey — Valkey for AI</title>
+<title>01 - Getting Started with Haystack + Valkey - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../cookbook.css">
 </head>
@@ -18,7 +18,7 @@
 <div class="meta"><span class="diff-easy">Beginner</span><span class="lang">Python</span><span class="lang">~10 min</span></div>
 
 <h1>Getting <span class="gradient">Started</span></h1>
-<p class="lead">Connect Haystack to Valkey, store documents with embeddings, and run your first vector similarity search — all in under 10 minutes.</p>
+<p class="lead">Connect Haystack to Valkey, store documents with embeddings, and run your first vector similarity search - all in under 10 minutes.</p>
 
 <h2>Prerequisites</h2>
 <ul>
@@ -34,7 +34,7 @@
 <span class="comment"># should include: name search</span></code></pre>
 
 <div class="callout">
-<p><strong>Note:</strong> On first run you'll see <code>Error executing command: Index not found</code> — this is expected. The document store checks for an existing index, doesn't find one, then creates it automatically when you write your first documents.</p>
+<p><strong>Note:</strong> On first run you'll see <code>Error executing command: Index not found</code> - this is expected. The document store checks for an existing index, doesn't find one, then creates it automatically when you write your first documents.</p>
 </div>
 
 <h2>Step 2: Install Dependencies</h2>
@@ -104,7 +104,7 @@ Score: 0.743 | Vector search finds semantically similar documents.</code></pre>
 
 <h2>How It Works</h2>
 <div class="callout">
-<p><strong>Key Insight:</strong> <code>ValkeyDocumentStore</code> stores each document's embedding as a Valkey hash and builds a vector index using Valkey's native vector search. Queries are single-hop — embed the query, run KNN against the index, get ranked results back. No external vector DB needed.</p>
+<p><strong>Key Insight:</strong> <code>ValkeyDocumentStore</code> stores each document's embedding as a Valkey hash and builds a vector index using Valkey's native vector search. Queries are single-hop - embed the query, run KNN against the index, get ranked results back. No external vector DB needed.</p>
 </div>
 
 <table>
@@ -119,7 +119,7 @@ Score: 0.743 | Vector search finds semantically similar documents.</code></pre>
 <div></div>
 <a href="02-rag-pipeline.html" class="next">
 <span class="label">Next →</span>
-<span class="title">02 — RAG Pipeline</span>
+<span class="title">02 - RAG Pipeline</span>
 </a>
 </div>
 </article>

@@ -29,7 +29,7 @@ client.xadd("ai:events", {"event": "model_prediction", "latency_ms": "45"})
 # All 3 groups get the message independently
 ```
 
-## Pattern 3: Hybrid — Stream + Pub/Sub
+## Pattern 3: Hybrid - Stream + Pub/Sub
 
 ```python
 def publish_with_durability(event):

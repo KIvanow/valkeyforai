@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>03 — Agent Rate Limiting — Valkey for AI</title>
+<title>03 - Agent Rate Limiting - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../cookbook.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
@@ -36,10 +36,10 @@ pre code.hljs{background:transparent!important;padding:0}
   3. Summarize each page (15 LLM calls × 2000 tokens each)
   4. Write final report (1 LLM call × 8000 tokens)
 
-Total: 32 calls, ~38,000 tokens — in 30 seconds.
+Total: 32 calls, ~38,000 tokens - in 30 seconds.
 </code></pre>
 <h2>Step 1: Per-Agent Token Bucket</h2>
-<p>Token bucket is ideal for agents — it allows bursts (agents work in bursts) while enforcing a steady-state rate:</p>
+<p>Token bucket is ideal for agents - it allows bursts (agents work in bursts) while enforcing a steady-state rate:</p>
 <pre><code class="language-python">TOKEN_BUCKET_SCRIPT = &quot;&quot;&quot;
 local key = KEYS[1]
 local capacity = tonumber(ARGV[1])
@@ -116,8 +116,8 @@ def agent_tool_check(agent_id: str, tool_name: str) -&gt; dict:
 
 
 <div class="nav-prev-next">
-<a href="02-token-aware.html" class="prev"><span class="label">← Previous</span><span class="title">02 — Token-Aware</span></a>
-<a href="04-hierarchical.html" class="next"><span class="label">Next →</span><span class="title">04 — Hierarchical</span></a>
+<a href="02-token-aware.html" class="prev"><span class="label">← Previous</span><span class="title">02 - Token-Aware</span></a>
+<a href="04-hierarchical.html" class="next"><span class="label">Next →</span><span class="title">04 - Hierarchical</span></a>
 </div>
 </article>
 <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg></button>

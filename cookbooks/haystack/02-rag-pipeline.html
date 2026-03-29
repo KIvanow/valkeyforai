@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>02 — RAG Pipeline with Haystack + Valkey — Valkey for AI</title>
+<title>02 - RAG Pipeline with Haystack + Valkey - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../cookbook.css">
 </head>
@@ -18,7 +18,7 @@
 <div class="meta"><span class="diff-mid">Intermediate</span><span class="lang">Python</span><span class="lang">~20 min</span></div>
 
 <h1>RAG <span class="gradient">Pipeline</span></h1>
-<p class="lead">Build a full retrieval-augmented generation pipeline with Valkey as the vector store. Embed your documents once, then answer questions grounded in your data — not the LLM's training set.</p>
+<p class="lead">Build a full retrieval-augmented generation pipeline with Valkey as the vector store. Embed your documents once, then answer questions grounded in your data - not the LLM's training set.</p>
 
 <h2>How RAG Works</h2>
 <pre><code>User question
@@ -27,7 +27,7 @@
   → inject docs into prompt
   → LLM generates grounded answer</code></pre>
 
-<p>Valkey handles the retrieval step — sub-millisecond KNN over your document embeddings.</p>
+<p>Valkey handles the retrieval step - sub-millisecond KNN over your document embeddings.</p>
 
 <h2>Step 1: Indexing Pipeline</h2>
 <p>Run this once to embed and store your documents:</p>
@@ -51,13 +51,13 @@ indexing_pipeline.add_component(
 indexing_pipeline.add_component(<span class="string">"writer"</span>, DocumentWriter(document_store=document_store))
 indexing_pipeline.connect(<span class="string">"embedder.documents"</span>, <span class="string">"writer.documents"</span>)
 
-<span class="comment"># Your documents — swap this for file loaders, web crawlers, etc.</span>
+<span class="comment"># Your documents - swap this for file loaders, web crawlers, etc.</span>
 docs = [
     Document(content=<span class="string">"Valkey supports vector search natively via its module system."</span>),
     Document(content=<span class="string">"The ValkeyDocumentStore integrates directly with Haystack pipelines."</span>),
     Document(content=<span class="string">"Cosine similarity measures the angle between two embedding vectors."</span>),
     Document(content=<span class="string">"RAG grounds LLM responses in retrieved facts, reducing hallucinations."</span>),
-    Document(content=<span class="string">"Haystack pipelines are composable — swap any component without rewriting the rest."</span>),
+    Document(content=<span class="string">"Haystack pipelines are composable - swap any component without rewriting the rest."</span>),
 ]
 
 indexing_pipeline.run({<span class="string">"embedder"</span>: {<span class="string">"documents"</span>: docs}})
@@ -126,7 +126,7 @@ using the ValkeyEmbeddingRetriever component.</code></pre>
 
 <h2>Pipeline Architecture</h2>
 <div class="callout">
-<p><strong>Key Insight:</strong> The indexing and query pipelines are intentionally separate. You index once (or on a schedule), then query thousands of times. Valkey's in-memory KNN means retrieval adds ~1ms to your total latency — negligible compared to the LLM call.</p>
+<p><strong>Key Insight:</strong> The indexing and query pipelines are intentionally separate. You index once (or on a schedule), then query thousands of times. Valkey's in-memory KNN means retrieval adds ~1ms to your total latency - negligible compared to the LLM call.</p>
 </div>
 
 <table>
@@ -134,7 +134,7 @@ using the ValkeyEmbeddingRetriever component.</code></pre>
 <tr><td>Index</td><td><code>SentenceTransformersDocumentEmbedder</code></td><td>Generates 768-dim embeddings for each doc</td></tr>
 <tr><td>Index</td><td><code>DocumentWriter</code></td><td>Writes docs + embeddings to Valkey</td></tr>
 <tr><td>Query</td><td><code>SentenceTransformersTextEmbedder</code></td><td>Embeds the user's question</td></tr>
-<tr><td>Query</td><td><code>ValkeyEmbeddingRetriever</code></td><td>KNN search — returns top-k similar docs</td></tr>
+<tr><td>Query</td><td><code>ValkeyEmbeddingRetriever</code></td><td>KNN search - returns top-k similar docs</td></tr>
 <tr><td>Query</td><td><code>ChatPromptBuilder</code></td><td>Injects retrieved docs into the prompt</td></tr>
 <tr><td>Query</td><td><code>OpenAIChatGenerator</code></td><td>Generates the final grounded answer</td></tr>
 </table>
@@ -152,7 +152,7 @@ document_store = ValkeyDocumentStore(
 )</code></pre>
 
 <div class="nav-prev-next">
-<a href="01-getting-started.html"><span class="label">← Previous</span><span class="title">01 — Getting Started</span></a>
+<a href="01-getting-started.html"><span class="label">← Previous</span><span class="title">01 - Getting Started</span></a>
 <div></div>
 </div>
 </article>

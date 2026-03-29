@@ -36,10 +36,10 @@ reviewer = Agent(
 )
 ```
 
-## Step 3: Store Patterns — First Execution
+## Step 3: Store Patterns - First Execution
 
 ```python
-# First crew run — agent learns patterns
+# First crew run - agent learns patterns
 learn_task = Task(
     description="""Review this code and remember the patterns you find:
     
@@ -70,10 +70,10 @@ JSON.SET memory:7f3a-b2c1 $ '{"content":"SQL injection risk in get_user...","sco
 EXPIRE memory:7f3a-b2c1 3600
 ```
 
-## Step 4: Recall Patterns — Later Execution
+## Step 4: Recall Patterns - Later Execution
 
 ```python
-# Later crew run — agent recalls what it learned
+# Later crew run - agent recalls what it learned
 recall_task = Task(
     description="""Review this new code. Use your memory of past reviews:
     
@@ -88,14 +88,14 @@ recall_task = Task(
 crew2 = Crew(
     agents=[reviewer],
     tasks=[recall_task],
-    memory=memory,  # Same memory — recalls from Valkey
+    memory=memory,  # Same memory - recalls from Valkey
     verbose=True,
 )
 
 result2 = crew2.kickoff()
 print(result2)
 # Agent recalls the SQL injection pattern from the first review!
-# "I've seen this pattern before — f-string SQL is vulnerable to injection..."
+# "I've seen this pattern before - f-string SQL is vulnerable to injection..."
 ```
 
 **Valkey Commands Fired (recall):**
@@ -105,11 +105,11 @@ FT.SEARCH memory_idx
   "(*)==>[KNN 5 @embedding $vec AS score]"
   PARAMS 2 vec <binary_vector>
 
-# Returns: score 0.94 — "SQL injection risk in get_user..."
+# Returns: score 0.94 - "SQL injection risk in get_user..."
 ```
 
 ## Next Steps
 
-Your agents now have persistent, searchable memory backed by Valkey. To deploy to production, see the [ElastiCache for Valkey Getting Started guide](<https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.html>) — set `VALKEY_HOST` and `VALKEY_TLS=true` and your `ValkeyStorage` connects to ElastiCache automatically.
+Your agents now have persistent, searchable memory backed by Valkey. To deploy to production, see the [ElastiCache for Valkey Getting Started guide](<https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.html>) - set `VALKEY_HOST` and `VALKEY_TLS=true` and your `ValkeyStorage` connects to ElastiCache automatically.
 
 [← Back to CrewAI Cookbooks](</cookbooks/crewai/>)

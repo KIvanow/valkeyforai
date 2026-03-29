@@ -12,7 +12,7 @@
       "time": "15 min",
       "next": {
         "file": "02-session-management.html",
-        "title": "02 \u2014 Sessions"
+        "title": "02 - Sessions"
       }
     },
     {
@@ -26,11 +26,11 @@
       "time": "20 min",
       "prev": {
         "file": "01-getting-started.html",
-        "title": "01 \u2014 Getting Started"
+        "title": "01 - Getting Started"
       },
       "next": {
         "file": "03-semantic-memory.html",
-        "title": "03 \u2014 Semantic Memory"
+        "title": "03 - Semantic Memory"
       }
     },
     {
@@ -44,11 +44,11 @@
       "time": "20 min",
       "prev": {
         "file": "02-session-management.html",
-        "title": "02 \u2014 Sessions"
+        "title": "02 - Sessions"
       },
       "next": {
         "file": "04-semantic-caching.html",
-        "title": "04 \u2014 Semantic Caching"
+        "title": "04 - Semantic Caching"
       }
     },
     {
@@ -62,11 +62,11 @@
       "time": "20 min",
       "prev": {
         "file": "03-semantic-memory.html",
-        "title": "03 \u2014 Semantic Memory"
+        "title": "03 - Semantic Memory"
       },
       "next": {
         "file": "05-agent-state.html",
-        "title": "05 \u2014 Agent State"
+        "title": "05 - Agent State"
       }
     },
     {
@@ -80,7 +80,7 @@
       "time": "25 min",
       "prev": {
         "file": "04-semantic-caching.html",
-        "title": "04 \u2014 Semantic Caching"
+        "title": "04 - Semantic Caching"
       }
     }
   ]

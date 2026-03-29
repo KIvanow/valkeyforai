@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * build.js — Converts Markdown cookbooks to styled HTML pages
+ * build.js - Converts Markdown cookbooks to styled HTML pages
  * 
  * Usage: node build.js [track-name]
  *   node build.js                    # builds all tracks
@@ -47,7 +47,7 @@ function buildPage(mdContent, cookbook, track, meta) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${cookbook.num} — ${cookbook.title} — Valkey for AI</title>
+<title>${cookbook.num} - ${cookbook.title} - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../cookbook.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">

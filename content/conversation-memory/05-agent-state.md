@@ -2,9 +2,9 @@
 
 AI agents run multi-step workflows: plan → search → analyze → respond. If the process crashes at step 3, you lose everything and start over. Worse, if the agent calls the same expensive tool twice, you pay double. You need:
 
-  * **Checkpointing** — save state after each step, resume on failure
-  * **Tool result caching** — don't call the same API twice
-  * **Activity log** — ordered record of what happened and when
+  * **Checkpointing** - save state after each step, resume on failure
+  * **Tool result caching** - don't call the same API twice
+  * **Activity log** - ordered record of what happened and when
 
 ## Three Valkey Patterns, One Agent
 
@@ -75,8 +75,8 @@ async def cached_tool_call(client, tool_name, args, tool_fn, ttl=300):
         print(f"⚡ Tool cache HIT: {tool_name}")
         return json.loads(cached)
 
-    # Cache miss — call the tool
-    print(f"🔄 Tool cache MISS: {tool_name} — calling...")
+    # Cache miss - call the tool
+    print(f"🔄 Tool cache MISS: {tool_name} - calling...")
     result = tool_fn(**args)
 
     # Store with TTL
@@ -95,7 +95,7 @@ result = await cached_tool_call(
 )
 ```
 
-**Key Insight:** `SET key value EX ttl` is the simplest caching pattern in Valkey. For tool results, the TTL should match how quickly the data goes stale — 5 minutes for web searches, 1 hour for database queries, 24 hours for static lookups.
+**Worth knowing:** `SET key value EX ttl` is the simplest caching pattern in Valkey. For tool results, the TTL should match how quickly the data goes stale - 5 minutes for web searches, 1 hour for database queries, 24 hours for static lookups.
 
 ## Pattern 3: Activity Log with STREAM
 

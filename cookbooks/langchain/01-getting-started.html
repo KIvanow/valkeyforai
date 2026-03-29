@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>01 — Getting Started with LangChain + Valkey — Valkey for AI</title>
+<title>01 - Getting Started with LangChain + Valkey - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../cookbook.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
@@ -30,12 +30,12 @@ pre code.hljs{background:transparent!important;padding:0}
 
 
 <h2>What is LangGraph + Valkey?</h2>
-<p><a href="https://github.com/langchain-ai/langgraph">LangGraph</a> agents are stateless by default — every invocation starts fresh. <code>ValkeySaver</code> from the <code>langgraph-checkpoint-aws</code> package adds persistent checkpointing backed by Valkey:</p>
+<p><a href="https://github.com/langchain-ai/langgraph">LangGraph</a> agents are stateless by default - every invocation starts fresh. <code>ValkeySaver</code> from the <code>langgraph-checkpoint-aws</code> package adds persistent checkpointing backed by Valkey:</p>
 <ul>
-<li><strong>Sub-millisecond reads</strong> — checkpoint retrieval in ~0.1ms</li>
-<li><strong>Atomic writes</strong> — no partial state corruption</li>
-<li><strong>Built-in TTL</strong> — sessions auto-expire, no cleanup jobs</li>
-<li><strong>ElastiCache ready</strong> — same code works locally and in production</li>
+<li><strong>Sub-millisecond reads</strong> - checkpoint retrieval in ~0.1ms</li>
+<li><strong>Atomic writes</strong> - no partial state corruption</li>
+<li><strong>Built-in TTL</strong> - sessions auto-expire, no cleanup jobs</li>
+<li><strong>ElastiCache ready</strong> - same code works locally and in production</li>
 </ul>
 <h2>Step 1: Start Valkey</h2>
 <p>Docker installed and Python 3.10+ required.</p>
@@ -83,7 +83,7 @@ builder.add_node(&quot;chatbot&quot;, chatbot)
 builder.set_entry_point(&quot;chatbot&quot;)
 builder.set_finish_point(&quot;chatbot&quot;)
 
-# 2. Compile with ValkeySaver — this is the key line
+# 2. Compile with ValkeySaver - this is the key line
 with ValkeySaver.from_conn_string(
     &quot;valkey://localhost:6379&quot;,
     ttl_seconds=3600,
@@ -98,7 +98,7 @@ with ValkeySaver.from_conn_string(
     )
     print(result[&quot;messages&quot;][-1].content)
 
-    # 4. Continue the conversation — state is persisted!
+    # 4. Continue the conversation - state is persisted!
     result = graph.invoke(
         {&quot;messages&quot;: [HumanMessage(content=&quot;How fast is it?&quot;)]},
         config,
@@ -107,7 +107,7 @@ with ValkeySaver.from_conn_string(
     print(result[&quot;messages&quot;][-1].content)
 </code></pre>
 <h2>Step 5: Verify Persistence</h2>
-<p>Stop and restart your script — the conversation state is still in Valkey:</p>
+<p>Stop and restart your script - the conversation state is still in Valkey:</p>
 <pre><code class="language-python"># In a NEW Python process:
 with ValkeySaver.from_conn_string(&quot;valkey://localhost:6379&quot;) as checkpointer:
     graph = builder.compile(checkpointer=checkpointer)
@@ -147,13 +147,13 @@ with ValkeySaver.from_conn_string(&quot;valkey://localhost:6379&quot;) as checkp
 <td>~0.1ms</td>
 </tr>
 </tbody></table>
-<p><strong>Source:</strong> <a href="https://github.com/langchain-ai/langgraph-checkpoint-aws"><code>langgraph-checkpoint-aws</code></a> — The official LangGraph checkpointer for Valkey.</p>
+<p><strong>Source:</strong> <a href="https://github.com/langchain-ai/langgraph-checkpoint-aws"><code>langgraph-checkpoint-aws</code></a> - The official LangGraph checkpointer for Valkey.</p>
 <p><a href="02-llm-caching.html">Next: 02 LLM Response Caching →</a></p>
 
 
 <div class="nav-prev-next">
 <div></div>
-<a href="02-llm-caching.html" class="next"><span class="label">Next →</span><span class="title">02 — LLM Caching</span></a>
+<a href="02-llm-caching.html" class="next"><span class="label">Next →</span><span class="title">02 - LLM Caching</span></a>
 </div>
 </article>
 <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg></button>

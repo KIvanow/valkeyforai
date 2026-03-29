@@ -68,7 +68,7 @@ def check_token_limit(
 
 ## Step 3: Dual Limiting (Requests + Tokens)
 
-Most production systems limit **both** — you don't want a user making 10,000 tiny requests either:
+Most production systems limit **both** - you don't want a user making 10,000 tiny requests either:
 
 ```python
 def dual_limit_check(
@@ -111,7 +111,7 @@ def dual_limit_check(
 
 ## Step 4: Estimate Output Tokens
 
-Input tokens are known. Output tokens aren't — but you can **estimate** them and adjust after:
+Input tokens are known. Output tokens aren't - but you can **estimate** them and adjust after:
 
 ```python
 OUTPUT_MULTIPLIERS = {

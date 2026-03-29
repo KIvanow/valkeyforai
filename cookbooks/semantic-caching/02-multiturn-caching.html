@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>02 — Multi-Turn Conversation Caching — Valkey for AI</title>
+<title>02 - Multi-Turn Conversation Caching - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../cookbook.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
@@ -139,7 +139,7 @@ def store_conversation_cache(messages: list, response: str, user_id: str):
             &quot;latency_ms&quot;: round((time.time() - start) * 1000, 1),
         }
 
-    # Cache miss — call LLM
+    # Cache miss - call LLM
     llm = openai_client.chat.completions.create(
         model=&quot;gpt-4&quot;, messages=messages,
     )
@@ -165,7 +165,7 @@ result = chat_with_cache(convo, user_id=&quot;user_123&quot;)
 print(f&quot;Source: {result[&#39;source&#39;]}, Latency: {result[&#39;latency_ms&#39;]}ms&quot;)
 </code></pre>
 <blockquote>
-<p><strong>Why TAG filter?</strong> <code>@user_id:{user_123}</code> ensures User A&#39;s cached conversations don&#39;t leak to User B. The hybrid query (TAG + KNN) runs as a single atomic operation — pre-filters by user, then finds the nearest conversation context.</p>
+<p><strong>Why TAG filter?</strong> <code>@user_id:{user_123}</code> ensures User A&#39;s cached conversations don&#39;t leak to User B. The hybrid query (TAG + KNN) runs as a single atomic operation - pre-filters by user, then finds the nearest conversation context.</p>
 </blockquote>
 <h2>Cache Isolation Strategies</h2>
 <table>
@@ -200,8 +200,8 @@ print(f&quot;Source: {result[&#39;source&#39;]}, Latency: {result[&#39;latency_m
 
 
 <div class="nav-prev-next">
-<a href="01-getting-started.html" class="prev"><span class="label">← Previous</span><span class="title">01 — Getting Started</span></a>
-<a href="03-production.html" class="next"><span class="label">Next →</span><span class="title">03 — Production Patterns</span></a>
+<a href="01-getting-started.html" class="prev"><span class="label">← Previous</span><span class="title">01 - Getting Started</span></a>
+<a href="03-production.html" class="next"><span class="label">Next →</span><span class="title">03 - Production Patterns</span></a>
 </div>
 </article>
 <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg></button>

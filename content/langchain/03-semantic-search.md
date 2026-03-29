@@ -2,9 +2,9 @@
 
 "How do I reset my password?" and "I forgot my password, help!" mean the same thing. Exact-match caching misses this. `ValkeyStore` uses vector similarity to match by meaning:
 
-  * **HNSW index** — approximate nearest neighbor search with 99%+ recall
-  * **Microsecond latency** — vector search in Valkey is sub-millisecond
-  * **Real-time updates** — new vectors are searchable immediately, no rebuild needed
+  * **HNSW index** - approximate nearest neighbor search with 99%+ recall
+  * **Microsecond latency** - vector search in Valkey is sub-millisecond
+  * **Real-time updates** - new vectors are searchable immediately, no rebuild needed
 
 ## Step 1: Configure ValkeyStore
 
@@ -12,7 +12,7 @@
 from langgraph_checkpoint_aws import ValkeyStore
 from langchain_aws import BedrockEmbeddings
 
-# Amazon Titan embeddings — 1536 dimensions
+# Amazon Titan embeddings - 1536 dimensions
 embeddings = BedrockEmbeddings(
     model_id="amazon.titan-embed-text-v2:0",
     region_name="us-west-2",
@@ -37,7 +37,7 @@ store.setup()  # Creates the FT index
 ## Step 2: Store Documents
 
 ```python
-# Store a document — embedding is generated automatically
+# Store a document - embedding is generated automatically
 store.put(
     ("help-desk", "passwords"),  # namespace
     "q1",                          # key
@@ -68,11 +68,11 @@ results = store.search(
 )
 
 for r in results:
-    print(f"Score: {r.score:.3f} — {r.value['text']}")
+    print(f"Score: {r.score:.3f} - {r.value['text']}")
 
 # Output:
-# Score: 0.943 — How do I reset my password?
-# Score: 0.412 — How do I connect to the VPN?
+# Score: 0.943 - How do I reset my password?
+# Score: 0.412 - How do I connect to the VPN?
 ```
 
 **Valkey Commands Fired:**
@@ -124,6 +124,6 @@ store = ValkeyStore.from_conn_string(
 
 ## Next Steps
 
-Now you have all three components: `ValkeySaver` (checkpoints), `ValkeyCache` (exact caching), and `ValkeyStore` (semantic search). Let's wire them all together.
+Now you have all three components: `ValkeySaver` (checkpoints), `ValkeyCache` (exact caching), and `ValkeyStore` (semantic search). Time to wire them all together.
 
-[Next: 04 Full Agent — All Three Components →](<04-full-agent.html>)
+[Next: 04 Full Agent - All Three Components →](<04-full-agent.html>)

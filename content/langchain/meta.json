@@ -12,7 +12,7 @@
       "time": "15 min",
       "next": {
         "file": "02-llm-caching.html",
-        "title": "02 \u2014 LLM Caching"
+        "title": "02 - LLM Caching"
       }
     },
     {
@@ -26,11 +26,11 @@
       "time": "20 min",
       "prev": {
         "file": "01-getting-started.html",
-        "title": "01 \u2014 Getting Started"
+        "title": "01 - Getting Started"
       },
       "next": {
         "file": "03-semantic-search.html",
-        "title": "03 \u2014 Semantic Search"
+        "title": "03 - Semantic Search"
       }
     },
     {
@@ -44,11 +44,11 @@
       "time": "20 min",
       "prev": {
         "file": "02-llm-caching.html",
-        "title": "02 \u2014 LLM Caching"
+        "title": "02 - LLM Caching"
       },
       "next": {
         "file": "04-full-agent.html",
-        "title": "04 \u2014 Full Agent"
+        "title": "04 - Full Agent"
       }
     },
     {
@@ -62,11 +62,11 @@
       "time": "25 min",
       "prev": {
         "file": "03-semantic-search.html",
-        "title": "03 \u2014 Semantic Search"
+        "title": "03 - Semantic Search"
       },
       "next": {
         "file": "05-deploy-elasticache.html",
-        "title": "05 \u2014 Deploy"
+        "title": "05 - Deploy"
       }
     },
     {
@@ -80,7 +80,7 @@
       "time": "20 min",
       "prev": {
         "file": "04-full-agent.html",
-        "title": "04 \u2014 Full Agent"
+        "title": "04 - Full Agent"
       }
     }
   ]

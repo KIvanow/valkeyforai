@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>01 — Context Engineering Fundamentals — Valkey for AI</title>
+<title>01 - Context Engineering Fundamentals - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../cookbook.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
@@ -32,9 +32,9 @@ pre code.hljs{background:transparent!important;padding:0}
 <h2>What is Context Engineering?</h2>
 <p>Context engineering is the discipline of <strong>systematically selecting, structuring, and delivering the right context</strong> to an LLM to improve reliability and performance.</p>
 <p>As Andrej Karpathy (OpenAI founding team) puts it: <em>&quot;Context engineering is the delicate art and science of filling the context window with just the right information for the next step.&quot;</em></p>
-<p>It goes beyond prompt engineering. Prompts are just one input. Context engineering treats context as <strong>infrastructure</strong> — including retrieved knowledge, long-term memory, tool calls, conversation history, and structured formatting.</p>
+<p>It goes beyond prompt engineering. Prompts are just one input. Context engineering treats context as <strong>infrastructure</strong> - including retrieved knowledge, long-term memory, tool calls, conversation history, and structured formatting.</p>
 <blockquote>
-<p><strong>Why this matters for production AI:</strong> Most agent failures are not model failures — they are context failures. The right context, delivered at the right time, is the difference between a useful agent and one that hallucinates.</p>
+<p><strong>Why this matters for production AI:</strong> Most agent failures are not model failures - they are context failures. The right context, delivered at the right time, is the difference between a useful agent and one that hallucinates.</p>
 </blockquote>
 <h2>The 5 Context Sources</h2>
 <p>Every LLM call needs context assembled from up to 5 sources. Valkey can serve as the unified backend for all of them:</p>
@@ -160,7 +160,7 @@ store_tool_output(&quot;sess_001&quot;, 1, &quot;check_order&quot;, {
 <pre><code class="language-python">def remember(user_id: str, key: str, value: str):
     &quot;&quot;&quot;Store a long-term memory about a user.&quot;&quot;&quot;
     client.hset(f&quot;memory:{user_id}&quot;, key, value)
-    # No TTL — persists across sessions
+    # No TTL - persists across sessions
 
 def recall(user_id: str) -&gt; dict:
     &quot;&quot;&quot;Retrieve all memories about a user.&quot;&quot;&quot;
@@ -175,7 +175,7 @@ memories = recall(&quot;alice&quot;)
 print(f&quot;Alice&#39;s memories: {memories}&quot;)
 </code></pre>
 <h2>The Pyramid Approach</h2>
-<p>Structure your context from general to specific — background first, then narrowing to the task:</p>
+<p>Structure your context from general to specific - background first, then narrowing to the task:</p>
 <pre><code class="language-python"># Layer 1: System instructions (broadest)
 # Layer 2: User memory (preferences, history)
 # Layer 3: Retrieved knowledge (relevant docs)
@@ -189,7 +189,7 @@ print(f&quot;Alice&#39;s memories: {memories}&quot;)
 
 <div class="nav-prev-next">
 <div></div>
-<a href="02-assembly-pipeline.html" class="next"><span class="label">Next →</span><span class="title">02 — Context Assembly Pipeline</span></a>
+<a href="02-assembly-pipeline.html" class="next"><span class="label">Next →</span><span class="title">02 - Context Assembly Pipeline</span></a>
 </div>
 </article>
 <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg></button>

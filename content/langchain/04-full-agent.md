@@ -41,10 +41,10 @@ model = ChatBedrockConverse(
 ## Step 2: Initialize All Three Components
 
 ```python
-# 1. Checkpointer — persists conversation state
+# 1. Checkpointer - persists conversation state
 saver = ValkeySaver(client=valkey_client, ttl=3600)
 
-# 2. Semantic store — vector search for cache lookups
+# 2. Semantic store - vector search for cache lookups
 store = ValkeyStore(
     client=valkey_client,
     index={
@@ -58,7 +58,7 @@ store = ValkeyStore(
 )
 store.setup()
 
-# 3. Exact cache — fast key-value cache for repeated prompts
+# 3. Exact cache - fast key-value cache for repeated prompts
 cache = ValkeyCache(client=valkey_client, prefix="llm_cache:", ttl=3600)
 ```
 
@@ -80,7 +80,7 @@ def helpdesk_agent(state: MessagesState):
         cached_answer = hits[0].value["answer"]
         return {"messages": [AIMessage(content=cached_answer)]}
 
-    # 2. Cache miss — call LLM
+    # 2. Cache miss - call LLM
     response = model.invoke(state["messages"])
 
     # 3. Store in semantic cache for future hits
@@ -108,7 +108,7 @@ import time
 
 config = {"configurable": {"thread_id": "user-42"}}
 
-# First question — cache miss, calls LLM
+# First question - cache miss, calls LLM
 t0 = time.time()
 r1 = graph.invoke(
     {"messages": [HumanMessage(content="How do I reset my password?")]},
@@ -116,7 +116,7 @@ r1 = graph.invoke(
 )
 print(f"❌ MISS: {(time.time()-t0)*1000:.0f}ms")
 
-# Paraphrased question — cache hit!
+# Paraphrased question - cache hit!
 t0 = time.time()
 r2 = graph.invoke(
     {"messages": [HumanMessage(content="I forgot my password, help!")]},
@@ -135,7 +135,7 @@ print(f"✅ HIT:  {(time.time()-t0)*1000:.1f}ms")
 # 1. Semantic cache lookup
 FT.SEARCH helpdesk_cache_idx "(*)==>[KNN 1 @embedding $vec]" ...
 
-# 2. (No match — call LLM via Bedrock)
+# 2. (No match - call LLM via Bedrock)
 
 # 3. Store response in semantic cache
 JSON.SET store:helpdesk_cache:helpdesk:a1b2c3d4e5f6 $ '{...}'
@@ -148,6 +148,6 @@ EXPIRE checkpoint:user-42:__empty__:cp_001 3600
 
 ## Next Steps
 
-You now have a complete LangGraph agent with Valkey-backed checkpointing, semantic caching, and vector search. To deploy to production, see the [ElastiCache for Valkey Getting Started guide](<https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.html>) — just swap `valkey://localhost:6379` for `valkeys://your-cluster.amazonaws.com:6379`.
+You now have a complete LangGraph agent with Valkey-backed checkpointing, semantic caching, and vector search. To deploy to production, see the [ElastiCache for Valkey Getting Started guide](<https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.html>) - just swap `valkey://localhost:6379` for `valkeys://your-cluster.amazonaws.com:6379`.
 
 [← Back to LangChain Cookbooks](</cookbooks/langchain/>)

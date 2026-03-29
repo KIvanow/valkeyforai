@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>06 — Production Patterns — Valkey for AI</title>
+<title>06 - Production Patterns - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../cookbook.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
@@ -52,7 +52,7 @@ async def chat(prompt: str, response: Response):
     return await call_llm(prompt)
 </code></pre>
 <h2>Pattern 2: Graceful Degradation</h2>
-<p>Don&#39;t hard-fail — degrade gracefully through model tiers, cache, then queue:</p>
+<p>Don&#39;t hard-fail - degrade gracefully through model tiers, cache, then queue:</p>
 <pre><code class="language-python">async def smart_llm_call(prompt, user_id):
     # Tier 1: Preferred model
     result = limiter.check(user_id, model=&quot;gpt-4&quot;)
@@ -107,13 +107,13 @@ async def chat(prompt: str, response: Response):
 <ul>
 <li><strong>Retry-After headers</strong> on every 429 response</li>
 <li><strong>Circuit breaker</strong> for Valkey connection failures</li>
-<li><strong>Fail-open policy</strong> — never block users because of infra issues</li>
-<li><strong>Graceful degradation</strong> — cheaper models before hard rejection</li>
-<li><strong>Request queuing</strong> — don&#39;t lose requests, queue them</li>
-<li><strong>Observability</strong> — log every allow/deny decision</li>
-<li><strong>Dynamic config</strong> — update limits without redeploying</li>
-<li><strong>Connection pooling</strong> — reuse Valkey connections</li>
-<li><strong>Lua scripts</strong> — atomic check-and-increment for correctness</li>
+<li><strong>Fail-open policy</strong> - never block users because of infra issues</li>
+<li><strong>Graceful degradation</strong> - cheaper models before hard rejection</li>
+<li><strong>Request queuing</strong> - don&#39;t lose requests, queue them</li>
+<li><strong>Observability</strong> - log every allow/deny decision</li>
+<li><strong>Dynamic config</strong> - update limits without redeploying</li>
+<li><strong>Connection pooling</strong> - reuse Valkey connections</li>
+<li><strong>Lua scripts</strong> - atomic check-and-increment for correctness</li>
 </ul>
 <h2>Valkey Configuration</h2>
 <pre><code class="language-python"># valkey.conf optimizations for rate limiting
@@ -123,11 +123,11 @@ hz 100
 tcp-keepalive 300
 timeout 0
 </code></pre>
-<p><strong>Full Series Complete!</strong> You now have everything you need to implement production-grade rate limiting for AI workloads. All code is open source — <a href="https://github.com/meet-bhagdev/valkeyforai/tree/main">clone the repo</a> and start shipping.</p>
+<p><strong>Full Series Complete!</strong> You now have everything you need to implement production-grade rate limiting for AI workloads. All code is open source - <a href="https://github.com/meet-bhagdev/valkeyforai/tree/main">clone the repo</a> and start shipping.</p>
 
 
 <div class="nav-prev-next">
-<a href="05-cost-based.html" class="prev"><span class="label">← Previous</span><span class="title">05 — Cost-Based</span></a>
+<a href="05-cost-based.html" class="prev"><span class="label">← Previous</span><span class="title">05 - Cost-Based</span></a>
 <div></div>
 </div>
 </article>

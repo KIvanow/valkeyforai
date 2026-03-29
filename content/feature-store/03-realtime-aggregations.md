@@ -2,13 +2,13 @@
 
 Traditional feature stores compute aggregations in batch (Spark, Flink) and write results to the online store. But for fraud detection, recommendation ranking, and real-time personalization, you need features that reflect the _last few minutes_ , not the last ETL run. Valkey's atomic data structures make this possible:
 
-  * **Sorted Sets** — Time-windowed event counts and sliding windows
-  * **INCR / INCRBYFLOAT** — Running counts and sums
-  * **HyperLogLog** — Approximate unique counts (cardinality)
+  * **Sorted Sets** - Time-windowed event counts and sliding windows
+  * **INCR / INCRBYFLOAT** - Running counts and sums
+  * **HyperLogLog** - Approximate unique counts (cardinality)
 
 ## Pattern 1: Sliding Window Count
 
-Count events in a sliding time window — e.g., "transactions in the last hour."
+Count events in a sliding time window - e.g., "transactions in the last hour."
 
 We use a **Sorted Set** where each member is a unique event ID and the score is the timestamp:
 
@@ -58,7 +58,7 @@ for i in range(5):
 
 ## Pattern 2: Running Average
 
-Track a rolling average — e.g., "average transaction amount" — using two atomic counters:
+Track a rolling average - e.g., "average transaction amount" - using two atomic counters:
 
 ```python
 def update_running_average(user_id: str, amount: float):
@@ -98,7 +98,7 @@ Pipeline (both + TTL)| 1 round-trip| ~0.2ms
   
 ## Pattern 3: Unique Count (Cardinality)
 
-Count unique values — e.g., "unique merchants this user transacted with in 24h." **HyperLogLog** gives you approximate cardinality using only 12KB of memory per counter:
+Count unique values - e.g., "unique merchants this user transacted with in 24h." **HyperLogLog** gives you approximate cardinality using only 12KB of memory per counter:
 
 ```python
 def record_unique_merchant(user_id: str, merchant_id: str):
@@ -126,7 +126,7 @@ for m in merchants:
 # After amazon: 4 unique merchants   ← duplicate, no change
 ```
 
-**HyperLogLog trade-off:** Uses only 12KB regardless of cardinality (vs. storing all values in a Set). The count has ~0.81% standard error — perfectly acceptable for ML features where approximate cardinality is fine.
+**HyperLogLog trade-off:** Uses only 12KB regardless of cardinality (vs. storing all values in a Set). The count has ~0.81% standard error - perfectly acceptable for ML features where approximate cardinality is fine.
 
 ## Pattern 4: Materialize Aggregations to Feature Store
 
@@ -176,4 +176,4 @@ Running count| String (counter)| `INCR`| ~56 bytes| Exact
 Unique count| HyperLogLog| `PFADD` \+ `PFCOUNT`| 12KB fixed| ~0.81% error  
 Max/Min value| Sorted Set| `ZADD` \+ `ZRANGE`| ~64 bytes/event| Exact  
   
-**What's Next:** Learn how to build real-time streaming feature pipelines with Valkey Streams — publish feature updates from any service and have them materialize instantly.
+**Next up:** Learn how to build real-time streaming feature pipelines with Valkey Streams - publish feature updates from any service and have them materialize instantly.

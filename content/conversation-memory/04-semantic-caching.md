@@ -111,8 +111,8 @@ async def chat_with_cache(client, user_message):
         print(f"⚡ Cache HIT (similarity: {cached['score']:.3f})")
         return cached["response"]
 
-    # 3. Cache miss — call the LLM
-    print("🔄 Cache MISS — calling LLM...")
+    # 3. Cache miss - call the LLM
+    print("🔄 Cache MISS - calling LLM...")
     response = call_llm(user_message)  # your LLM call here
 
     # 4. Store in cache for next time
@@ -123,7 +123,7 @@ async def chat_with_cache(client, user_message):
 
 # First call: cache miss, calls LLM (~2 seconds)
 await chat_with_cache(client, "What is Valkey?")
-# 🔄 Cache MISS — calling LLM...
+# 🔄 Cache MISS - calling LLM...
 
 # Second call: cache hit, instant (~3ms)
 await chat_with_cache(client, "Can you explain Valkey?")
@@ -149,7 +149,7 @@ Metric| Without cache| With semantic cache
 LLM calls / 1000 requests| 1,000| 600  
 Avg latency| ~2,000ms| ~1,200ms  
 Cost (at $0.01/call)| $10.00| $6.00  
-Cache lookup overhead| —| ~3ms  
+Cache lookup overhead| -| ~3ms  
   
 ## Valkey Commands Reference
 
@@ -161,4 +161,4 @@ Set TTL| `EXPIRE llmcache:{id} 3600`| ~0.1ms
 Invalidate entry| `DEL llmcache:{id}`| ~0.1ms  
 Flush all cache| `FT.DROPINDEX cache_idx`| ~1ms  
   
-**What's Next:** We've covered conversation history, session management, semantic memory, and caching. In the final cookbook, we'll add agent state — checkpointing multi-step reasoning and logging tool calls with Valkey Streams.
+**Next up:** We've covered conversation history, session management, semantic memory, and caching. In the final cookbook, we'll add agent state - checkpointing multi-step reasoning and logging tool calls with Valkey Streams.

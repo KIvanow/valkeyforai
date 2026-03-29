@@ -1,11 +1,11 @@
 ## Why Valkey for Conversation Memory?
 
-LLMs are stateless — every API call starts from scratch. Conversation memory bridges the gap. Valkey is ideal because:
+LLMs are stateless - every API call starts from scratch. Conversation memory bridges the gap. Valkey is ideal because:
 
-  * **Sub-millisecond reads** — `LRANGE` returns the last 50 messages in ~0.1ms
-  * **Atomic appends** — `RPUSH` adds messages without race conditions
-  * **Built-in TTL** — Sessions auto-expire with `EXPIRE`, no cleanup jobs needed
-  * **GLIDE client** — Official Valkey client with Rust core for high performance
+  * **Sub-millisecond reads** - `LRANGE` returns the last 50 messages in ~0.1ms
+  * **Atomic appends** - `RPUSH` adds messages without race conditions
+  * **Built-in TTL** - Sessions auto-expire with `EXPIRE`, no cleanup jobs needed
+  * **GLIDE client** - Official Valkey client with Rust core for high performance
 
 ## Prerequisites
 
@@ -31,7 +31,7 @@ docker exec valkey valkey-cli PING
 pip install valkey-glide
 ```
 
-GLIDE is the official Valkey client — Rust core with Python bindings. It works with both standalone Valkey and ElastiCache for Valkey clusters.
+GLIDE is the official Valkey client - Rust core with Python bindings. It works with both standalone Valkey and ElastiCache for Valkey clusters.
 
 ## Step 3: Understand the Data Model
 
@@ -49,7 +49,7 @@ chat:sess_abc123 → [
 ]
 ```
 
-**Key Insight:** Valkey Lists are doubly-linked lists optimized for push/pop at both ends. `RPUSH` appends in O(1). `LRANGE -N -1` retrieves the last N messages in O(N). This maps perfectly to conversation history — always appending, always reading the tail.
+**How this works:** Valkey Lists are doubly-linked lists optimized for push/pop at both ends. `RPUSH` appends in O(1). `LRANGE -N -1` retrieves the last N messages in O(N). This maps perfectly to conversation history - always appending, always reading the tail.
 
 ## Step 4: Connect and Store Messages
 
@@ -78,7 +78,7 @@ async def main():
     for msg in messages:
         await client.rpush(key, [json.dumps(msg)])
 
-    # Set TTL — session expires after 1 hour
+    # Set TTL - session expires after 1 hour
     await client.expire(key, 3600)
 
     print("✅ Conversation stored")
@@ -113,7 +113,7 @@ for msg in history:
 
 ## Step 6: Feed History to an LLM
 
-The conversation history is already in the format LLMs expect — a list of `{"role", "content"}` dicts:
+The conversation history is already in the format LLMs expect - a list of `{"role", "content"}` dicts:
 
 ```python
 import boto3, json
@@ -175,7 +175,7 @@ config = GlideClientConfiguration(
 
 Everything else stays the same. GLIDE handles the connection, TLS, and cluster topology automatically.
 
-**What's Next:** In the next cookbook, we'll add session metadata — tracking user IDs, token counts, and model info alongside the conversation history using Valkey Hashes.
+**Next up:** In the next cookbook, we'll add session metadata - tracking user IDs, token counts, and model info alongside the conversation history using Valkey Hashes.
 
-[ Next → 02 — Session Management ](<02-session-management.html>)
+[ Next → 02 - Session Management ](<02-session-management.html>)
 

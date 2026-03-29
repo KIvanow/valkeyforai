@@ -6,7 +6,7 @@ Keep your cache fresh with TTL, event-driven invalidation, and versioning strate
 
 ## Strategy 1: TTL-Based Expiration
 
-The simplest approach — let entries expire automatically:
+The simplest approach - let entries expire automatically:
 
 ```bash
 # Set TTL when storing

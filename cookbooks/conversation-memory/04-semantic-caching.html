@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>04 — Semantic Caching — Valkey for AI</title>
+<title>04 - Semantic Caching - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../cookbook.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
@@ -126,8 +126,8 @@ async def cache_lookup(client, query_embedding):
         print(f&quot;⚡ Cache HIT (similarity: {cached[&#39;score&#39;]:.3f})&quot;)
         return cached[&quot;response&quot;]
 
-    # 3. Cache miss — call the LLM
-    print(&quot;🔄 Cache MISS — calling LLM...&quot;)
+    # 3. Cache miss - call the LLM
+    print(&quot;🔄 Cache MISS - calling LLM...&quot;)
     response = call_llm(user_message)  # your LLM call here
 
     # 4. Store in cache for next time
@@ -138,7 +138,7 @@ async def cache_lookup(client, query_embedding):
 
 # First call: cache miss, calls LLM (~2 seconds)
 await chat_with_cache(client, &quot;What is Valkey?&quot;)
-# 🔄 Cache MISS — calling LLM...
+# 🔄 Cache MISS - calling LLM...
 
 # Second call: cache hit, instant (~3ms)
 await chat_with_cache(client, &quot;Can you explain Valkey?&quot;)
@@ -197,7 +197,7 @@ await chat_with_cache(client, &quot;Can you explain Valkey?&quot;)
 </tr>
 <tr>
 <td>Cache lookup overhead</td>
-<td>—</td>
+<td>-</td>
 <td>~3ms</td>
 </tr>
 </tbody></table>
@@ -236,12 +236,12 @@ await chat_with_cache(client, &quot;Can you explain Valkey?&quot;)
 <td>~1ms</td>
 </tr>
 </tbody></table>
-<p><strong>What&#39;s Next:</strong> We&#39;ve covered conversation history, session management, semantic memory, and caching. In the final cookbook, we&#39;ll add agent state — checkpointing multi-step reasoning and logging tool calls with Valkey Streams.</p>
+<p><strong>Next up:</strong> We&#39;ve covered conversation history, session management, semantic memory, and caching. In the final cookbook, we&#39;ll add agent state - checkpointing multi-step reasoning and logging tool calls with Valkey Streams.</p>
 
 
 <div class="nav-prev-next">
-<a href="03-semantic-memory.html" class="prev"><span class="label">← Previous</span><span class="title">03 — Semantic Memory</span></a>
-<a href="05-agent-state.html" class="next"><span class="label">Next →</span><span class="title">05 — Agent State</span></a>
+<a href="03-semantic-memory.html" class="prev"><span class="label">← Previous</span><span class="title">03 - Semantic Memory</span></a>
+<a href="05-agent-state.html" class="next"><span class="label">Next →</span><span class="title">05 - Agent State</span></a>
 </div>
 </article>
 <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg></button>

@@ -1,6 +1,6 @@
 ## Why Hybrid Search?
 
-Pure vector search returns the most similar items globally. But often you need to filter first — "find similar articles, but only in the _tech_ category" or "similar products under $50." Hybrid search lets you combine vector KNN with traditional filters in a single query.
+Pure vector search returns the most similar items globally. But often you need to filter first - "find similar articles, but only in the _tech_ category" or "similar products under $50." Hybrid search lets you combine vector KNN with traditional filters in a single query.
 
 ## Step 1: Create an Index with Multiple Field Types
 
@@ -84,7 +84,7 @@ for i in range(1, len(results), 2):
     fd = {fields[j]: fields[j+1] for j in range(0, len(fields), 2)}
     print(f"  {results[i]}: {fd.get('title')} [{fd.get('category')}]")
 
-# Only returns tech articles — food and finance are excluded!
+# Only returns tech articles - food and finance are excluded!
 ```
 
 ## Step 4: NUMERIC Range + Vector Search

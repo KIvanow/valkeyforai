@@ -44,7 +44,7 @@ try:
         "DIM", "3",
         "DISTANCE_METRIC", "COSINE",
     )
-    print("Index created!")
+    print("Index created.")
 except valkey.ResponseError as e:
     print(f"Index may already exist: {e}")
 ```
@@ -82,7 +82,7 @@ print(f"Stored {len(documents)} documents")
 ## Step 5: Run a KNN Search
 
 ```python
-# Query vector — find documents similar to this
+# Query vector - find documents similar to this
 query_vec = vec_to_bytes([0.12, 0.22, 0.88])
 
 # FT.SEARCH with KNN query
@@ -147,4 +147,4 @@ Drop index| `FT.DROPINDEX idx`| Removes index (not data)
   
 **Important:** Vectors MUST be binary FLOAT32 data, not strings. Always use `np.array(vec, dtype=np.float32).tobytes()` or `struct.pack(f'{len(vec)}f', *vec)` to serialize.
 
-[Next →02 — Semantic Search with Embeddings](<02-semantic-search.html>)
+[Next →02 - Semantic Search with Embeddings](<02-semantic-search.html>)

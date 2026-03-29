@@ -16,7 +16,7 @@ If your feature lookup takes 50ms, your entire prediction pipeline is bottleneck
 
 ## Pattern 1: Single Entity Lookup
 
-The simplest pattern — fetch all features for one entity:
+The simplest pattern - fetch all features for one entity:
 
 ### Raw Valkey: HGETALL
 
@@ -90,7 +90,7 @@ print(f"Fetched features for {len(batch)} entities")
 ### With the Library
 
 ```python
-# Batch read — uses pipeline internally
+# Batch read - uses pipeline internally
 entity_ids = [f"user_{i:03d}" for i in range(100)]
 batch = store.read_batch("user_profile", entity_ids)
 
@@ -135,7 +135,7 @@ vector = store.get_feature_vector(
 #  'user_risk_profile__fraud_score': 0.05, 'user_risk_profile__txn_count_24h': 12}
 ```
 
-**Key Insight:** `get_feature_vector()` groups the feature references by view, then uses `HMGET` for each view in a single pipeline. One round-trip fetches from all views, regardless of how many.
+**Why this is fast:** `get_feature_vector()` groups the feature references by view, then uses `HMGET` for each view in a single pipeline. One round-trip fetches from all views, regardless of how many.
 
 ## Latency Benchmarks
 
@@ -164,4 +164,4 @@ ttl = client.ttl("fs:v1:user_profile:user_123")
 print(f"Expires in {ttl} seconds")
 ```
 
-**What's Next:** Learn how to compute real-time aggregation features (sliding window counts, rolling averages, cardinality) directly in Valkey.
+**Next up:** Learn how to compute real-time aggregation features (sliding window counts, rolling averages, cardinality) directly in Valkey.

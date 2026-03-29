@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>03 — Managing Your ValkeySession Store — Strands — Valkey for AI</title>
+<title>03 - Managing Your ValkeySession Store - Strands - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../cookbook.css">
 </head>
@@ -21,7 +21,7 @@
 <p class="lead">Delete sessions on logout, query raw keys to see exactly what's in Valkey, and share a single session across multiple agents in an orchestrator pattern.</p>
 
 <h2>Share a Session Across Multiple Agents</h2>
-<p>A single session can hold state for multiple agents — each gets its own agent key and message keys under the same session ID. This is the foundation for orchestrator/subagent patterns where agents need to share context:</p>
+<p>A single session can hold state for multiple agents - each gets its own agent key and message keys under the same session ID. This is the foundation for orchestrator/subagent patterns where agents need to share context:</p>
 <pre><code><span class="keyword">from</span> strands <span class="keyword">import</span> Agent
 <span class="keyword">from</span> strands_valkey_session_manager <span class="keyword">import</span> ValkeySessionManager
 
@@ -49,7 +49,7 @@ writer(<span class="string">"Write a short blog intro about Valkey for AI."</spa
 <span class="comment"># session:workflow-001:agent:writer:message:&lt;id&gt;</span></code></pre>
 
 <h2>Clean Up on Logout</h2>
-<p>Call <code>delete_session()</code> to remove all keys for a session — the session record, agent state, and every message — in one call:</p>
+<p>Call <code>delete_session()</code> to remove all keys for a session - the session record, agent state, and every message - in one call:</p>
 <pre><code><span class="keyword">import</span> valkey
 <span class="keyword">from</span> strands_valkey_session_manager <span class="keyword">import</span> ValkeySessionManager
 
@@ -76,7 +76,7 @@ keys = client.keys(<span class="string">"session:user-42*"</span>)
 <div class="nav-prev-next">
 <a href="02-session-internals.html" class="prev">
 <span class="label">← Previous</span>
-<span class="title">02 — Managing Session Data</span>
+<span class="title">02 - Managing Session Data</span>
 </a>
 <div></div>
 </div>

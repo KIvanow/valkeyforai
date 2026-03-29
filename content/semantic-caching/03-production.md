@@ -7,7 +7,7 @@ The threshold controls the trade-off between hit rate and answer quality:
 | `0.05` (very strict) | Low (~20%) | Very low | Medical, legal, financial |
 | `0.15` (balanced) | Medium (~50%) | Low | General chatbots |
 | `0.30` (relaxed) | High (~70%) | Medium | FAQ bots, support |
-| `0.50` (very relaxed) | Very high (~85%) | High — stale answers | Not recommended |
+| `0.50` (very relaxed) | Very high (~85%) | High - stale answers | Not recommended |
 
 ```python
 # Test different thresholds to find the right balance
@@ -73,18 +73,18 @@ def get_cache_stats() -> dict:
 ## Pattern 3: TTL Strategies
 
 ```python
-# Strategy 1: Fixed TTL — simple, predictable
+# Strategy 1: Fixed TTL - simple, predictable
 client.expire(cache_key, 3600)  # 1 hour
 
 # Strategy 2: Category-based TTL
 TTL_MAP = {
-    "factual": 86400,      # 24h — facts don't change fast
-    "opinion": 3600,       # 1h — opinions evolve
-    "real-time": 300,      # 5 min — stock prices, weather
-    "conversation": 1800,  # 30 min — chat context
+    "factual": 86400,      # 24h - facts don't change fast
+    "opinion": 3600,       # 1h - opinions evolve
+    "real-time": 300,      # 5 min - stock prices, weather
+    "conversation": 1800,  # 30 min - chat context
 }
 
-# Strategy 3: Sliding TTL — reset on each hit
+# Strategy 3: Sliding TTL - reset on each hit
 def cache_hit_with_refresh(cache_key: str, ttl: int = 3600):
     """On cache hit, refresh the TTL to keep popular entries alive."""
     response = client.hget(cache_key, "response")
@@ -100,7 +100,7 @@ def cache_hit_with_refresh(cache_key: str, ttl: int = 3600):
 # maxmemory 1gb
 # maxmemory-policy allkeys-lru
 #
-# LRU = Least Recently Used — evicts least-accessed cache entries first
+# LRU = Least Recently Used - evicts least-accessed cache entries first
 # This is ideal for semantic caching where popular queries should stay
 
 # Check memory usage

@@ -2,10 +2,10 @@
 
 [CrewAI](https://github.com/crewAIInc/crewAI) is a framework for orchestrating multi-agent AI systems. Agents need persistent memory to learn across executions. Valkey provides the memory backend:
 
-  * **Sub-millisecond reads** — memory recall in ~0.1ms via GLIDE
-  * **Vector search** — `FT.SEARCH` with HNSW for semantic recall
-  * **JSON storage** — `JSON.SET` stores structured memory records natively
-  * **TTL** — memories auto-expire with `EXPIRE`
+  * **Sub-millisecond reads** - memory recall in ~0.1ms via GLIDE
+  * **Vector search** - `FT.SEARCH` with HNSW for semantic recall
+  * **JSON storage** - `JSON.SET` stores structured memory records natively
+  * **TTL** - memories auto-expire with `EXPIRE`
 
 ## Step 1: Start Valkey
 

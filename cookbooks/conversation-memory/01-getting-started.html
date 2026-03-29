@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>01 — Getting Started with Conversation Memory — Valkey for AI</title>
+<title>01 - Getting Started with Conversation Memory - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../cookbook.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
@@ -30,12 +30,12 @@ pre code.hljs{background:transparent!important;padding:0}
 
 
 <h2>Why Valkey for Conversation Memory?</h2>
-<p>LLMs are stateless — every API call starts from scratch. Conversation memory bridges the gap. Valkey is ideal because:</p>
+<p>LLMs are stateless - every API call starts from scratch. Conversation memory bridges the gap. Valkey is ideal because:</p>
 <ul>
-<li><strong>Sub-millisecond reads</strong> — <code>LRANGE</code> returns the last 50 messages in ~0.1ms</li>
-<li><strong>Atomic appends</strong> — <code>RPUSH</code> adds messages without race conditions</li>
-<li><strong>Built-in TTL</strong> — Sessions auto-expire with <code>EXPIRE</code>, no cleanup jobs needed</li>
-<li><strong>GLIDE client</strong> — Official Valkey client with Rust core for high performance</li>
+<li><strong>Sub-millisecond reads</strong> - <code>LRANGE</code> returns the last 50 messages in ~0.1ms</li>
+<li><strong>Atomic appends</strong> - <code>RPUSH</code> adds messages without race conditions</li>
+<li><strong>Built-in TTL</strong> - Sessions auto-expire with <code>EXPIRE</code>, no cleanup jobs needed</li>
+<li><strong>GLIDE client</strong> - Official Valkey client with Rust core for high performance</li>
 </ul>
 <h2>Prerequisites</h2>
 <ul>
@@ -52,7 +52,7 @@ pre code.hljs{background:transparent!important;padding:0}
 <h2>Step 2: Install GLIDE</h2>
 <pre><code class="language-bash">pip install valkey-glide
 </code></pre>
-<p>GLIDE is the official Valkey client — Rust core with Python bindings. It works with both standalone Valkey and ElastiCache for Valkey clusters.</p>
+<p>GLIDE is the official Valkey client - Rust core with Python bindings. It works with both standalone Valkey and ElastiCache for Valkey clusters.</p>
 <h2>Step 3: Understand the Data Model</h2>
 <p>Each conversation is stored as a <strong>Valkey List</strong> :</p>
 <pre><code class="language-python"># Key format: chat:{session_id}
@@ -65,7 +65,7 @@ chat:sess_abc123 → [
     &#39;{&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: &quot;Sub-millisecond latency...&quot;}&#39;
 ]
 </code></pre>
-<p><strong>Key Insight:</strong> Valkey Lists are doubly-linked lists optimized for push/pop at both ends. <code>RPUSH</code> appends in O(1). <code>LRANGE -N -1</code> retrieves the last N messages in O(N). This maps perfectly to conversation history — always appending, always reading the tail.</p>
+<p><strong>How this works:</strong> Valkey Lists are doubly-linked lists optimized for push/pop at both ends. <code>RPUSH</code> appends in O(1). <code>LRANGE -N -1</code> retrieves the last N messages in O(N). This maps perfectly to conversation history - always appending, always reading the tail.</p>
 <h2>Step 4: Connect and Store Messages</h2>
 <pre><code class="language-python">import asyncio
 import json
@@ -91,7 +91,7 @@ async def main():
     for msg in messages:
         await client.rpush(key, [json.dumps(msg)])
 
-    # Set TTL — session expires after 1 hour
+    # Set TTL - session expires after 1 hour
     await client.expire(key, 3600)
 
     print(&quot;✅ Conversation stored&quot;)
@@ -121,7 +121,7 @@ for msg in history:
 # assistant: Sub-millisecond latency for most operations.
 </code></pre>
 <h2>Step 6: Feed History to an LLM</h2>
-<p>The conversation history is already in the format LLMs expect — a list of <code>{&quot;role&quot;, &quot;content&quot;}</code> dicts:</p>
+<p>The conversation history is already in the format LLMs expect - a list of <code>{&quot;role&quot;, &quot;content&quot;}</code> dicts:</p>
 <pre><code class="language-python">import boto3, json
 
 async def chat(client, session_id, user_message):
@@ -204,13 +204,13 @@ config = GlideClientConfiguration(
 )
 </code></pre>
 <p>Everything else stays the same. GLIDE handles the connection, TLS, and cluster topology automatically.</p>
-<p><strong>What&#39;s Next:</strong> In the next cookbook, we&#39;ll add session metadata — tracking user IDs, token counts, and model info alongside the conversation history using Valkey Hashes.</p>
-<p><a href="02-session-management.html"> Next → 02 — Session Management </a></p>
+<p><strong>Next up:</strong> In the next cookbook, we&#39;ll add session metadata - tracking user IDs, token counts, and model info alongside the conversation history using Valkey Hashes.</p>
+<p><a href="02-session-management.html"> Next → 02 - Session Management </a></p>
 
 
 <div class="nav-prev-next">
 <div></div>
-<a href="02-session-management.html" class="next"><span class="label">Next →</span><span class="title">02 — Sessions</span></a>
+<a href="02-session-management.html" class="next"><span class="label">Next →</span><span class="title">02 - Sessions</span></a>
 </div>
 </article>
 <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg></button>

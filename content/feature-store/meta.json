@@ -12,7 +12,7 @@
       "time": "15 min",
       "next": {
         "file": "02-online-serving.html",
-        "title": "02 \u2014 Online Serving"
+        "title": "02 - Online Serving"
       }
     },
     {
@@ -26,11 +26,11 @@
       "time": "20 min",
       "prev": {
         "file": "01-getting-started.html",
-        "title": "01 \u2014 Getting Started"
+        "title": "01 - Getting Started"
       },
       "next": {
         "file": "03-realtime-aggregations.html",
-        "title": "03 \u2014 Aggregations"
+        "title": "03 - Aggregations"
       }
     },
     {
@@ -44,11 +44,11 @@
       "time": "20 min",
       "prev": {
         "file": "02-online-serving.html",
-        "title": "02 \u2014 Online Serving"
+        "title": "02 - Online Serving"
       },
       "next": {
         "file": "04-streaming-updates.html",
-        "title": "04 \u2014 Streaming"
+        "title": "04 - Streaming"
       }
     },
     {
@@ -62,11 +62,11 @@
       "time": "20 min",
       "prev": {
         "file": "03-realtime-aggregations.html",
-        "title": "03 \u2014 Aggregations"
+        "title": "03 - Aggregations"
       },
       "next": {
         "file": "05-ml-integration.html",
-        "title": "05 \u2014 ML Integration"
+        "title": "05 - ML Integration"
       }
     },
     {
@@ -80,11 +80,11 @@
       "time": "25 min",
       "prev": {
         "file": "04-streaming-updates.html",
-        "title": "04 \u2014 Streaming"
+        "title": "04 - Streaming"
       },
       "next": {
         "file": "06-production.html",
-        "title": "06 \u2014 Production"
+        "title": "06 - Production"
       }
     },
     {
@@ -98,7 +98,7 @@
       "time": "25 min",
       "prev": {
         "file": "05-ml-integration.html",
-        "title": "05 \u2014 ML Integration"
+        "title": "05 - ML Integration"
       }
     }
   ]

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Conversation Memory Cookbooks — Valkey for AI</title>
+<title>Conversation Memory Cookbooks - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -46,10 +46,10 @@ h1 .gradient{background:linear-gradient(135deg,var(--g1),var(--g2));-webkit-back
 <div class="container">
 <div class="breadcrumb"><a href="/">Home</a> → <a href="/#frameworks">Frameworks</a> → Conversation Memory</div>
 <h1>Conversation Memory + <span class="gradient">Valkey</span></h1>
-<p class="subtitle">5 cookbooks covering every aspect of conversation memory with Valkey — from basic chat history to semantic search, caching, and agent state management.</p>
+<p class="subtitle">5 cookbooks covering every aspect of conversation memory with Valkey - from basic chat history to semantic search, caching, and agent state management.</p>
 <div class="cookbook-list">
 <a class="cb-card" href="01-getting-started.html"><div class="cb-num">01</div><div class="cb-content"><h3>Getting Started</h3><p>Connect with GLIDE, store chat messages in a LIST, retrieve conversation history, and auto-expire sessions with TTL.</p><div class="cb-tags"><span>Beginner</span><span>~15 min</span><span>Python</span></div></div></a>
-<a class="cb-card" href="02-session-management.html"><div class="cb-num">02</div><div class="cb-content"><h3>Session Management</h3><p>Track session metadata with HASH — user ID, model, token count, timestamps. List active sessions and implement sliding window history.</p><div class="cb-tags"><span>Intermediate</span><span>~15 min</span><span>Python</span></div></div></a>
+<a class="cb-card" href="02-session-management.html"><div class="cb-num">02</div><div class="cb-content"><h3>Session Management</h3><p>Track session metadata with HASH - user ID, model, token count, timestamps. List active sessions and implement sliding window history.</p><div class="cb-tags"><span>Intermediate</span><span>~15 min</span><span>Python</span></div></div></a>
 <a class="cb-card" href="03-semantic-memory.html"><div class="cb-num">03</div><div class="cb-content"><h3>Semantic Memory</h3><p>Store conversation embeddings with JSON.SET and search by meaning with FT.SEARCH KNN. Find relevant past context across all sessions.</p><div class="cb-tags"><span>Intermediate</span><span>~20 min</span><span>Python</span></div></div></a>
 <a class="cb-card" href="04-semantic-caching.html"><div class="cb-num">04</div><div class="cb-content"><h3>Semantic Caching</h3><p>Cache LLM responses by meaning, not exact match. Skip expensive API calls when a similar question was already answered.</p><div class="cb-tags"><span>Advanced</span><span>~20 min</span><span>Python</span></div></div></a>
 <a class="cb-card" href="05-agent-state.html"><div class="cb-num">05</div><div class="cb-content"><h3>Agent State &amp; Tool Results</h3><p>Checkpoint agent reasoning with HASH, log tool calls to STREAM, and resume multi-step workflows after interruption.</p><div class="cb-tags"><span>Advanced</span><span>~25 min</span><span>Python</span></div></div></a>

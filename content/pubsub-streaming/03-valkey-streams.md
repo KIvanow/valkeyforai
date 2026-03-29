@@ -3,7 +3,7 @@
 Feature| Pub/Sub| Streams  
 ---|---|---  
 Durability| Ephemeral| Persistent until trimmed  
-Replay| No| Yes — XRANGE  
+Replay| No| Yes - XRANGE  
 Consumer groups| No| Yes  
 Ordering| No guarantees| Strict by ID  
 Backpressure| None| MAXLEN trimming  
@@ -14,7 +14,7 @@ Backpressure| None| MAXLEN trimming
 import valkey, json, time
 client = valkey.Valkey(host="localhost", port=6379, decode_responses=True)
 
-# XADD — append to stream
+# XADD - append to stream
 entry_id = client.xadd("ai:tasks", {
     "type": "embedding",
     "text": "Hello world",
@@ -29,16 +29,16 @@ client.xadd("ai:tasks", {"type": "completion"}, maxlen=10000)
 ## Step 2: Read Messages
 
 ```python
-# XREAD — blocking read for new messages
+# XREAD - blocking read for new messages
 entries = client.xread({"ai:tasks": "0-0"}, count=10, block=5000)
 for stream, messages in entries:
     for msg_id, data in messages:
         print(f"[{msg_id}] {data}")
 
-# XRANGE — replay from beginning
+# XRANGE - replay from beginning
 messages = client.xrange("ai:tasks", min="-", max="+", count=5)
 
-# XREVRANGE — newest first
+# XREVRANGE - newest first
 latest = client.xrevrange("ai:tasks", max="+", min="-", count=1)
 ```
 

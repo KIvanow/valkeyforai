@@ -41,18 +41,18 @@ memory.add(
     user_id="bob",
 )
 
-# Search for Alice — only gets Alice's memories
+# Search for Alice - only gets Alice's memories
 alice_results = memory.search("What are the user preferences?", user_id="alice")
 print("Alice:", [r["memory"] for r in alice_results["results"]])
 # Alice: ['Prefers dark mode and Python']
 
-# Search for Bob — only gets Bob's memories
+# Search for Bob - only gets Bob's memories
 bob_results = memory.search("What are the user preferences?", user_id="bob")
 print("Bob:", [r["memory"] for r in bob_results["results"]])
 # Bob: ['Uses TypeScript and likes light mode']
 ```
 
-**How isolation works:** In Valkey, each memory is stored as a Hash with a `user_id` TAG field. When you search with `user_id="alice"`, Mem0 adds a TAG filter `@user_id:{alice}` to the `FT.SEARCH` query — ensuring Bob's memories are never returned.
+**How isolation works:** In Valkey, each memory is stored as a Hash with a `user_id` TAG field. When you search with `user_id="alice"`, Mem0 adds a TAG filter `@user_id:{alice}` to the `FT.SEARCH` query - ensuring Bob's memories are never returned.
 
 ## Step 3: Per-Agent Memories
 

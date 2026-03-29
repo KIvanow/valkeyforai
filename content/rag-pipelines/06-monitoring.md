@@ -161,7 +161,7 @@ Search Latency p99| >50ms| >200ms
 Memory Usage| >75%| >90%  
 Error Rate| >1%| >5%  
   
-### 🎉 Cookbook Complete!
+### 🎉 Cookbook Complete
 
 You've learned the fundamentals of RAG with Valkey. Ready to build?
 

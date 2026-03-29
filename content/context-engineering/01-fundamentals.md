@@ -4,9 +4,9 @@ Context engineering is the discipline of **systematically selecting, structuring
 
 As Andrej Karpathy (OpenAI founding team) puts it: *"Context engineering is the delicate art and science of filling the context window with just the right information for the next step."*
 
-It goes beyond prompt engineering. Prompts are just one input. Context engineering treats context as **infrastructure** — including retrieved knowledge, long-term memory, tool calls, conversation history, and structured formatting.
+It goes beyond prompt engineering. Prompts are just one input. Context engineering treats context as **infrastructure** - including retrieved knowledge, long-term memory, tool calls, conversation history, and structured formatting.
 
-> **Why this matters for production AI:** Most agent failures are not model failures — they are context failures. The right context, delivered at the right time, is the difference between a useful agent and one that hallucinates.
+> **Why this matters for production AI:** Most agent failures are not model failures - they are context failures. The right context, delivered at the right time, is the difference between a useful agent and one that hallucinates.
 
 ## The 5 Context Sources
 
@@ -115,7 +115,7 @@ store_tool_output("sess_001", 1, "check_order", {
 def remember(user_id: str, key: str, value: str):
     """Store a long-term memory about a user."""
     client.hset(f"memory:{user_id}", key, value)
-    # No TTL — persists across sessions
+    # No TTL - persists across sessions
 
 def recall(user_id: str) -> dict:
     """Retrieve all memories about a user."""
@@ -132,7 +132,7 @@ print(f"Alice's memories: {memories}")
 
 ## The Pyramid Approach
 
-Structure your context from general to specific — background first, then narrowing to the task:
+Structure your context from general to specific - background first, then narrowing to the task:
 
 ```python
 # Layer 1: System instructions (broadest)

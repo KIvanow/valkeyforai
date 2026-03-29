@@ -12,7 +12,7 @@
       "time": "15 min",
       "next": {
         "file": "02-semantic-search.html",
-        "title": "02 \u2014 Semantic Search"
+        "title": "02 - Semantic Search"
       }
     },
     {
@@ -26,11 +26,11 @@
       "time": "20 min",
       "prev": {
         "file": "01-getting-started.html",
-        "title": "01 \u2014 Getting Started"
+        "title": "01 - Getting Started"
       },
       "next": {
         "file": "03-hybrid-search.html",
-        "title": "03 \u2014 Hybrid Search"
+        "title": "03 - Hybrid Search"
       }
     },
     {
@@ -44,7 +44,7 @@
       "time": "20 min",
       "prev": {
         "file": "02-semantic-search.html",
-        "title": "02 \u2014 Semantic Search"
+        "title": "02 - Semantic Search"
       }
     }
   ]

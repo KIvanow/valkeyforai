@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>01 — Getting Started with Strands + Valkey — Valkey for AI</title>
+<title>01 - Getting Started with Strands + Valkey - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../cookbook.css">
 </head>
@@ -18,7 +18,7 @@
 <div class="meta"><span class="diff-easy">Beginner</span><span class="lang">Python</span><span class="lang">~15 min</span></div>
 
 <h1>Getting <span class="gradient">Started</span></h1>
-<p class="lead">Use the official <code>strands-valkey-session-manager</code> community package to give your Strands agent persistent conversation history, session metadata, and agent state — backed by Valkey.</p>
+<p class="lead">Use the official <code>strands-valkey-session-manager</code> community package to give your Strands agent persistent conversation history, session metadata, and agent state - backed by Valkey.</p>
 
 <p>The <code>strands-valkey-session-manager</code> package provides a ready-to-use <code>ValkeySessionManager</code> that plugs directly into Strands' <code>Agent(session_manager=...)</code> parameter. No custom implementation needed.</p>
 
@@ -27,7 +27,7 @@
 <table>
 <tr><th>Data</th><th>Key Pattern</th><th>Description</th></tr>
 <tr><td>Session Record</td><td><code>session:{id}</code></td><td>Top-level record for a conversation. Tracks when the session was created and last updated.</td></tr>
-<tr><td>Agent State</td><td><code>session:{id}:agent:{agent_id}</code></td><td>Per-agent record within a session. Tracks message count and interrupt state — used to resume the agent exactly where it left off.</td></tr>
+<tr><td>Agent State</td><td><code>session:{id}:agent:{agent_id}</code></td><td>Per-agent record within a session. Tracks message count and interrupt state - used to resume the agent exactly where it left off.</td></tr>
 <tr><td>Conversation Messages</td><td><code>session:{id}:agent:{agent_id}:message:{msg_id}</code></td><td>A single turn in the conversation. Stores the role (user or assistant), content, any tool calls or results, and a timestamp.</td></tr>
 </table>
 
@@ -59,7 +59,7 @@ pip install strands-valkey-session-manager</code></pre>
 <span class="comment"># Connect to Valkey</span>
 client = valkey.Valkey(host=<span class="string">"localhost"</span>, port=<span class="num">6379</span>, decode_responses=<span class="keyword">True</span>)
 
-<span class="comment"># Create the session manager — one per session</span>
+<span class="comment"># Create the session manager - one per session</span>
 session_manager = ValkeySessionManager(
     session_id=<span class="string">"user-42"</span>,
     client=client,
@@ -81,7 +81,7 @@ print(response)</code></pre>
 <div></div>
 <a href="02-session-internals.html" class="next">
 <span class="label">Next →</span>
-<span class="title">02 — Managing Session Data</span>
+<span class="title">02 - Managing Session Data</span>
 </a>
 </div>
 </article>

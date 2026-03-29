@@ -207,7 +207,7 @@ pool = valkey.ConnectionPool(
     retry_on_timeout=True,
 )
 
-# Create client from pool (cheap — reuses connections)
+# Create client from pool (cheap - reuses connections)
 client = valkey.Valkey(connection_pool=pool)
 
 # Use with the feature store library
@@ -219,7 +219,7 @@ print(f"Pool connections: {len(pool._available_connections)}")
 
 ## Pattern 5: Error Handling & Fallbacks
 
-Handle Valkey failures gracefully — don't let a cache miss crash your prediction:
+Handle Valkey failures gracefully - don't let a cache miss crash your prediction:
 
 ```python
 def safe_read_features(store, view_name: str, entity_id: str, defaults: dict = None):
@@ -229,10 +229,10 @@ def safe_read_features(store, view_name: str, entity_id: str, defaults: dict = N
         if features:
             return features
     except redis.ConnectionError:
-        # Valkey is down — use defaults
+        # Valkey is down - use defaults
         print(f"⚠️ Valkey connection error, using defaults")
     except redis.TimeoutError:
-        # Valkey is slow — use defaults
+        # Valkey is slow - use defaults
         print(f"⚠️ Valkey timeout, using defaults")
     except Exception as e:
         print(f"⚠️ Unexpected error: {e}")

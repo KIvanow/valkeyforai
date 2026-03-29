@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>02 — Online Feature Serving — Valkey for AI</title>
+<title>02 - Online Feature Serving - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../cookbook.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
@@ -41,7 +41,7 @@ user_id = &quot;user_123&quot;
 </code></pre>
 <p>If your feature lookup takes 50ms, your entire prediction pipeline is bottlenecked. Valkey gives you ~0.1ms.</p>
 <h2>Pattern 1: Single Entity Lookup</h2>
-<p>The simplest pattern — fetch all features for one entity:</p>
+<p>The simplest pattern - fetch all features for one entity:</p>
 <h3>Raw Valkey: HGETALL</h3>
 <pre><code class="language-python">import valkey
 
@@ -97,7 +97,7 @@ for eid, raw in zip(entity_ids, results):
 print(f&quot;Fetched features for {len(batch)} entities&quot;)
 </code></pre>
 <h3>With the Library</h3>
-<pre><code class="language-python"># Batch read — uses pipeline internally
+<pre><code class="language-python"># Batch read - uses pipeline internally
 entity_ids = [f&quot;user_{i:03d}&quot; for i in range(100)]
 batch = store.read_batch(&quot;user_profile&quot;, entity_ids)
 
@@ -133,7 +133,7 @@ vector = store.get_feature_vector(
 # {&#39;user_profile__age&#39;: 28, &#39;user_profile__lifetime_value&#39;: 1250.5,
 #  &#39;user_risk_profile__fraud_score&#39;: 0.05, &#39;user_risk_profile__txn_count_24h&#39;: 12}
 </code></pre>
-<p><strong>Key Insight:</strong> <code>get_feature_vector()</code> groups the feature references by view, then uses <code>HMGET</code> for each view in a single pipeline. One round-trip fetches from all views, regardless of how many.</p>
+<p><strong>Why this is fast:</strong> <code>get_feature_vector()</code> groups the feature references by view, then uses <code>HMGET</code> for each view in a single pipeline. One round-trip fetches from all views, regardless of how many.</p>
 <h2>Latency Benchmarks</h2>
 <table>
 <thead>
@@ -193,12 +193,12 @@ pipe.execute()
 ttl = client.ttl(&quot;fs:v1:user_profile:user_123&quot;)
 print(f&quot;Expires in {ttl} seconds&quot;)
 </code></pre>
-<p><strong>What&#39;s Next:</strong> Learn how to compute real-time aggregation features (sliding window counts, rolling averages, cardinality) directly in Valkey.</p>
+<p><strong>Next up:</strong> Learn how to compute real-time aggregation features (sliding window counts, rolling averages, cardinality) directly in Valkey.</p>
 
 
 <div class="nav-prev-next">
-<a href="01-getting-started.html" class="prev"><span class="label">← Previous</span><span class="title">01 — Getting Started</span></a>
-<a href="03-realtime-aggregations.html" class="next"><span class="label">Next →</span><span class="title">03 — Aggregations</span></a>
+<a href="01-getting-started.html" class="prev"><span class="label">← Previous</span><span class="title">01 - Getting Started</span></a>
+<a href="03-realtime-aggregations.html" class="next"><span class="label">Next →</span><span class="title">03 - Aggregations</span></a>
 </div>
 </article>
 <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg></button>

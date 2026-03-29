@@ -12,7 +12,7 @@
       "time": "15 min",
       "next": {
         "file": "02-token-aware.html",
-        "title": "02 \u2014 Token-Aware"
+        "title": "02 - Token-Aware"
       }
     },
     {
@@ -26,11 +26,11 @@
       "time": "20 min",
       "prev": {
         "file": "01-getting-started.html",
-        "title": "01 \u2014 Getting Started"
+        "title": "01 - Getting Started"
       },
       "next": {
         "file": "03-agent-limiting.html",
-        "title": "03 \u2014 Agent Limiting"
+        "title": "03 - Agent Limiting"
       }
     },
     {
@@ -44,11 +44,11 @@
       "time": "20 min",
       "prev": {
         "file": "02-token-aware.html",
-        "title": "02 \u2014 Token-Aware"
+        "title": "02 - Token-Aware"
       },
       "next": {
         "file": "04-hierarchical.html",
-        "title": "04 \u2014 Hierarchical"
+        "title": "04 - Hierarchical"
       }
     },
     {
@@ -62,11 +62,11 @@
       "time": "20 min",
       "prev": {
         "file": "03-agent-limiting.html",
-        "title": "03 \u2014 Agent Limiting"
+        "title": "03 - Agent Limiting"
       },
       "next": {
         "file": "05-cost-based.html",
-        "title": "05 \u2014 Cost-Based"
+        "title": "05 - Cost-Based"
       }
     },
     {
@@ -80,11 +80,11 @@
       "time": "25 min",
       "prev": {
         "file": "04-hierarchical.html",
-        "title": "04 \u2014 Hierarchical"
+        "title": "04 - Hierarchical"
       },
       "next": {
         "file": "06-production.html",
-        "title": "06 \u2014 Production"
+        "title": "06 - Production"
       }
     },
     {
@@ -98,7 +98,7 @@
       "time": "25 min",
       "prev": {
         "file": "05-cost-based.html",
-        "title": "05 \u2014 Cost-Based"
+        "title": "05 - Cost-Based"
       }
     }
   ]

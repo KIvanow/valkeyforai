@@ -1,6 +1,6 @@
 ## Why Consumer Groups?  
   
-With plain XREAD, every consumer gets every message. With consumer groups, messages are distributed — enabling parallel processing of AI tasks like embeddings, completions, and tool calls.
+With plain XREAD, every consumer gets every message. With consumer groups, messages are distributed - enabling parallel processing of AI tasks like embeddings, completions, and tool calls.
 
 ## Step 1: Create a Group
 

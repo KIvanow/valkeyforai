@@ -128,7 +128,7 @@ async def recall(client, query_embedding: list[float], limit: int = 5):
         options=FtSearchOptions(params={"vec": vec_bytes}),
     )
 
-    # Parse results — score is cosine distance, convert to similarity
+    # Parse results - score is cosine distance, convert to similarity
     memories = []
     if result and len(result) >= 2 and result[1]:
         for key, fields in result[1].items():
@@ -171,6 +171,6 @@ async def search(client, query_embedding, scope: str = None, categories: list = 
 
 ## Next Steps
 
-The storage backend is complete. Next, let's wire it into CrewAI's `Memory` system and run real agents.
+The storage backend is complete. Next we wire it into CrewAI's `Memory` system and run real agents.
 
 [Next: 03 Agent Memory in Action →](<03-agent-memory.html>)

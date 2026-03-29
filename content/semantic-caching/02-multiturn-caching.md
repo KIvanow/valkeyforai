@@ -125,7 +125,7 @@ def chat_with_cache(messages: list, user_id: str) -> dict:
             "latency_ms": round((time.time() - start) * 1000, 1),
         }
 
-    # Cache miss — call LLM
+    # Cache miss - call LLM
     llm = openai_client.chat.completions.create(
         model="gpt-4", messages=messages,
     )
@@ -151,7 +151,7 @@ result = chat_with_cache(convo, user_id="user_123")
 print(f"Source: {result['source']}, Latency: {result['latency_ms']}ms")
 ```
 
-> **Why TAG filter?** `@user_id:{user_123}` ensures User A's cached conversations don't leak to User B. The hybrid query (TAG + KNN) runs as a single atomic operation — pre-filters by user, then finds the nearest conversation context.
+> **Why TAG filter?** `@user_id:{user_123}` ensures User A's cached conversations don't leak to User B. The hybrid query (TAG + KNN) runs as a single atomic operation - pre-filters by user, then finds the nearest conversation context.
 
 ## Cache Isolation Strategies
 

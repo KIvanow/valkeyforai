@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>01 — Getting Started with CrewAI + Valkey — Valkey for AI</title>
+<title>01 - Getting Started with CrewAI + Valkey - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../cookbook.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
@@ -32,10 +32,10 @@ pre code.hljs{background:transparent!important;padding:0}
 <h2>What is CrewAI + Valkey?</h2>
 <p><a href="https://github.com/crewAIInc/crewAI">CrewAI</a> is a framework for orchestrating multi-agent AI systems. Agents need persistent memory to learn across executions. Valkey provides the memory backend:</p>
 <ul>
-<li><strong>Sub-millisecond reads</strong> — memory recall in ~0.1ms via GLIDE</li>
-<li><strong>Vector search</strong> — <code>FT.SEARCH</code> with HNSW for semantic recall</li>
-<li><strong>JSON storage</strong> — <code>JSON.SET</code> stores structured memory records natively</li>
-<li><strong>TTL</strong> — memories auto-expire with <code>EXPIRE</code></li>
+<li><strong>Sub-millisecond reads</strong> - memory recall in ~0.1ms via GLIDE</li>
+<li><strong>Vector search</strong> - <code>FT.SEARCH</code> with HNSW for semantic recall</li>
+<li><strong>JSON storage</strong> - <code>JSON.SET</code> stores structured memory records natively</li>
+<li><strong>TTL</strong> - memories auto-expire with <code>EXPIRE</code></li>
 </ul>
 <h2>Step 1: Start Valkey</h2>
 <p>Docker installed and Python 3.10+ required. AWS credentials needed for Bedrock (later guides).</p>
@@ -132,7 +132,7 @@ asyncio.run(test_connection())
 
 <div class="nav-prev-next">
 <div></div>
-<a href="02-memory-storage.html" class="next"><span class="label">Next →</span><span class="title">02 — Memory Storage</span></a>
+<a href="02-memory-storage.html" class="next"><span class="label">Next →</span><span class="title">02 - Memory Storage</span></a>
 </div>
 </article>
 <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg></button>

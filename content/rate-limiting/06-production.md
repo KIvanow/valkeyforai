@@ -26,7 +26,7 @@ async def chat(prompt: str, response: Response):
 
 ## Pattern 2: Graceful Degradation
 
-Don't hard-fail — degrade gracefully through model tiers, cache, then queue:
+Don't hard-fail - degrade gracefully through model tiers, cache, then queue:
 
 ```python
 async def smart_llm_call(prompt, user_id):
@@ -91,13 +91,13 @@ def enqueue_request(user_id, prompt, model="gpt-4"):
 
   * **Retry-After headers** on every 429 response
   * **Circuit breaker** for Valkey connection failures
-  * **Fail-open policy** — never block users because of infra issues
-  * **Graceful degradation** — cheaper models before hard rejection
-  * **Request queuing** — don't lose requests, queue them
-  * **Observability** — log every allow/deny decision
-  * **Dynamic config** — update limits without redeploying
-  * **Connection pooling** — reuse Valkey connections
-  * **Lua scripts** — atomic check-and-increment for correctness
+  * **Fail-open policy** - never block users because of infra issues
+  * **Graceful degradation** - cheaper models before hard rejection
+  * **Request queuing** - don't lose requests, queue them
+  * **Observability** - log every allow/deny decision
+  * **Dynamic config** - update limits without redeploying
+  * **Connection pooling** - reuse Valkey connections
+  * **Lua scripts** - atomic check-and-increment for correctness
 
 ## Valkey Configuration
 
@@ -110,4 +110,4 @@ tcp-keepalive 300
 timeout 0
 ```
 
-**Full Series Complete!** You now have everything you need to implement production-grade rate limiting for AI workloads. All code is open source — [clone the repo](<https://github.com/meet-bhagdev/valkeyforai/tree/main>) and start shipping.
+**Full Series Complete!** You now have everything you need to implement production-grade rate limiting for AI workloads. All code is open source - [clone the repo](<https://github.com/meet-bhagdev/valkeyforai/tree/main>) and start shipping.

@@ -12,7 +12,7 @@
       "time": "15 min",
       "next": {
         "file": "02-multi-user-memory.html",
-        "title": "02 \u2014 Multi-User Memory"
+        "title": "02 - Multi-User Memory"
       }
     },
     {
@@ -26,11 +26,11 @@
       "time": "20 min",
       "prev": {
         "file": "01-getting-started.html",
-        "title": "01 \u2014 Getting Started"
+        "title": "01 - Getting Started"
       },
       "next": {
         "file": "03-production.html",
-        "title": "03 \u2014 Production"
+        "title": "03 - Production"
       }
     },
     {
@@ -44,7 +44,7 @@
       "time": "20 min",
       "prev": {
         "file": "02-multi-user-memory.html",
-        "title": "02 \u2014 Multi-User Memory"
+        "title": "02 - Multi-User Memory"
       }
     }
   ]

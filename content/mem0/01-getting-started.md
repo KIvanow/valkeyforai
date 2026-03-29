@@ -2,7 +2,7 @@
 
 [Mem0](<https://github.com/mem0ai/mem0>) ("mem-zero") is an open-source memory layer for AI applications (YC S24). It has a **dedicated Valkey connector** (`provider: "valkey"`) that uses the `valkey` Python client with native `FT.CREATE`/`FT.SEARCH` for vector-based memory storage and retrieval.
 
-**Mem0 has a first-class Valkey integration** — not just Redis compatibility. The `valkey.py` connector in Mem0's source uses the native `valkey` Python package and supports HNSW/FLAT indexing with configurable parameters.
+**Mem0 has a first-class Valkey integration** - not just Redis compatibility. The `valkey.py` connector in Mem0's source uses the native `valkey` Python package and supports HNSW/FLAT indexing with configurable parameters.
 
 ## Step 1: Install
 
@@ -10,7 +10,7 @@
 pip install mem0ai
 ```
 
-The `valkey` Python client is included as a core dependency — no separate install needed.
+The `valkey` Python client is included as a core dependency - no separate install needed.
 
 ## Step 2: Start Valkey with Search Module
 
@@ -139,6 +139,6 @@ Search| `memory.search(query, user_id)`| `FT.SEARCH` with KNN + TAG filter
 Get all| `memory.get_all(user_id)`| `FT.SEARCH @user_id:{id} *`  
 Index creation| Automatic on init| `FT.CREATE` with HNSW + TAG fields  
   
-**Source:** [mem0/vector_stores/valkey.py](<https://github.com/mem0ai/mem0/blob/main/mem0/vector_stores/valkey.py>) — The official Valkey connector in the Mem0 repository.
+**Source:** [mem0/vector_stores/valkey.py](<https://github.com/mem0ai/mem0/blob/main/mem0/vector_stores/valkey.py>) - The official Valkey connector in the Mem0 repository.
 
-[Next →02 — Multi-User Memory](<02-multi-user-memory.html>)
+[Next →02 - Multi-User Memory](<02-multi-user-memory.html>)

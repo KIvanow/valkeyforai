@@ -3,10 +3,10 @@
 Valkey Pub/Sub is a fire-and-forget messaging system. Publishers send messages to **channels** , and any number of subscribers listening on that channel receive them instantly. It's perfect for:
 
   * **Streaming LLM tokens** to multiple clients simultaneously
-  * **AI agent events** — broadcasting tool completions and state changes
-  * **Real-time notifications** — alerting dashboards of new predictions
+  * **AI agent events** - broadcasting tool completions and state changes
+  * **Real-time notifications** - alerting dashboards of new predictions
 
-**Pub/Sub vs Streams:** Pub/Sub is ephemeral — if no one is listening, messages are lost. Valkey Streams (Cookbook 03) are durable — messages persist and can be replayed. Use Pub/Sub for live broadcasting, Streams for guaranteed delivery.
+**Pub/Sub vs Streams:** Pub/Sub is ephemeral - if no one is listening, messages are lost. Valkey Streams (Cookbook 03) are durable - messages persist and can be replayed. Use Pub/Sub for live broadcasting, Streams for guaranteed delivery.
 
 ## Prerequisites
 
@@ -54,7 +54,7 @@ publish_message("ai:events", {
 
 ## Step 4: Create a Subscriber
 
-Run this in a **separate terminal** — subscribers block while waiting for messages:
+Run this in a **separate terminal** - subscribers block while waiting for messages:
 
 ```python
 import valkey
@@ -67,7 +67,7 @@ pubsub = client.pubsub()
 
 # Subscribe to the channel
 pubsub.subscribe("ai:events")
-print("Subscribed to ai:events — waiting for messages...")
+print("Subscribed to ai:events - waiting for messages...")
 
 # Listen for messages (blocks)
 for message in pubsub.listen():
@@ -138,6 +138,6 @@ Unsubscribe| `UNSUBSCRIBE channel`| ~0.1ms
 Check active channels| `PUBSUB CHANNELS`| ~0.1ms  
 Count subscribers| `PUBSUB NUMSUB channel`| ~0.1ms  
   
-**What's Next:** In the next cookbook, we'll use Pub/Sub to stream LLM tokens in real-time — broadcasting each token as it arrives from the model to multiple connected clients.
+**Next up:** In the next cookbook, we'll use Pub/Sub to stream LLM tokens in real-time - broadcasting each token as it arrives from the model to multiple connected clients.
 
-[ Next → 02 — Streaming LLM Tokens ](<02-streaming-llm-tokens.html>)
+[ Next → 02 - Streaming LLM Tokens ](<02-streaming-llm-tokens.html>)

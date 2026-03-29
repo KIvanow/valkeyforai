@@ -7,11 +7,14 @@
       "output": "01-getting-started.html",
       "title": "Getting Started with Semantic Caching",
       "h1": "Getting Started with <span class=\"gradient\">Semantic Caching</span>",
-      "lead": "Build a semantic cache that stores LLM responses and returns cached answers for semantically similar prompts — cutting costs by 60%+ and latency from seconds to milliseconds.",
+      "lead": "Build a semantic cache that stores LLM responses and returns cached answers for semantically similar prompts - cutting costs by 60%+ and latency from seconds to milliseconds.",
       "breadcrumb": "Getting Started",
       "difficulty": "Beginner",
       "time": "15 min",
-      "next": { "file": "02-multiturn-caching.html", "title": "02 — Multi-Turn Conversation Caching" }
+      "next": {
+        "file": "02-multiturn-caching.html",
+        "title": "02 - Multi-Turn Conversation Caching"
+      }
     },
     {
       "num": "02",
@@ -23,8 +26,14 @@
       "breadcrumb": "Multi-Turn Caching",
       "difficulty": "Intermediate",
       "time": "20 min",
-      "prev": { "file": "01-getting-started.html", "title": "01 — Getting Started" },
-      "next": { "file": "03-production.html", "title": "03 — Production Patterns" }
+      "prev": {
+        "file": "01-getting-started.html",
+        "title": "01 - Getting Started"
+      },
+      "next": {
+        "file": "03-production.html",
+        "title": "03 - Production Patterns"
+      }
     },
     {
       "num": "03",
@@ -36,7 +45,10 @@
       "breadcrumb": "Production Patterns",
       "difficulty": "Advanced",
       "time": "25 min",
-      "prev": { "file": "02-multiturn-caching.html", "title": "02 — Multi-Turn Caching" }
+      "prev": {
+        "file": "02-multiturn-caching.html",
+        "title": "02 - Multi-Turn Caching"
+      }
     }
   ]
 }

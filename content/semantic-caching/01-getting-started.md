@@ -143,7 +143,7 @@ def ask_with_cache(prompt: str) -> dict:
             "latency_ms": round(elapsed, 1),
         }
 
-    # 2. Cache miss — call LLM
+    # 2. Cache miss - call LLM
     llm_response = openai_client.chat.completions.create(
         model="gpt-4",
         messages=[{"role": "user", "content": prompt}],
@@ -165,17 +165,17 @@ def ask_with_cache(prompt: str) -> dict:
 ## Step 5: Test It
 
 ```python
-# First call — cache MISS (calls LLM)
+# First call - cache MISS (calls LLM)
 result1 = ask_with_cache("What is Valkey?")
 print(f"Source: {result1['source']}, Latency: {result1['latency_ms']}ms")
 # Source: llm, Latency: 1250.3ms
 
-# Second call — semantically similar — cache HIT!
+# Second call - semantically similar - cache HIT!
 result2 = ask_with_cache("Can you explain what Valkey is?")
 print(f"Source: {result2['source']}, Latency: {result2['latency_ms']}ms")
 # Source: cache, Latency: 12.5ms  ← 100x faster!
 
-# Third call — different topic — cache MISS
+# Third call - different topic - cache MISS
 result3 = ask_with_cache("How do I cook pasta?")
 print(f"Source: {result3['source']}, Latency: {result3['latency_ms']}ms")
 # Source: llm, Latency: 980.7ms

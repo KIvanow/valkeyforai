@@ -22,7 +22,7 @@ docker exec valkey valkey-cli ping
 pip install valkey
 ```
 
-That's it — no special libraries needed. The `redis` Python package works with Valkey out of the box.
+That's it - no special libraries needed. The `redis` Python package works with Valkey out of the box.
 
 ## Step 3: Your First Rate Limiter
 
@@ -56,7 +56,7 @@ def check_rate_limit(user_id: str, max_requests: int = 10, window: int = 60) -> 
 ## Step 4: Test It
 
 ```python
-# Send 12 requests — last 2 should be denied
+# Send 12 requests - last 2 should be denied
 for i in range(12):
     result = check_rate_limit("user-123", max_requests=10)
     status = "✅" if result["allowed"] else "❌"
@@ -76,11 +76,11 @@ for i in range(12):
 
 ## How It Works
 
-**Key Insight:** We use `INCR` \+ `EXPIRE` in a pipeline. The key includes the window number (current timestamp ÷ window size), so it auto-rotates every window. Valkey handles all the atomic counting — no race conditions.
+**Under the hood:** We use `INCR` \+ `EXPIRE` in a pipeline. The key includes the window number (current timestamp ÷ window size), so it auto-rotates every window. Valkey handles all the atomic counting - no race conditions.
 
 Operation| Valkey Command| Time  
 ---|---|---  
 Increment counter| `INCR`| ~0.1ms  
 Set expiry| `EXPIRE`| ~0.1ms  
 Pipeline (both)| 1 round-trip| ~0.2ms total  
-[ Next → 02 — Token-Aware Limiting ](<02-token-aware.html>)
+[ Next → 02 - Token-Aware Limiting ](<02-token-aware.html>)

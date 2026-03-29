@@ -19,7 +19,7 @@ def store_short_term(session_id: str, key: str, value: str, ttl: int = 1800):
 def store_long_term(user_id: str, key: str, value: str):
     """Store cross-session user knowledge that persists indefinitely."""
     client.hset(f"memory:{user_id}", key, value)
-    # No EXPIRE — this persists
+    # No EXPIRE - this persists
 
 # Example
 store_short_term("sess_100", "current_topic", "billing")

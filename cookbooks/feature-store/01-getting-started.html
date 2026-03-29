@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>01 — Getting Started with Feature Store — Valkey for AI</title>
+<title>01 - Getting Started with Feature Store - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../cookbook.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
@@ -32,10 +32,10 @@ pre code.hljs{background:transparent!important;padding:0}
 <h2>Why Valkey for Feature Stores?</h2>
 <p>ML models need features at inference time. A feature store bridges offline training and online serving. Valkey is the ideal online store because:</p>
 <ul>
-<li><strong>Sub-millisecond reads</strong> — HGETALL returns a full feature vector in ~0.1ms</li>
-<li><strong>Atomic writes</strong> — HSET updates features without race conditions</li>
-<li><strong>Built-in TTL</strong> — Stale features expire automatically with EXPIRE</li>
-<li><strong>Batch pipelines</strong> — Fetch 100 entities in ~0.3ms with pipelining</li>
+<li><strong>Sub-millisecond reads</strong> - HGETALL returns a full feature vector in ~0.1ms</li>
+<li><strong>Atomic writes</strong> - HSET updates features without race conditions</li>
+<li><strong>Built-in TTL</strong> - Stale features expire automatically with EXPIRE</li>
+<li><strong>Batch pipelines</strong> - Fetch 100 entities in ~0.3ms with pipelining</li>
 </ul>
 <h2>Prerequisites</h2>
 <ul>
@@ -52,7 +52,7 @@ pre code.hljs{background:transparent!important;padding:0}
 <h2>Step 2: Install Dependencies</h2>
 <pre><code class="language-bash">pip install valkey
 </code></pre>
-<p>The <code>redis</code> Python package works with Valkey out of the box — no special drivers needed.</p>
+<p>The <code>redis</code> Python package works with Valkey out of the box - no special drivers needed.</p>
 <h2>Step 3: Understand the Data Model</h2>
 <p>Every entity&#39;s features are stored as a <strong>Valkey Hash</strong> :</p>
 <pre><code class="language-python"># Key format: fs:v1:{feature_view_name}:{entity_id}
@@ -65,9 +65,9 @@ fs:v1:user_profile:user_123 → {
     _feature_view: &quot;user_profile&quot;
 }
 </code></pre>
-<p><strong>Key Insight:</strong> Valkey Hashes map perfectly to feature vectors. Each field is a feature, each key is an entity. One <code>HGETALL</code> returns the full feature vector. One <code>HMGET</code> returns selective features. Both complete in ~0.1ms.</p>
+<p><strong>How it works:</strong> Valkey Hashes map perfectly to feature vectors. Each field is a feature, each key is an entity. One <code>HGETALL</code> returns the full feature vector. One <code>HMGET</code> returns selective features. Both complete in ~0.1ms.</p>
 <h2>Step 4: Write Features with Raw Valkey Commands</h2>
-<p>Let&#39;s start with raw Valkey commands to understand what&#39;s happening under the hood:</p>
+<p>Starting with raw Valkey commands to see what&#39;s happening under the hood:</p>
 <pre><code class="language-python">import valkey
 import time
 
@@ -83,27 +83,27 @@ features = {
     &quot;_feature_view&quot;: &quot;user_profile&quot;,
 }
 
-# HSET — write all features atomically
+# HSET - write all features atomically
 client.hset(key, mapping=features)
 
-# Set TTL — features expire after 1 hour
+# Set TTL - features expire after 1 hour
 client.expire(key, 3600)
 
 print(&quot;✅ Features written&quot;)
 </code></pre>
 <h2>Step 5: Read Features Back</h2>
-<pre><code class="language-python"># HGETALL — read all features for an entity
+<pre><code class="language-python"># HGETALL - read all features for an entity
 result = client.hgetall(&quot;fs:v1:user_profile:user_001&quot;)
 print(result)
 # {&#39;age&#39;: &#39;28&#39;, &#39;lifetime_value&#39;: &#39;1250.50&#39;, &#39;segment&#39;: &#39;premium&#39;, ...}
 
-# HMGET — read only specific features
+# HMGET - read only specific features
 age, ltv = client.hmget(&quot;fs:v1:user_profile:user_001&quot;, [&quot;age&quot;, &quot;lifetime_value&quot;])
 print(f&quot;age={age}, ltv={ltv}&quot;)
 # age=28, ltv=1250.50
 </code></pre>
 <h2>Step 6: Use the Library</h2>
-<p>Now let&#39;s do the same thing with the feature store library, which handles serialization, TTL, and metadata for you.</p>
+<p>Here&#39;s the same thing with the feature store library, which handles serialization, TTL, and metadata for you.</p>
 <p><strong>Note:</strong> This step uses the feature store library from the <a href="https://github.com/meet-bhagdev/valkeyforai">valkeyforai GitHub repo</a>. Clone it first:</p>
 <pre><code class="language-bash">git clone https://github.com/meet-bhagdev/valkeyforai &amp;&amp; cd valkeyforai
 </code></pre>
@@ -130,18 +130,18 @@ user_features = FeatureView(
 # Register it with the store
 store.register(user_features)
 
-# Write — automatically serializes, sets TTL, adds metadata
+# Write - automatically serializes, sets TTL, adds metadata
 store.write(&quot;user_profile&quot;, &quot;user_001&quot;, {
     &quot;age&quot;: 28,
     &quot;lifetime_value&quot;: 1250.50,
     &quot;segment&quot;: &quot;premium&quot;,
 })
 
-# Read — automatically deserializes to correct Python types
+# Read - automatically deserializes to correct Python types
 features = store.read(&quot;user_profile&quot;, &quot;user_001&quot;)
 print(features)
 # {&#39;age&#39;: 28, &#39;lifetime_value&#39;: 1250.5, &#39;segment&#39;: &#39;premium&#39;}
-# Note: age is int, ltv is float — types are preserved!
+# Note: age is int, ltv is float - types are preserved!
 </code></pre>
 <h2>How It Works Under the Hood</h2>
 <table>
@@ -178,13 +178,13 @@ print(features)
 <td>~0.1ms</td>
 </tr>
 </tbody></table>
-<p><strong>What&#39;s Next:</strong> In the next cookbook, we&#39;ll cover batch serving — fetching features for 100+ entities in a single round-trip using Valkey pipelines.</p>
-<p><a href="02-online-serving.html"> Next → 02 — Online Feature Serving </a></p>
+<p><strong>Next up:</strong> In the next cookbook, we&#39;ll cover batch serving - fetching features for 100+ entities in a single round-trip using Valkey pipelines.</p>
+<p><a href="02-online-serving.html"> Next → 02 - Online Feature Serving </a></p>
 
 
 <div class="nav-prev-next">
 <div></div>
-<a href="02-online-serving.html" class="next"><span class="label">Next →</span><span class="title">02 — Online Serving</span></a>
+<a href="02-online-serving.html" class="next"><span class="label">Next →</span><span class="title">02 - Online Serving</span></a>
 </div>
 </article>
 <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg></button>

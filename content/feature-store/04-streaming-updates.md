@@ -2,10 +2,10 @@
 
 Instead of writing features directly to Hashes, publish them to a Valkey Stream. A consumer reads the stream and writes to the online store. This decouples producers from consumers and enables:
 
-  * **Fan-in** — Multiple services publish to one stream
-  * **Replay** — Re-process historical updates if needed
-  * **Backpressure** — Stream `MAXLEN` prevents unbounded growth
-  * **Distributed processing** — Consumer groups for parallel workers
+  * **Fan-in** - Multiple services publish to one stream
+  * **Replay** - Re-process historical updates if needed
+  * **Backpressure** - Stream `MAXLEN` prevents unbounded growth
+  * **Distributed processing** - Consumer groups for parallel workers
 
 ```python
 # Architecture:
@@ -214,7 +214,7 @@ consume_from_group("worker-1")
 consume_from_group("worker-2")
 ```
 
-**Consumer Group Benefits:** Messages are distributed across workers — each message is delivered to exactly one consumer in the group. If a worker crashes, unacknowledged messages can be reclaimed with `XPENDING` and `XCLAIM`. This gives you at-least-once delivery semantics.
+**Consumer Group Benefits:** Messages are distributed across workers - each message is delivered to exactly one consumer in the group. If a worker crashes, unacknowledged messages can be reclaimed with `XPENDING` and `XCLAIM`. This gives you at-least-once delivery semantics.
 
 ## Valkey Streams Command Reference
 
@@ -228,4 +228,4 @@ Stream length| `XLEN stream`| ~0.1ms
 Group read| `XREADGROUP GROUP name consumer ...`| ~0.1ms + block  
 Acknowledge| `XACK stream group id`| ~0.1ms  
   
-**What's Next:** Learn how to serve feature vectors directly to ML models — scikit-learn, PyTorch, and LLM chains — with a FastAPI integration example.
+**Next up:** Learn how to serve feature vectors directly to ML models - scikit-learn, PyTorch, and LLM chains - with a FastAPI integration example.

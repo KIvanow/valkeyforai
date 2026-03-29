@@ -5,10 +5,10 @@ Cookbook 01 stored messages in a LIST. But in production you also need to know: 
 ## Data Model: Two Keys Per Session
 
 ```python
-# Messages — LIST (same as cookbook 01)
+# Messages - LIST (same as cookbook 01)
 chat:sess_abc123          → ["{"role":"user",...}", ...]
 
-# Metadata — HASH (new)
+# Metadata - HASH (new)
 meta:sess_abc123          → {
     user_id:       "user_42",
     model:         "claude-3-haiku",
@@ -20,7 +20,7 @@ meta:sess_abc123          → {
 }
 ```
 
-**Key Insight:** Valkey Hashes are perfect for metadata — each field is independently readable and writable. `HINCRBY` atomically increments token counts without read-modify-write races. `HSET` updates individual fields without touching others.
+**Why this matters:** Valkey Hashes are perfect for metadata - each field is independently readable and writable. `HINCRBY` atomically increments token counts without read-modify-write races. `HSET` updates individual fields without touching others.
 
 ## Pattern 1: Create a Session with Metadata
 
@@ -60,7 +60,7 @@ async def add_message(client, session_id, role, content, tokens_used=0):
     await client.hset(meta_key, {"last_active": str(time.time())})
 ```
 
-## Pattern 3: Sliding Window — Keep Last N Messages
+## Pattern 3: Sliding Window - Keep Last N Messages
 
 Long conversations eat context windows. Use `LTRIM` to keep only the most recent messages:
 
@@ -71,7 +71,7 @@ async def add_message_windowed(client, session_id, role, content, max_messages=5
     # Append
     await client.rpush(chat_key, [json.dumps({"role": role, "content": content})])
 
-    # Trim to last N messages — O(1) for small trims
+    # Trim to last N messages - O(1) for small trims
     await client.ltrim(chat_key, -max_messages, -1)
 ```
 
@@ -128,4 +128,4 @@ Get one field| `HGET meta:{id} token_count`| ~0.1ms
 Trim conversation| `LTRIM chat:{id} -50 -1`| ~0.1ms  
 Scan for sessions| `SCAN 0 MATCH meta:* COUNT 100`| ~1ms  
   
-**What's Next:** Messages are stored, sessions are tracked. But how do you find _relevant_ past conversations? In the next cookbook, we'll add semantic memory — vector search over conversation history using Valkey's FT.SEARCH.
+**Next up:** Messages are stored, sessions are tracked. But how do you find _relevant_ past conversations? In the next cookbook, we'll add semantic memory - vector search over conversation history using Valkey's FT.SEARCH.

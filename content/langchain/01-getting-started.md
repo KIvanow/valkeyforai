@@ -1,11 +1,11 @@
 ## What is LangGraph + Valkey?
 
-[LangGraph](https://github.com/langchain-ai/langgraph) agents are stateless by default — every invocation starts fresh. `ValkeySaver` from the `langgraph-checkpoint-aws` package adds persistent checkpointing backed by Valkey:
+[LangGraph](https://github.com/langchain-ai/langgraph) agents are stateless by default - every invocation starts fresh. `ValkeySaver` from the `langgraph-checkpoint-aws` package adds persistent checkpointing backed by Valkey:
 
-  * **Sub-millisecond reads** — checkpoint retrieval in ~0.1ms
-  * **Atomic writes** — no partial state corruption
-  * **Built-in TTL** — sessions auto-expire, no cleanup jobs
-  * **ElastiCache ready** — same code works locally and in production
+  * **Sub-millisecond reads** - checkpoint retrieval in ~0.1ms
+  * **Atomic writes** - no partial state corruption
+  * **Built-in TTL** - sessions auto-expire, no cleanup jobs
+  * **ElastiCache ready** - same code works locally and in production
 
 ## Step 1: Start Valkey
 
@@ -71,7 +71,7 @@ builder.add_node("chatbot", chatbot)
 builder.set_entry_point("chatbot")
 builder.set_finish_point("chatbot")
 
-# 2. Compile with ValkeySaver — this is the key line
+# 2. Compile with ValkeySaver - this is the key line
 with ValkeySaver.from_conn_string(
     "valkey://localhost:6379",
     ttl_seconds=3600,
@@ -86,7 +86,7 @@ with ValkeySaver.from_conn_string(
     )
     print(result["messages"][-1].content)
 
-    # 4. Continue the conversation — state is persisted!
+    # 4. Continue the conversation - state is persisted!
     result = graph.invoke(
         {"messages": [HumanMessage(content="How fast is it?")]},
         config,
@@ -97,7 +97,7 @@ with ValkeySaver.from_conn_string(
 
 ## Step 5: Verify Persistence
 
-Stop and restart your script — the conversation state is still in Valkey:
+Stop and restart your script - the conversation state is still in Valkey:
 
 ```python
 # In a NEW Python process:
@@ -119,6 +119,6 @@ with ValkeySaver.from_conn_string("valkey://localhost:6379") as checkpointer:
 | Load latest | `FT.SEARCH checkpoints_idx '@thread_id:{session-1}' LIMIT 0 1` | ~0.1ms |
 | List history | `FT.SEARCH checkpoints_idx '@thread_id:{session-1}'` | ~0.1ms |
 
-**Source:** [`langgraph-checkpoint-aws`](https://github.com/langchain-ai/langgraph-checkpoint-aws) — The official LangGraph checkpointer for Valkey.
+**Source:** [`langgraph-checkpoint-aws`](https://github.com/langchain-ai/langgraph-checkpoint-aws) - The official LangGraph checkpointer for Valkey.
 
 [Next: 02 LLM Response Caching →](02-llm-caching.html)

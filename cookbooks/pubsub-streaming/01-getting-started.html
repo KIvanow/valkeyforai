@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>01 — Getting Started with Pub/Sub — Valkey for AI</title>
+<title>01 - Getting Started with Pub/Sub - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../cookbook.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
@@ -33,10 +33,10 @@ pre code.hljs{background:transparent!important;padding:0}
 <p>Valkey Pub/Sub is a fire-and-forget messaging system. Publishers send messages to <strong>channels</strong> , and any number of subscribers listening on that channel receive them instantly. It&#39;s perfect for:</p>
 <ul>
 <li><strong>Streaming LLM tokens</strong> to multiple clients simultaneously</li>
-<li><strong>AI agent events</strong> — broadcasting tool completions and state changes</li>
-<li><strong>Real-time notifications</strong> — alerting dashboards of new predictions</li>
+<li><strong>AI agent events</strong> - broadcasting tool completions and state changes</li>
+<li><strong>Real-time notifications</strong> - alerting dashboards of new predictions</li>
 </ul>
-<p><strong>Pub/Sub vs Streams:</strong> Pub/Sub is ephemeral — if no one is listening, messages are lost. Valkey Streams (Cookbook 03) are durable — messages persist and can be replayed. Use Pub/Sub for live broadcasting, Streams for guaranteed delivery.</p>
+<p><strong>Pub/Sub vs Streams:</strong> Pub/Sub is ephemeral - if no one is listening, messages are lost. Valkey Streams (Cookbook 03) are durable - messages persist and can be replayed. Use Pub/Sub for live broadcasting, Streams for guaranteed delivery.</p>
 <h2>Prerequisites</h2>
 <ul>
 <li>Docker installed (or a running Valkey instance)</li>
@@ -73,7 +73,7 @@ publish_message(&quot;ai:events&quot;, {
 # Published to ai:events → 0 subscriber(s)  (no one listening yet)
 </code></pre>
 <h2>Step 4: Create a Subscriber</h2>
-<p>Run this in a <strong>separate terminal</strong> — subscribers block while waiting for messages:</p>
+<p>Run this in a <strong>separate terminal</strong> - subscribers block while waiting for messages:</p>
 <pre><code class="language-python">import valkey
 import json
 
@@ -84,7 +84,7 @@ pubsub = client.pubsub()
 
 # Subscribe to the channel
 pubsub.subscribe(&quot;ai:events&quot;)
-print(&quot;Subscribed to ai:events — waiting for messages...&quot;)
+print(&quot;Subscribed to ai:events - waiting for messages...&quot;)
 
 # Listen for messages (blocks)
 for message in pubsub.listen():
@@ -175,13 +175,13 @@ thread.stop()
 <td>~0.1ms</td>
 </tr>
 </tbody></table>
-<p><strong>What&#39;s Next:</strong> In the next cookbook, we&#39;ll use Pub/Sub to stream LLM tokens in real-time — broadcasting each token as it arrives from the model to multiple connected clients.</p>
-<p><a href="02-streaming-llm-tokens.html"> Next → 02 — Streaming LLM Tokens </a></p>
+<p><strong>Next up:</strong> In the next cookbook, we&#39;ll use Pub/Sub to stream LLM tokens in real-time - broadcasting each token as it arrives from the model to multiple connected clients.</p>
+<p><a href="02-streaming-llm-tokens.html"> Next → 02 - Streaming LLM Tokens </a></p>
 
 
 <div class="nav-prev-next">
 <div></div>
-<a href="02-streaming-llm-tokens.html" class="next"><span class="label">Next →</span><span class="title">02 — LLM Tokens</span></a>
+<a href="02-streaming-llm-tokens.html" class="next"><span class="label">Next →</span><span class="title">02 - LLM Tokens</span></a>
 </div>
 </article>
 <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg></button>

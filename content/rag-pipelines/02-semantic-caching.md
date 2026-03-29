@@ -2,7 +2,7 @@
 
 # Semantic Caching Patterns
 
-Cache LLM responses by semantic similarity — not just exact matches. Save costs and reduce latency.
+Cache LLM responses by semantic similarity - not just exact matches. Save costs and reduce latency.
 
 ## Why Semantic Caching?
 
@@ -58,10 +58,10 @@ The threshold determines how similar queries must be to trigger a cache hit:
 
 Threshold| Behavior| Use Case  
 ---|---|---  
-**0.95+**|  Very strict — near-identical queries only| Legal, medical, compliance  
-**0.90-0.95**|  Balanced — captures paraphrases| General Q&A;, support bots  
-**0.85-0.90**|  Loose — similar topics match| Conversational AI, brainstorming  
-**< 0.85**| Very loose — may return unrelated answers| Not recommended  
+**0.95+**|  Very strict - near-identical queries only| Legal, medical, compliance  
+**0.90-0.95**|  Balanced - captures paraphrases| General Q&A;, support bots  
+**0.85-0.90**|  Loose - similar topics match| Conversational AI, brainstorming  
+**< 0.85**| Very loose - may return unrelated answers| Not recommended  
   
 **💡 Tip:** Start with 0.92 and adjust based on your cache hit rate and answer quality. Monitor false positives closely. 
 

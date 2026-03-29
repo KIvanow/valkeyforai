@@ -1,6 +1,6 @@
 ## The Context Assembly Function
 
-Before every LLM call, an agent needs to assemble context from multiple sources. This function is the core of context engineering — it gathers everything the LLM needs into a structured prompt.
+Before every LLM call, an agent needs to assemble context from multiple sources. This function is the core of context engineering - it gathers everything the LLM needs into a structured prompt.
 
 ```python
 import valkey
@@ -27,7 +27,7 @@ def assemble_context(user_id: str, session_id: str, agent_id: str, current_messa
         mem_str = "\n".join(f"- {k}: {v}" for k, v in memories.items())
         messages.append({"role": "system", "content": f"User context:\n{mem_str}"})
 
-    # 3. Retrieved knowledge (RAG — would use FT.SEARCH in production)
+    # 3. Retrieved knowledge (RAG - would use FT.SEARCH in production)
     # Simplified here; see the Vector Search cookbook for full implementation
     kb_results = client.lrange(f"kb:results:{session_id}", 0, -1)
     if kb_results:
@@ -149,4 +149,4 @@ for msg in budgeted:
 | 5 | Tool outputs | `HGETALL tool:{session}:step_*` | Function call results |
 | 6 | Current message | (from input) | What the user just said |
 
-> **Key insight from Philipp Schmid (Google DeepMind):** "Context engineering is a system, not a string. Context isn't just a static prompt template — it's the output of a system that runs before the main LLM call."
+> **Key insight from Philipp Schmid (Google DeepMind):** "Context engineering is a system, not a string. Context isn't just a static prompt template - it's the output of a system that runs before the main LLM call."

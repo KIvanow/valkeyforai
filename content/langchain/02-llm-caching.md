@@ -70,7 +70,7 @@ async def cached_llm_call(prompt: str) -> dict:
             "latency_ms": cache_time * 1000,
         }
 
-    # 2. Cache miss — call LLM
+    # 2. Cache miss - call LLM
     start = time.time()
     response = await model.ainvoke([HumanMessage(content=prompt)])
     llm_time = time.time() - start
@@ -85,7 +85,7 @@ async def cached_llm_call(prompt: str) -> dict:
     }
 ```
 
-## Step 4: Benchmark — The Dramatic Difference
+## Step 4: Benchmark - The Dramatic Difference
 
 ```python
 import asyncio
@@ -93,11 +93,11 @@ import asyncio
 async def benchmark():
     prompt = "What is Amazon ElastiCache for Valkey?"
 
-    # First call — cache miss
+    # First call - cache miss
     r1 = await cached_llm_call(prompt)
     print(f"❌ Cache MISS: {r1['latency_ms']:.0f}ms")
 
-    # Second call — cache hit
+    # Second call - cache hit
     r2 = await cached_llm_call(prompt)
     print(f"✅ Cache HIT:  {r2['latency_ms']:.1f}ms")
 

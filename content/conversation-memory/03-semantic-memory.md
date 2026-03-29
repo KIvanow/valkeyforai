@@ -1,6 +1,6 @@
 ## The Problem
 
-Cookbook 01-02 gave us ordered chat history. But what if a user asks "How do I deploy?" and three weeks ago they discussed deployment in a different session? `LRANGE` can't find that — it only reads the current session. You need **semantic search** : finding messages by meaning, not position.
+Cookbook 01-02 gave us ordered chat history. But what if a user asks "How do I deploy?" and three weeks ago they discussed deployment in a different session? `LRANGE` can't find that - it only reads the current session. You need **semantic search** : finding messages by meaning, not position.
 
 ## Architecture
 
@@ -69,7 +69,7 @@ async def create_memory_index(client):
     print("✅ Index created")
 ```
 
-**Key Insight:** `FT.CREATE ON JSON` indexes fields inside JSON documents. The HNSW algorithm provides approximate nearest-neighbor search with ~99% recall at sub-millisecond latency. Once created, the index automatically updates as you add/remove documents.
+**The key thing here:** `FT.CREATE ON JSON` indexes fields inside JSON documents. The HNSW algorithm provides approximate nearest-neighbor search with ~99% recall at sub-millisecond latency. Once created, the index automatically updates as you add/remove documents.
 
 ## Step 3: Store Messages with Embeddings
 
@@ -115,7 +115,7 @@ async def search_memory(client, query, limit=5, user_id=None):
     query_embedding = get_embedding(query)
     vec_bytes = struct.pack(f"<{len(query_embedding)}f", *query_embedding)
 
-    # Build filter — optionally scope to a user
+    # Build filter - optionally scope to a user
     filter_expr = "*"
     if user_id:
         filter_expr = f"@user_id:{{{user_id}}}"
@@ -171,7 +171,7 @@ async def demo():
     # [0.234] (sess_2) Valkey HNSW index provides sub-millisecond vector search
 ```
 
-**Notice:** The query "How do I deploy?" matched messages about "blue-green strategy" and "CI/CD pipeline" — completely different words, but semantically related. This is the power of vector search. And it found them across different sessions.
+**Notice:** The query "How do I deploy?" matched messages about "blue-green strategy" and "CI/CD pipeline" - completely different words, but semantically related. This is the power of vector search. And it found them across different sessions.
 
 ## Valkey Commands Reference
 
@@ -198,6 +198,6 @@ Combine vector search with metadata filters in a single query:
 "(@session_id:{sess_1})==>[KNN 5 @embedding $vec AS score]"
 ```
 
-Filters are applied _before_ the vector search, so they're fast — Valkey only computes distances for matching documents.
+Filters are applied _before_ the vector search, so they're fast - Valkey only computes distances for matching documents.
 
-**What's Next:** Semantic memory finds relevant past conversations. But what about avoiding redundant LLM calls? In the next cookbook, we'll build a semantic cache that returns cached responses when a similar question was already answered.
+**Next up:** Semantic memory finds relevant past conversations. But what about avoiding redundant LLM calls? In the next cookbook, we'll build a semantic cache that returns cached responses when a similar question was already answered.

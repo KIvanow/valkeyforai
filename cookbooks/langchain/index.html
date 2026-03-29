@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LangChain Cookbooks — Valkey for AI</title>
+<title>LangChain Cookbooks - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -46,12 +46,12 @@ h1 .gradient{background:linear-gradient(135deg,var(--g1),var(--g2));-webkit-back
 <div class="container">
 <div class="breadcrumb"><a href="/">Home</a> → <a href="/#frameworks">Frameworks</a> → LangChain</div>
 <h1>LangChain + <span class="gradient">Valkey</span></h1>
-<p class="subtitle">4 cookbooks for using Valkey as the complete persistence layer for LangGraph agents — checkpointing, semantic caching, and vector search through the official langgraph-checkpoint-aws package.</p>
+<p class="subtitle">4 cookbooks for using Valkey as the complete persistence layer for LangGraph agents - checkpointing, semantic caching, and vector search through the official langgraph-checkpoint-aws package.</p>
 <div class="cookbook-list">
 <a class="cb-card" href="01-getting-started.html"><div class="cb-num">01</div><div class="cb-content"><h3>Getting Started</h3><p>Install <code>langgraph-checkpoint-aws[valkey]</code>, connect to Valkey, and persist your first LangGraph agent with <code>ValkeySaver</code>.</p><div class="cb-tags"><span>Beginner</span><span>~15 min</span><span>Python</span></div></div></a>
 <a class="cb-card" href="02-llm-caching.html"><div class="cb-num">02</div><div class="cb-content"><h3>LLM Response Caching</h3><p>Cache expensive Bedrock LLM calls with <code>ValkeyCache</code>. Benchmark cache miss (~4s) vs cache hit (~1ms) and slash your inference costs.</p><div class="cb-tags"><span>Intermediate</span><span>~20 min</span><span>Python</span></div></div></a>
 <a class="cb-card" href="03-semantic-search.html"><div class="cb-num">03</div><div class="cb-content"><h3>Semantic Search with ValkeyStore</h3><p>Store documents with vector embeddings and search by meaning using HNSW indexes, <code>BedrockEmbeddings</code>, and <code>ValkeyStore</code>.</p><div class="cb-tags"><span>Intermediate</span><span>~20 min</span><span>Python</span></div></div></a>
-<a class="cb-card" href="04-full-agent.html"><div class="cb-num">04</div><div class="cb-content"><h3>Full Agent — All Three Components</h3><p>Wire <code>ValkeySaver</code> + <code>ValkeyStore</code> + <code>ValkeyCache</code> together in an IT help desk agent with semantic caching and checkpointing.</p><div class="cb-tags"><span>Advanced</span><span>~25 min</span><span>Python</span></div></div></a>
+<a class="cb-card" href="04-full-agent.html"><div class="cb-num">04</div><div class="cb-content"><h3>Full Agent - All Three Components</h3><p>Wire <code>ValkeySaver</code> + <code>ValkeyStore</code> + <code>ValkeyCache</code> together in an IT help desk agent with semantic caching and checkpointing.</p><div class="cb-tags"><span>Advanced</span><span>~25 min</span><span>Python</span></div></div></a>
 </div>
 <div style="margin-top:48px;background:linear-gradient(135deg,rgba(168,85,247,.15),rgba(99,102,241,.15));border:1px solid rgba(168,85,247,.25);border-radius:16px;padding:32px;text-align:center">
 <h3 style="font-size:22px;font-weight:800;margin-bottom:8px">🎮 Try It Live</h3>

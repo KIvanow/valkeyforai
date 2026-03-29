@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>03 — Hybrid Search — Valkey for AI</title>
+<title>03 - Hybrid Search - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../cookbook.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
@@ -30,7 +30,7 @@ pre code.hljs{background:transparent!important;padding:0}
 
 
 <h2>Why Hybrid Search?</h2>
-<p>Pure vector search returns the most similar items globally. But often you need to filter first — &quot;find similar articles, but only in the <em>tech</em> category&quot; or &quot;similar products under $50.&quot; Hybrid search lets you combine vector KNN with traditional filters in a single query.</p>
+<p>Pure vector search returns the most similar items globally. But often you need to filter first - &quot;find similar articles, but only in the <em>tech</em> category&quot; or &quot;similar products under $50.&quot; Hybrid search lets you combine vector KNN with traditional filters in a single query.</p>
 <h2>Step 1: Create an Index with Multiple Field Types</h2>
 <pre><code class="language-python">import valkey
 import numpy as np
@@ -104,7 +104,7 @@ for i in range(1, len(results), 2):
     fd = {fields[j]: fields[j+1] for j in range(0, len(fields), 2)}
     print(f&quot;  {results[i]}: {fd.get(&#39;title&#39;)} [{fd.get(&#39;category&#39;)}]&quot;)
 
-# Only returns tech articles — food and finance are excluded!
+# Only returns tech articles - food and finance are excluded!
 </code></pre>
 <h2>Step 4: NUMERIC Range + Vector Search</h2>
 <p>Find similar articles from <strong>2024 or later</strong> :</p>
@@ -182,7 +182,7 @@ for i in range(1, len(results), 2):
 
 
 <div class="nav-prev-next">
-<a href="02-semantic-search.html" class="prev"><span class="label">← Previous</span><span class="title">02 — Semantic Search</span></a>
+<a href="02-semantic-search.html" class="prev"><span class="label">← Previous</span><span class="title">02 - Semantic Search</span></a>
 <div></div>
 </div>
 </article>

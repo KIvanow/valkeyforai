@@ -2,10 +2,10 @@
 
 ML models need features at inference time. A feature store bridges offline training and online serving. Valkey is the ideal online store because:
 
-  * **Sub-millisecond reads** — HGETALL returns a full feature vector in ~0.1ms
-  * **Atomic writes** — HSET updates features without race conditions
-  * **Built-in TTL** — Stale features expire automatically with EXPIRE
-  * **Batch pipelines** — Fetch 100 entities in ~0.3ms with pipelining
+  * **Sub-millisecond reads** - HGETALL returns a full feature vector in ~0.1ms
+  * **Atomic writes** - HSET updates features without race conditions
+  * **Built-in TTL** - Stale features expire automatically with EXPIRE
+  * **Batch pipelines** - Fetch 100 entities in ~0.3ms with pipelining
 
 ## Prerequisites
 
@@ -31,7 +31,7 @@ docker exec valkey valkey-cli ping
 pip install valkey
 ```
 
-The `redis` Python package works with Valkey out of the box — no special drivers needed.
+The `redis` Python package works with Valkey out of the box - no special drivers needed.
 
 ## Step 3: Understand the Data Model
 
@@ -49,11 +49,11 @@ fs:v1:user_profile:user_123 → {
 }
 ```
 
-**Key Insight:** Valkey Hashes map perfectly to feature vectors. Each field is a feature, each key is an entity. One `HGETALL` returns the full feature vector. One `HMGET` returns selective features. Both complete in ~0.1ms.
+**How it works:** Valkey Hashes map perfectly to feature vectors. Each field is a feature, each key is an entity. One `HGETALL` returns the full feature vector. One `HMGET` returns selective features. Both complete in ~0.1ms.
 
 ## Step 4: Write Features with Raw Valkey Commands
 
-Let's start with raw Valkey commands to understand what's happening under the hood:
+Starting with raw Valkey commands to see what's happening under the hood:
 
 ```python
 import valkey
@@ -71,10 +71,10 @@ features = {
     "_feature_view": "user_profile",
 }
 
-# HSET — write all features atomically
+# HSET - write all features atomically
 client.hset(key, mapping=features)
 
-# Set TTL — features expire after 1 hour
+# Set TTL - features expire after 1 hour
 client.expire(key, 3600)
 
 print("✅ Features written")
@@ -83,12 +83,12 @@ print("✅ Features written")
 ## Step 5: Read Features Back
 
 ```python
-# HGETALL — read all features for an entity
+# HGETALL - read all features for an entity
 result = client.hgetall("fs:v1:user_profile:user_001")
 print(result)
 # {'age': '28', 'lifetime_value': '1250.50', 'segment': 'premium', ...}
 
-# HMGET — read only specific features
+# HMGET - read only specific features
 age, ltv = client.hmget("fs:v1:user_profile:user_001", ["age", "lifetime_value"])
 print(f"age={age}, ltv={ltv}")
 # age=28, ltv=1250.50
@@ -96,7 +96,7 @@ print(f"age={age}, ltv={ltv}")
 
 ## Step 6: Use the Library
 
-Now let's do the same thing with the feature store library, which handles serialization, TTL, and metadata for you.
+Here's the same thing with the feature store library, which handles serialization, TTL, and metadata for you.
 
 **Note:** This step uses the feature store library from the [valkeyforai GitHub repo](https://github.com/meet-bhagdev/valkeyforai). Clone it first:
 
@@ -128,18 +128,18 @@ user_features = FeatureView(
 # Register it with the store
 store.register(user_features)
 
-# Write — automatically serializes, sets TTL, adds metadata
+# Write - automatically serializes, sets TTL, adds metadata
 store.write("user_profile", "user_001", {
     "age": 28,
     "lifetime_value": 1250.50,
     "segment": "premium",
 })
 
-# Read — automatically deserializes to correct Python types
+# Read - automatically deserializes to correct Python types
 features = store.read("user_profile", "user_001")
 print(features)
 # {'age': 28, 'lifetime_value': 1250.5, 'segment': 'premium'}
-# Note: age is int, ltv is float — types are preserved!
+# Note: age is int, ltv is float - types are preserved!
 ```
 
 ## How It Works Under the Hood
@@ -152,6 +152,6 @@ Write + TTL (pipelined)| `HSET` \+ `EXPIRE` in pipeline| ~0.2ms
 Read all features| `HGETALL key`| ~0.1ms  
 Read specific features| `HMGET key field1 field2`| ~0.1ms  
   
-**What's Next:** In the next cookbook, we'll cover batch serving — fetching features for 100+ entities in a single round-trip using Valkey pipelines.
+**Next up:** In the next cookbook, we'll cover batch serving - fetching features for 100+ entities in a single round-trip using Valkey pipelines.
 
-[ Next → 02 — Online Feature Serving ](<02-online-serving.html>)
+[ Next → 02 - Online Feature Serving ](<02-online-serving.html>)
