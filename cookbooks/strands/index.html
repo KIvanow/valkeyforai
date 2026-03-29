@@ -3,95 +3,64 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Strands Agents + Valkey Cookbooks — Valkey for AI</title>
+<title>Strands Cookbooks — Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../cookbook.css">
 <style>
-.cookbook-grid{display:grid;gap:16px;margin:32px 0}
-.cookbook-card{display:block;background:var(--card);border:1px solid var(--brd);border-radius:var(--radius);padding:24px;transition:.2s}
-.cookbook-card:hover{background:var(--card-h);text-decoration:none;transform:translateY(-2px)}
-.cookbook-card .num{font-size:13px;color:var(--g2);font-weight:700;margin-bottom:8px}
-.cookbook-card h3{margin:0 0 8px;font-size:17px}
-.cookbook-card p{font-size:14px;color:var(--t3);margin:0 0 12px}
-.cookbook-card .tags{display:flex;gap:8px;flex-wrap:wrap}
-.hero{text-align:center;padding:60px 24px 40px;max-width:800px;margin:0 auto}
-.hero h1{font-size:44px;margin-bottom:16px}
-.hero .lead{margin:0 auto 32px;max-width:600px}
-.arch{background:var(--card);border:1px solid var(--brd);border-radius:12px;padding:20px;font-family:'SF Mono','Fira Code',monospace;font-size:13px;line-height:1.6;color:var(--t2);white-space:pre;overflow-x:auto;margin:0 auto 40px;max-width:700px}
-.cta{display:flex;gap:16px;justify-content:center;margin-top:32px;flex-wrap:wrap}
-.cta a{padding:10px 24px;border-radius:100px;font-size:14px;font-weight:600;transition:.2s}
-.cta a.primary{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff}
-.cta a.secondary{border:1px solid var(--brd);color:var(--t2)}
-.cta a:hover{transform:translateY(-1px);text-decoration:none}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#000;--card:rgba(255,255,255,.04);--card-h:rgba(255,255,255,.07);--brd:rgba(255,255,255,.08);--t1:#f5f5f7;--t2:rgba(245,245,247,.6);--t3:rgba(245,245,247,.4);--g1:#a855f7;--g2:#6366f1;--radius:16px;--font:'Inter',system-ui,sans-serif}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font);background:var(--bg);color:var(--t1);line-height:1.6;min-height:100vh}
+a{color:inherit;text-decoration:none}
+.nav{position:sticky;top:0;z-index:100;background:rgba(0,0,0,.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--brd);padding:16px 32px}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px}
+.nav-logo img{height:24px}
+.accent{color:#a855f7}
+.nav-links{display:flex;gap:24px;align-items:center;font-size:14px;color:var(--t2)}
+.nav-links a:hover{color:var(--t1)}
+.container{max-width:900px;margin:0 auto;padding:40px 24px}
+.breadcrumb{font-size:13px;color:var(--t3);margin-bottom:32px}
+.breadcrumb a{color:var(--g1)}
+h1{font-size:48px;font-weight:900;letter-spacing:-.04em;line-height:1.1;margin-bottom:16px}
+h1 .gradient{background:linear-gradient(135deg,var(--g1),var(--g2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{font-size:18px;color:var(--t2);max-width:600px;margin-bottom:48px}
+.cookbook-list{display:flex;flex-direction:column;gap:16px}
+.cb-card{display:flex;gap:20px;background:var(--card);border:1px solid var(--brd);border-radius:var(--radius);padding:24px;transition:.3s;cursor:pointer}
+.cb-card:hover{background:var(--card-h);border-color:rgba(255,255,255,.12);transform:translateY(-2px)}
+.cb-num{font-size:32px;font-weight:900;background:linear-gradient(135deg,var(--g1),var(--g2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;min-width:48px}
+.cb-content h3{font-size:18px;font-weight:700;margin-bottom:4px}
+.cb-content p{font-size:14px;color:var(--t2);margin-bottom:8px}
+.cb-tags{display:flex;gap:6px}
+.cb-tags span{padding:3px 10px;border-radius:100px;font-size:11px;font-weight:600;background:rgba(168,85,247,.12);color:var(--g1)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:100px;font-size:14px;font-weight:600;transition:.2s}
+.btn-secondary{background:var(--card);color:var(--t1);border:1px solid var(--brd)}
+.github-section{margin-top:40px;text-align:center}
+@media(max-width:600px){h1{font-size:32px}.cb-card{flex-direction:column;gap:8px}}
 </style>
-</head>
+<style>body.light{--bg:#fff;--bg-elevated:#f5f5f7;--bg-card:rgba(0,0,0,.03);--bg-card-hover:rgba(0,0,0,.06);--bg-card-h:rgba(0,0,0,.06);--bg2:#f5f5f7;--card:rgba(0,0,0,.03);--card-h:rgba(0,0,0,.06);--brd:rgba(0,0,0,.08);--brd-h:rgba(0,0,0,.15);--t1:#1d1d1f;--t2:rgba(29,29,31,.6);--t3:rgba(29,29,31,.4)}.theme-toggle{background:rgba(128,128,128,.12);border:1px solid rgba(128,128,128,.2);border-radius:100px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;position:fixed;top:18px;right:24px;z-index:1001}</style></head>
 <body>
 <nav class="nav"><div class="nav-inner">
 <a href="/" class="nav-logo"><img src="/valkey-logo.svg" alt="Valkey"><span class="accent">for ai</span></a>
-<div class="nav-links"><a href="/#use-cases">Use Cases</a><a href="/#frameworks">Frameworks</a><a href="https://github.com/strands-agents/sdk-python" target="_blank">GitHub</a></div>
+<div class="nav-links"><a href="/#use-cases">Use Cases</a><a href="/#frameworks">Frameworks</a><a href="https://github.com/meet-bhagdev/valkeyforai/tree/main" target="_blank">GitHub</a></div>
 </div></nav>
-
-<div class="hero">
-<h1>Strands Agents</h1>
-<p class="lead">Use the official <code>strands-valkey-session-manager</code> community package to back your Strands agents with Valkey — persisting conversation history, session metadata, and agent state across invocations.</p>
-<div class="arch">┌──────────────────────────────────────────────────────────┐
-│                    Strands Agent                         │
-│       Agent(session_manager=ValkeySessionManager(...))   │
-└──────────────────────────┬───────────────────────────────┘
-                           │ strands-valkey-session-manager
-                           ▼
-              ┌────────────────────────────────────────┐
-              │   ElastiCache for Valkey               │
-              │                                        │
-              │  session:{id}                → Session │
-              │  session:{id}:agent:{id}     → Agent   │
-              │  session:{id}:agent:{id}:    →         │
-              │    message:{msg_id}          → Message │
-              └────────────────────────────────────────┘</div>
+<div class="container">
+<div class="breadcrumb"><a href="/">Home</a> → <a href="/#frameworks">Frameworks</a> → Strands</div>
+<h1>Strands + <span class="gradient">Valkey</span></h1>
+<p class="subtitle">3 cookbooks for using the official strands-valkey-session-manager community package to back Strands agents with Valkey — persisting conversation history, session metadata, and agent state.</p>
+<div class="cookbook-list">
+<a class="cb-card" href="01-getting-started.html"><div class="cb-num">01</div><div class="cb-content"><h3>Getting Started</h3><p>Install <code>strands-valkey-session-manager</code>, create a <code>ValkeySessionManager</code>, and wire it to a Strands agent. Persistent conversation history in under 15 minutes.</p><div class="cb-tags"><span>Beginner</span><span>~15 min</span><span>Python</span></div></div></a>
+<a class="cb-card" href="02-session-internals.html"><div class="cb-num">02</div><div class="cb-content"><h3>Managing Session Data</h3><p>Understand the key structure and shape of session, agent, and message objects. Use <code>list_messages()</code> and other built-in API methods to inspect and manage session data.</p><div class="cb-tags"><span>Intermediate</span><span>~15 min</span><span>Python</span></div></div></a>
+<a class="cb-card" href="03-managing-your-session-store.html"><div class="cb-num">03</div><div class="cb-content"><h3>Managing Your Session Store</h3><p>Delete sessions on logout, query raw keys to inspect what's stored, and share a session across multiple agents in an orchestrator pattern.</p><div class="cb-tags"><span>Intermediate</span><span>~15 min</span><span>Python</span></div></div></a>
 </div>
-
-<article>
-<div class="cookbook-grid">
-
-<a href="01-getting-started.html" class="cookbook-card">
-<div class="num">01</div>
-<h3>Getting Started</h3>
-<p>Install <code>strands-valkey-session-manager</code>, create a <code>ValkeySessionManager</code>, and wire it to a Strands agent. Persistent conversation history in under 15 minutes.</p>
-<div class="tags">
-<span class="diff-easy">Beginner</span>
-<span class="lang">Python</span>
-<span style="background:rgba(255,255,255,.06);color:var(--t3)">~15 min</span>
+<div style="margin-top:48px;background:linear-gradient(135deg,rgba(168,85,247,.15),rgba(99,102,241,.15));border:1px solid rgba(168,85,247,.25);border-radius:16px;padding:32px;text-align:center">
+<h3 style="font-size:22px;font-weight:800;margin-bottom:8px">🎮 Try It Live</h3>
+<p style="font-size:14px;color:var(--t2);margin-bottom:20px">Chat with a Strands agent and watch session data persist to Valkey in real-time.</p>
+<a href="/demo/strands.html" class="btn" style="background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;padding:12px 28px;border-radius:100px;font-size:14px;font-weight:600">Open Interactive Demo</a>
 </div>
-</a>
-
-<a href="02-session-internals.html" class="cookbook-card">
-<div class="num">02</div>
-<h3>Managing Session Data</h3>
-<p>Understand the key structure and shape of session, agent, and message objects stored by the package. Use <code>list_messages()</code> and other built-in API methods to inspect and manage session data.</p>
-<div class="tags">
-<span class="diff-mid">Intermediate</span>
-<span class="lang">Python</span>
-<span style="background:rgba(255,255,255,.06);color:var(--t3)">~20 min</span>
+<div class="github-section">
+<a href="https://github.com/strands-agents/sdk-python" target="_blank" class="btn btn-secondary">⭐ Strands on GitHub</a>
+<a href="https://github.com/meet-bhagdev/valkeyforai/tree/main" target="_blank" class="btn btn-secondary" style="margin-left:8px">📦 valkeyforai Repo</a>
 </div>
-</a>
-
-<a href="03-managing-your-session-store.html" class="cookbook-card">
-<div class="num">03</div>
-<h3>Managing Your ValkeySession Store</h3>
-<p>Delete sessions on logout, query raw keys to inspect what's stored, and share a session across multiple agents in an orchestrator pattern.</p>
-<div class="tags">
-<span class="diff-mid">Intermediate</span>
-<span class="lang">Python</span>
-<span style="background:rgba(255,255,255,.06);color:var(--t3)">~15 min</span>
 </div>
-</a>
-
-</div>
-
-<div class="cta">
-<a href="01-getting-started.html" class="primary">Start Cookbook 01 →</a>
-<a href="/demo/strands.html" class="secondary">🎮 Try Live Demo</a>
-</div>
-</article>
-</body>
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg></button><script>function toggleTheme(){var b=document.body,l=b.classList.toggle("light");localStorage.setItem("theme",l?"light":"dark")}(function(){if(localStorage.getItem("theme")==="light")document.body.classList.add("light")})()</script></body>
 </html>
