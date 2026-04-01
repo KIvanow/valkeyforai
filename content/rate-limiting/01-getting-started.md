@@ -22,7 +22,7 @@ docker exec valkey valkey-cli ping
 pip install valkey
 ```
 
-That's it - no special libraries needed. The `redis` Python package works with Valkey out of the box.
+That's it - no special libraries needed. The `valkey` package is the official Valkey Python client.
 
 ## Step 3: Your First Rate Limiter
 

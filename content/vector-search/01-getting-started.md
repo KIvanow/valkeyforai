@@ -23,7 +23,7 @@ valkey-cli MODULE LIST
 pip install valkey numpy
 ```
 
-We use the standard `redis` Python client. Module commands like `FT.CREATE` are called via `execute_command()`.
+We use the standard `valkey` Python client. Module commands like `FT.CREATE` are called via `execute_command()`.
 
 ## Step 3: Create a Vector Index
 

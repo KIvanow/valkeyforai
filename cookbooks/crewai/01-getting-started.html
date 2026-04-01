@@ -49,7 +49,7 @@ pre code.hljs{background:transparent!important;padding:0}
 <h2>Step 2: Install Dependencies</h2>
 <pre><code class="language-bash">pip install crewai valkey-glide boto3
 </code></pre>
-<p><strong>Why GLIDE?</strong> Valkey GLIDE is the official Valkey client with a Rust core for high performance. It supports both standalone Valkey and ElastiCache for Valkey clusters. Unlike <code>redis-py</code>, GLIDE is purpose-built for Valkey and supports all Valkey-specific features including <code>FT.*</code> search commands.</p>
+<p><strong>Why GLIDE?</strong> Valkey GLIDE is the official Valkey client with a Rust core for high performance. It supports both standalone Valkey and ElastiCache for Valkey clusters. Unlike generic Redis clients, GLIDE is purpose-built for Valkey and supports all Valkey-specific features including <code>FT.*</code> search commands.</p>
 <h2>Step 3: Connection Configuration</h2>
 <pre><code class="language-python">from dataclasses import dataclass
 import os

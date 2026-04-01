@@ -63,7 +63,7 @@ print(stream_health(&quot;ai:tasks&quot;))
             for msg in ps.listen():
                 if msg[&quot;type&quot;] == &quot;message&quot;:
                     print(msg[&quot;data&quot;])
-        except redis.ConnectionError:
+        except valkey.ConnectionError:
             print(&quot;Disconnected, reconnecting in 2s...&quot;)
             time.sleep(2)
 </code></pre>

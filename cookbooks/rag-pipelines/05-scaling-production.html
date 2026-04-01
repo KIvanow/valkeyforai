@@ -134,7 +134,7 @@ client = valkey.Valkey(connection_pool=pool)
 
 # Or use async with connection pool
 pool = valkey.asyncio.ConnectionPool.from_url(
-    &quot;redis://localhost:6379&quot;,
+    &quot;valkey://localhost:6379&quot;,
     max_connections=50
 )
 </code></pre>
@@ -148,9 +148,9 @@ client = valkey.Valkey(
 )
 
 # For cluster mode
-from redis.cluster import RedisCluster
+from valkey.cluster import ValkeyCluster
 
-cluster = RedisCluster(
+cluster = ValkeyCluster(
     host=&#39;my-cluster.cache.amazonaws.com&#39;,
     port=6379,
     ssl=True

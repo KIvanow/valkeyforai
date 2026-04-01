@@ -110,7 +110,7 @@ FT.SEARCH idx:docs
 ## Python Implementation
 
 ```python
-from redis.commands.search.query import Query
+from valkey.commands.search.query import Query
 
 def hybrid_search(query_text, category=None, date_range=None, k=5):
     # Build filter

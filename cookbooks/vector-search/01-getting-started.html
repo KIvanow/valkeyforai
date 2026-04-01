@@ -45,7 +45,7 @@ valkey-server --loadmodule /usr/lib/valkey/libsearch.so
 <h2>Step 2: Install Python Client</h2>
 <pre><code class="language-bash">pip install valkey numpy
 </code></pre>
-<p>We use the standard <code>redis</code> Python client. Module commands like <code>FT.CREATE</code> are called via <code>execute_command()</code>.</p>
+<p>We use the standard <code>valkey</code> Python client. Module commands like <code>FT.CREATE</code> are called via <code>execute_command()</code>.</p>
 <h2>Step 3: Create a Vector Index</h2>
 <pre><code class="language-python">import valkey
 import numpy as np

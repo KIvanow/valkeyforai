@@ -23,7 +23,7 @@ Every LLM call needs context assembled from up to 5 sources. Valkey can serve as
 ## Prerequisites
 
 - Valkey with the **valkey-search** module (or ElastiCache for Valkey 8.2+)
-- Python 3.9+ with `redis`
+- Python 3.9+ with `valkey`
 
 ```bash
 pip install valkey

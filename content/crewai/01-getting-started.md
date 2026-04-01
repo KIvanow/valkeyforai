@@ -30,7 +30,7 @@ docker exec valkey valkey-cli PING
 pip install crewai valkey-glide boto3
 ```
 
-**Why GLIDE?** Valkey GLIDE is the official Valkey client with a Rust core for high performance. It supports both standalone Valkey and ElastiCache for Valkey clusters. Unlike `redis-py`, GLIDE is purpose-built for Valkey and supports all Valkey-specific features including `FT.*` search commands.
+**Why GLIDE?** Valkey GLIDE is the official Valkey client with a Rust core for high performance. It supports both standalone Valkey and ElastiCache for Valkey clusters. Unlike generic Redis clients, GLIDE is purpose-built for Valkey and supports all Valkey-specific features including `FT.*` search commands.
 
 ## Step 3: Connection Configuration
 

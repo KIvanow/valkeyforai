@@ -17,7 +17,7 @@
 ## Prerequisites
 
 - Valkey with the **valkey-search** module loaded (or ElastiCache for Valkey 8.2+)
-- Python 3.9+ with `redis`, `openai`, `numpy`
+- Python 3.9+ with `valkey`, `openai`, `numpy`
 
 ## Step 1: Setup
 

@@ -40,7 +40,7 @@ def resilient_subscriber(channel):
             for msg in ps.listen():
                 if msg["type"] == "message":
                     print(msg["data"])
-        except redis.ConnectionError:
+        except valkey.ConnectionError:
             print("Disconnected, reconnecting in 2s...")
             time.sleep(2)
 ```

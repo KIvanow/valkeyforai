@@ -230,10 +230,10 @@ print(f&quot;Pool connections: {len(pool._available_connections)}&quot;)
         features = store.read(view_name, entity_id)
         if features:
             return features
-    except redis.ConnectionError:
+    except valkey.ConnectionError:
         # Valkey is down - use defaults
         print(f&quot;⚠️ Valkey connection error, using defaults&quot;)
-    except redis.TimeoutError:
+    except valkey.TimeoutError:
         # Valkey is slow - use defaults
         print(f&quot;⚠️ Valkey timeout, using defaults&quot;)
     except Exception as e:

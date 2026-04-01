@@ -31,7 +31,7 @@ docker exec valkey valkey-cli ping
 pip install valkey
 ```
 
-The `redis` Python package works with Valkey out of the box - no special drivers needed.
+The `valkey` package is the official Valkey Python client - no special drivers needed.
 
 ## Step 3: Understand the Data Model
 

@@ -228,10 +228,10 @@ def safe_read_features(store, view_name: str, entity_id: str, defaults: dict = N
         features = store.read(view_name, entity_id)
         if features:
             return features
-    except redis.ConnectionError:
+    except valkey.ConnectionError:
         # Valkey is down - use defaults
         print(f"⚠️ Valkey connection error, using defaults")
-    except redis.TimeoutError:
+    except valkey.TimeoutError:
         # Valkey is slow - use defaults
         print(f"⚠️ Valkey timeout, using defaults")
     except Exception as e:
