@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Live Semantic Caching Demo - Valkey for AI</title>
+<title>Live Semantic Caching - Valkey for AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 .nav{position:sticky;top:0;z-index:100;background:rgba(0,0,0,.8);backdrop-filter:blur(20px);border-bottom:1px solid #222;padding:16px 32px}
@@ -11,140 +11,168 @@
 .nav-logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px;color:#e5e5e5;text-decoration:none}
 .nav-logo img{height:24px}
 .accent{color:#6366f1}
-.nav-links{display:flex;gap:24px;align-items:center;font-size:14px}
+.nav-links{display:flex;gap:24px;font-size:14px}
 .nav-links a{color:#888;text-decoration:none}
 .nav-links a:hover{color:#e5e5e5}
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0a0a0a;--card:#141414;--brd:#222;--t1:#e5e5e5;--t2:#888;--t3:#555;--g1:#a855f7;--g2:#6366f1;--green:#22c55e;--red:#ef4444;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace}
-body{font-family:var(--font);background:var(--bg);color:var(--t1);line-height:1.5;min-height:100vh}
+body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#e5e5e5;line-height:1.5}
+a{color:inherit}
 .container{max-width:900px;margin:0 auto;padding:32px 24px}
 h1{font-size:28px;font-weight:800;margin-bottom:4px}
-.sub{color:var(--t2);font-size:14px;margin-bottom:24px}
-.live-badge{display:inline-block;background:#22c55e22;color:#22c55e;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;margin-bottom:16px}
-.panel{background:var(--card);border:1px solid var(--brd);border-radius:12px;padding:20px;margin-bottom:16px}
-.panel h3{font-size:14px;font-weight:700;margin-bottom:12px;color:var(--t2)}
-input{background:#0a0a0a;border:1px solid var(--brd);border-radius:8px;padding:8px 12px;color:var(--t1);font-family:var(--font);font-size:14px;width:100%}
-.btn{padding:8px 20px;border-radius:8px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:.2s}
-.btn-primary{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff}
-.btn-primary:hover{opacity:.9}
-.btn-secondary{background:var(--card);color:var(--t1);border:1px solid var(--brd)}
-.btn-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-.quick-btn{padding:6px 14px;border-radius:100px;font-size:12px;border:1px solid var(--brd);background:transparent;color:var(--t2);cursor:pointer}
-.quick-btn:hover{border-color:var(--g1);color:var(--t1)}
-.result{background:#0a0a0a;border:1px solid var(--brd);border-radius:8px;padding:12px;margin-top:8px;font-size:13px}
-.hit{border-color:var(--green);background:#22c55e08}
-.miss{border-color:var(--red);background:#ef444408}
-.cmd-log{background:#0a0a0a;border:1px solid var(--brd);border-radius:8px;padding:12px;font-family:var(--mono);font-size:12px;color:var(--g1);max-height:200px;overflow-y:auto;white-space:pre-wrap}
-.stats{display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap}
-.stat{text-align:center}
-.stat .num{font-size:24px;font-weight:800}
-.stat .lbl{font-size:11px;color:var(--t3);text-transform:uppercase}
-.latency{color:var(--green)}
+.sub{color:#888;font-size:14px;margin-bottom:24px}
+.live{display:inline-block;background:#22c55e22;color:#22c55e;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;margin-bottom:16px}
+.panel{background:#141414;border:1px solid #222;border-radius:12px;padding:20px;margin-bottom:16px}
+.panel h3{font-size:14px;font-weight:700;margin-bottom:12px;color:#888}
+input{background:#0a0a0a;border:1px solid #222;border-radius:8px;padding:10px 14px;color:#e5e5e5;font-family:inherit;font-size:14px;width:100%}
+.btn{padding:9px 20px;border-radius:8px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:.15s}
+.btn-p{background:linear-gradient(135deg,#a855f7,#6366f1);color:#fff}
+.btn-p:hover{opacity:.9}
+.btn-s{background:#141414;color:#e5e5e5;border:1px solid #222}
+.row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
+.stats{display:flex;gap:20px;margin-bottom:20px;flex-wrap:wrap}
+.stat .n{font-size:22px;font-weight:800}
+.stat .l{font-size:11px;color:#555;text-transform:uppercase}
+.hit-color{color:#22c55e}
+.miss-color{color:#ef4444}
+.result{background:#0a0a0a;border:1px solid #222;border-radius:8px;padding:14px;margin-top:10px;font-size:14px}
+.result.hit{border-color:#22c55e;background:#22c55e08}
+.result.miss{border-color:#ef4444;background:#ef444408}
+.result .label{font-size:12px;font-weight:700;margin-bottom:6px}
+.result .response{margin:8px 0;line-height:1.6}
+.result .meta{font-size:12px;color:#888;margin-top:8px}
+.latency-bar{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:12px}
+.latency-bar .bar{height:8px;border-radius:4px;min-width:2px;transition:width .3s}
+.latency-bar .bar.fast{background:#22c55e}
+.latency-bar .bar.slow{background:#ef4444}
+.cmd{background:#0a0a0a;border:1px solid #222;border-radius:8px;padding:12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#a855f7;max-height:220px;overflow-y:auto;white-space:pre-wrap;word-break:break-all}
+.quick{padding:6px 14px;border-radius:100px;font-size:12px;border:1px solid #222;background:transparent;color:#888;cursor:pointer}
+.quick:hover{border-color:#a855f7;color:#e5e5e5}
+.history{margin-top:12px}
+.history-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1a1a1a;font-size:13px}
+.history-item .prompt{flex:1;color:#e5e5e5}
+.history-item .badge{padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600}
+.history-item .badge.hit{background:#22c55e22;color:#22c55e}
+.history-item .badge.miss{background:#ef444422;color:#ef4444}
+.history-item .ms{color:#888;font-family:'JetBrains Mono',monospace;font-size:11px;width:80px;text-align:right}
 </style>
 </head>
 <body>
 <nav class="nav"><div class="nav-inner"><a href="/" class="nav-logo"><img src="/valkey-logo.svg" alt="Valkey"><span class="accent">for ai</span></a><div class="nav-links"><a href="/#use-cases">Use Cases</a><a href="/#frameworks">Frameworks</a><a href="https://github.com/meet-bhagdev/valkeyforai/tree/main" target="_blank">GitHub</a></div></div></nav>
 <script>if(window.self!==window.top)document.querySelector('.nav').style.display='none'</script>
 <div class="container">
-<div class="live-badge">LIVE - Connected to Valkey 9</div>
+<div class="live">LIVE - Real Valkey 9 + Bedrock Claude Haiku + Titan Embeddings</div>
 <h1>Semantic Caching</h1>
-<p class="sub">Cache a response, then query with similar text. Real FT.SEARCH KNN with cosine distance scores from a live Valkey instance.</p>
+<p class="sub">Ask a question and Claude answers it (takes ~2s). Ask a similar question and the cached response comes back in ~1ms. Real embeddings, real LLM, real cache.</p>
 
 <div class="stats">
-<div class="stat"><div class="num" style="color:var(--green)" id="hits">0</div><div class="lbl">Cache Hits</div></div>
-<div class="stat"><div class="num" style="color:var(--red)" id="misses">0</div><div class="lbl">Misses</div></div>
-<div class="stat"><div class="num latency" id="lastLatency">-</div><div class="lbl">Last Latency</div></div>
+<div class="stat"><div class="n hit-color" id="nHit">0</div><div class="l">Cache Hits</div></div>
+<div class="stat"><div class="n miss-color" id="nMiss">0</div><div class="l">Cache Misses</div></div>
+<div class="stat"><div class="n" style="color:#a855f7" id="saved">0ms</div><div class="l">Time Saved</div></div>
 </div>
 
 <div class="panel">
-<h3>1. Set Up Cache Index</h3>
-<button class="btn btn-primary" onclick="setupCache()">FT.CREATE cache index</button>
-<span id="setupStatus" style="margin-left:12px;font-size:13px;color:var(--t2)"></span>
+<h3>1. Set Up Cache</h3>
+<button class="btn btn-p" onclick="setupCache()">FT.CREATE cache index</button>
+<span id="cacheStatus" style="margin-left:12px;font-size:13px;color:#888"></span>
 </div>
 
 <div class="panel">
-<h3>2. Cache a Response</h3>
-<input type="text" id="storePrompt" placeholder="Prompt..." value="What is Valkey?" style="margin-bottom:8px">
-<input type="text" id="storeResponse" placeholder="Response..." value="Valkey is an open-source, high-performance in-memory data store.">
-<button class="btn btn-primary" onclick="storeEntry()" style="margin-top:8px">HSET + EXPIRE</button>
-<div class="btn-row" style="margin-top:8px">
-<button class="quick-btn" onclick="presetStore('How does vector search work?','Vector search uses HNSW indexes to find nearest neighbors in sub-millisecond time.')">+ vector search Q&A</button>
-<button class="quick-btn" onclick="presetStore('What is semantic caching?','Semantic caching stores LLM responses indexed by meaning, not exact text match.')">+ caching Q&A</button>
+<h3>2. Ask a Question</h3>
+<p style="font-size:13px;color:#888;margin-bottom:10px">First query calls Claude (~2s). Similar queries hit the cache (~1ms). Try asking the same thing in different words.</p>
+<input type="text" id="prompt" placeholder="Ask anything..." value="What is Valkey and what is it used for?">
+<div class="row">
+<button class="btn btn-p" onclick="ask()" id="askBtn">Ask (checks cache first)</button>
+<button class="btn btn-s" onclick="setupCache()">Flush Cache</button>
 </div>
-<div id="storeResult"></div>
+<div class="row">
+<button class="quick" onclick="sp('What is Valkey and what is it used for?')">What is Valkey?</button>
+<button class="quick" onclick="sp('Explain Valkey to me')">Explain Valkey</button>
+<button class="quick" onclick="sp('How does vector search work?')">Vector search?</button>
+<button class="quick" onclick="sp('What are HNSW indexes?')">HNSW indexes?</button>
+<button class="quick" onclick="sp('Best pasta recipe')">Pasta recipe</button>
+</div>
+<div id="result"></div>
 </div>
 
 <div class="panel">
-<h3>3. Query the Cache</h3>
-<input type="text" id="queryPrompt" placeholder="Ask something..." value="Explain Valkey to me">
-<div class="btn-row">
-<button class="btn btn-primary" onclick="queryCache()">FT.SEARCH KNN</button>
-</div>
-<div class="btn-row" style="margin-top:4px">
-<button class="quick-btn" onclick="setQuery('What is Valkey?')">What is Valkey?</button>
-<button class="quick-btn" onclick="setQuery('Explain Valkey to me')">Explain Valkey to me</button>
-<button class="quick-btn" onclick="setQuery('How to cook pasta')">How to cook pasta</button>
-<button class="quick-btn" onclick="setQuery('Tell me about vector search')">Tell me about vector search</button>
-</div>
-<div id="queryResult"></div>
+<h3>Query History</h3>
+<div class="history" id="history"><div style="color:#555;font-size:13px">Ask a question to start...</div></div>
 </div>
 
 <div class="panel">
 <h3>Valkey Commands</h3>
-<div class="cmd-log" id="cmdLog">// Commands will appear here...</div>
+<div class="cmd" id="cmd">// Click "FT.CREATE" then ask a question...</div>
+</div>
+
+<div class="panel" style="border-color:#333">
+<h3>Deploy This Yourself</h3>
+<p style="font-size:13px;color:#888">Clone the repo and run with Docker Compose. Requires AWS credentials with Bedrock access.</p>
+<pre class="cmd" style="color:#888;margin-top:8px">git clone https://github.com/meet-bhagdev/valkeyforai.git
+cd valkeyforai/demo/live/deploy
+docker compose up --build</pre>
 </div>
 </div>
 
 <script>
-const API = "https://2vipd3rcpj.execute-api.us-east-1.amazonaws.com";
-let hitCount = 0, missCount = 0;
+const API="https://2vipd3rcpj.execute-api.us-east-1.amazonaws.com";
+let hits=0,misses=0,timeSaved=0;
+function sp(t){document.getElementById('prompt').value=t}
+function log(t){const e=document.getElementById('cmd');e.textContent+='\n> '+t;e.scrollTop=e.scrollHeight}
 
-function log(cmd) {
-  const el = document.getElementById("cmdLog");
-  el.textContent += "\n> " + cmd;
-  el.scrollTop = el.scrollHeight;
-}
-function setQuery(t) { document.getElementById("queryPrompt").value = t; }
-function presetStore(p, r) { document.getElementById("storePrompt").value = p; document.getElementById("storeResponse").value = r; }
-
-async function setupCache() {
-  const res = await fetch(API + "/api/semantic-cache/setup", {method:"POST"});
-  const data = await res.json();
-  document.getElementById("setupStatus").textContent = "Index created";
-  log(data.command);
-}
-
-async function storeEntry() {
-  const prompt = document.getElementById("storePrompt").value;
-  const response = document.getElementById("storeResponse").value;
-  const res = await fetch(API + "/api/semantic-cache/store", {
-    method:"POST", headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({prompt, response})
-  });
-  const data = await res.json();
-  document.getElementById("storeResult").innerHTML = '<div class="result">Cached at <code>' + data.key + '</code> in ' + data.latency_ms + 'ms</div>';
-  data.commands.forEach(c => log(c));
+async function setupCache(){
+  const r=await(await fetch(API+'/api/semantic-cache/setup',{method:'POST'})).json();
+  document.getElementById('cacheStatus').textContent='Cache index created. Ready.';
+  document.getElementById('cacheStatus').style.color='#22c55e';
+  hits=0;misses=0;timeSaved=0;
+  document.getElementById('nHit').textContent=0;
+  document.getElementById('nMiss').textContent=0;
+  document.getElementById('saved').textContent='0ms';
+  document.getElementById('history').innerHTML='<div style="color:#555;font-size:13px">Cache flushed. Ask a question...</div>';
+  log('FT.CREATE demo:cache_idx ...');
 }
 
-async function queryCache() {
-  const prompt = document.getElementById("queryPrompt").value;
-  const res = await fetch(API + "/api/semantic-cache/query", {
-    method:"POST", headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({prompt, threshold: 0.3})
-  });
-  const data = await res.json();
-  document.getElementById("lastLatency").textContent = data.latency_ms + "ms";
-  log(data.command);
+async function ask(){
+  const prompt=document.getElementById('prompt').value;
+  if(!prompt)return;
+  document.getElementById('askBtn').disabled=true;
+  document.getElementById('askBtn').textContent='Thinking...';
+  try{
+    const r=await(await fetch(API+'/api/semantic-cache/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,threshold:0.20})})).json();
+    r.commands.forEach(c=>log(c));
 
-  if (data.hit) {
-    hitCount++;
-    document.getElementById("hits").textContent = hitCount;
-    document.getElementById("queryResult").innerHTML = '<div class="result hit"><strong>CACHE HIT</strong> (score: ' + data.score + ', ' + data.latency_ms + 'ms)<br>Matched: "' + data.cached_prompt + '"<br>Response: ' + data.cached_response + '</div>';
-  } else {
-    missCount++;
-    document.getElementById("misses").textContent = missCount;
-    document.getElementById("queryResult").innerHTML = '<div class="result miss"><strong>CACHE MISS</strong> (nearest score: ' + data.score + ', ' + data.latency_ms + 'ms)<br>No similar prompt found above threshold.</div>';
+    const lat=r.latency;
+    if(r.hit){
+      hits++;timeSaved+=lat.total_ms>10?2000:0;// estimate saved LLM time
+      document.getElementById('nHit').textContent=hits;
+      document.getElementById('saved').textContent=Math.round(timeSaved)+'ms';
+      const maxBar=200;
+      document.getElementById('result').innerHTML=
+        '<div class="result hit"><div class="label" style="color:#22c55e">CACHE HIT</div>'+
+        '<div class="response">'+r.response+'</div>'+
+        '<div class="meta">Matched: "'+r.cached_prompt+'" | Cosine distance: '+r.score+'</div>'+
+        '<div class="latency-bar"><span>'+lat.total_ms+'ms total</span><div class="bar fast" style="width:'+Math.max(2,lat.total_ms/10)+'px"></div><span style="color:#22c55e">'+lat.search_ms+'ms Valkey search</span></div>'+
+        '</div>';
+    }else{
+      misses++;
+      document.getElementById('nMiss').textContent=misses;
+      const barW=Math.min(200,lat.llm_ms/20);
+      document.getElementById('result').innerHTML=
+        '<div class="result miss"><div class="label" style="color:#ef4444">CACHE MISS - Called Claude Haiku</div>'+
+        '<div class="response">'+r.response+'</div>'+
+        '<div class="meta">'+(r.score?'Nearest score: '+r.score+' (above threshold)':'No cached entries yet')+'</div>'+
+        '<div class="latency-bar"><span>'+lat.total_ms+'ms total</span><div class="bar slow" style="width:'+barW+'px"></div><span style="color:#ef4444">'+lat.llm_ms+'ms Claude</span> | <span style="color:#22c55e">'+lat.search_ms+'ms Valkey</span></div>'+
+        '</div>';
+    }
+    // Add to history
+    const hist=document.getElementById('history');
+    if(hist.querySelector('div[style]'))hist.innerHTML='';
+    const badge=r.hit?'<span class="badge hit">HIT</span>':'<span class="badge miss">MISS</span>';
+    hist.innerHTML='<div class="history-item"><span class="prompt">'+prompt+'</span>'+badge+'<span class="ms">'+lat.total_ms+'ms</span></div>'+hist.innerHTML;
+  }catch(e){
+    document.getElementById('result').innerHTML='<div class="result miss">Error: '+e.message+'</div>';
   }
+  document.getElementById('askBtn').disabled=false;
+  document.getElementById('askBtn').textContent='Ask (checks cache first)';
 }
 </script>
 </body>

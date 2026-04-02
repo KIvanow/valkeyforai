@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  valkey:
+    image: valkey/valkey-bundle:latest
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 5s
+      retries: 5
+
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - VALKEY_HOST=valkey
+      - AWS_REGION=us-east-1
+    depends_on:
+      valkey:
+        condition: service_healthy
