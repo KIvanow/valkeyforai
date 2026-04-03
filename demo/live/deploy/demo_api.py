@@ -203,3 +203,99 @@ def rl_check(req: RateLimitReq):
 def rl_reset():
     for k in vk.keys("demo:rl:*"): vk.delete(k)
     return {"status": "ok"}
+
+
+# --- Conversation Memory ---
+
+class ConvSendReq(BaseModel):
+    session_id: str = "demo-session"
+    role: str = "user"
+    content: str
+
+class ConvHistoryReq(BaseModel):
+    session_id: str = "demo-session"
+    last_n: int = 50
+
+@app.post("/api/conversation/send")
+def conv_send(req: ConvSendReq):
+    t0 = time.perf_counter()
+    key = f"demo:chat:{req.session_id}"
+    msg = json.dumps({"role": req.role, "content": req.content, "ts": time.time()})
+    vk.rpush(key, msg.encode())
+    vk.expire(key, 3600)
+    length = vk.llen(key)
+    ms = (time.perf_counter() - t0) * 1000
+    return {"length": length, "latency_ms": round(ms, 2),
+            "commands": [f'RPUSH {key} \'{{"role":"{req.role}","content":"{req.content[:40]}..."}}\'', f"EXPIRE {key} 3600"]}
+
+@app.post("/api/conversation/history")
+def conv_history(req: ConvHistoryReq):
+    t0 = time.perf_counter()
+    key = f"demo:chat:{req.session_id}"
+    raw = vk.lrange(key, -req.last_n, -1)
+    ms = (time.perf_counter() - t0) * 1000
+    messages = [json.loads(m.decode() if isinstance(m, bytes) else m) for m in raw]
+    ttl = vk.ttl(key)
+    return {"messages": messages, "count": len(messages), "ttl": ttl, "latency_ms": round(ms, 2),
+            "command": f"LRANGE {key} -{req.last_n} -1"}
+
+@app.post("/api/conversation/reset")
+def conv_reset():
+    for k in vk.keys("demo:chat:*"): vk.delete(k)
+    return {"status": "ok"}
+
+# --- Feature Store ---
+
+class FeatureWriteReq(BaseModel):
+    entity_type: str = "user"
+    entity_id: str
+    features: dict
+
+class FeatureReadReq(BaseModel):
+    entity_type: str = "user"
+    entity_id: str
+
+class FeatureBatchReq(BaseModel):
+    entity_type: str = "user"
+    entity_ids: list[str]
+
+@app.post("/api/feature-store/write")
+def fs_write(req: FeatureWriteReq):
+    t0 = time.perf_counter()
+    key = f"demo:fs:v1:{req.entity_type}:{req.entity_id}"
+    data = {**{k: str(v) for k, v in req.features.items()}, "_updated_at": str(time.time())}
+    vk.hset(key, mapping={k: v.encode() if isinstance(v, str) else v for k, v in data.items()})
+    vk.expire(key, 3600)
+    ms = (time.perf_counter() - t0) * 1000
+    return {"key": key, "fields": len(data), "latency_ms": round(ms, 2),
+            "commands": [f"HSET {key} " + " ".join(f'{k} "{v}"' for k, v in data.items()), f"EXPIRE {key} 3600"]}
+
+@app.post("/api/feature-store/read")
+def fs_read(req: FeatureReadReq):
+    t0 = time.perf_counter()
+    key = f"demo:fs:v1:{req.entity_type}:{req.entity_id}"
+    raw = vk.hgetall(key)
+    ms = (time.perf_counter() - t0) * 1000
+    features = {k.decode(): v.decode() for k, v in raw.items()} if raw else {}
+    return {"key": key, "features": features, "latency_ms": round(ms, 2), "command": f"HGETALL {key}"}
+
+@app.post("/api/feature-store/batch")
+def fs_batch(req: FeatureBatchReq):
+    t0 = time.perf_counter()
+    keys = [f"demo:fs:v1:{req.entity_type}:{eid}" for eid in req.entity_ids]
+    pipe = vk.pipeline(transaction=False)
+    for k in keys:
+        pipe.hgetall(k)
+    results = pipe.execute()
+    ms = (time.perf_counter() - t0) * 1000
+    entities = []
+    for k, raw in zip(keys, results):
+        features = {fk.decode(): fv.decode() for fk, fv in raw.items()} if raw else {}
+        entities.append({"key": k, "features": features})
+    return {"count": len(entities), "entities": entities, "latency_ms": round(ms, 2),
+            "command": f"PIPELINE: {len(keys)}x HGETALL (1 round-trip)"}
+
+@app.post("/api/feature-store/reset")
+def fs_reset():
+    for k in vk.keys("demo:fs:*"): vk.delete(k)
+    return {"status": "ok"}

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Feature Store - Valkey for AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+.nav{position:sticky;top:0;z-index:100;background:rgba(0,0,0,.8);backdrop-filter:blur(20px);border-bottom:1px solid #222;padding:16px 32px}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px;color:#e5e5e5;text-decoration:none}
+.nav-logo img{height:24px}.accent{color:#6366f1}
+.nav-links{display:flex;gap:24px;font-size:14px}.nav-links a{color:#888;text-decoration:none}.nav-links a:hover{color:#e5e5e5}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#e5e5e5;line-height:1.5}
+.container{max-width:900px;margin:0 auto;padding:32px 24px}
+h1{font-size:28px;font-weight:800;margin-bottom:4px}
+.sub{color:#888;font-size:14px;margin-bottom:24px}
+.live{display:inline-block;background:#22c55e22;color:#22c55e;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;margin-bottom:16px}
+.panel{background:#141414;border:1px solid #222;border-radius:12px;padding:20px;margin-bottom:16px}
+.panel h3{font-size:14px;font-weight:700;margin-bottom:12px;color:#888}
+input,select{background:#0a0a0a;border:1px solid #222;border-radius:8px;padding:10px 14px;color:#e5e5e5;font-family:inherit;font-size:14px}
+.btn{padding:9px 20px;border-radius:8px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:.15s}
+.btn-p{background:linear-gradient(135deg,#a855f7,#6366f1);color:#fff}.btn-p:hover{opacity:.9}
+.btn-s{background:#141414;color:#e5e5e5;border:1px solid #222}
+.btn-d{background:#ef4444;color:#fff}
+.row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
+.stats{display:flex;gap:20px;margin-bottom:20px;flex-wrap:wrap}
+.stat .n{font-size:22px;font-weight:800;color:#a855f7}.stat .l{font-size:11px;color:#555;text-transform:uppercase}
+.stat .n.g{color:#22c55e}
+.result{background:#0a0a0a;border:1px solid #222;border-radius:8px;padding:14px;margin-top:8px;font-size:13px}
+.result .k{color:#a855f7;font-family:'JetBrains Mono',monospace;font-size:12px;margin-bottom:6px}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:8px}
+.feat{background:#141414;border:1px solid #222;border-radius:6px;padding:8px 10px}
+.feat .fname{font-size:11px;color:#888;text-transform:uppercase}.feat .fval{font-size:15px;font-weight:700}
+.cmd{background:#0a0a0a;border:1px solid #222;border-radius:8px;padding:12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#a855f7;max-height:200px;overflow-y:auto;white-space:pre-wrap;word-break:break-all}
+.batch-result{margin-top:10px;font-size:13px}
+.batch-result .entity{background:#0a0a0a;border:1px solid #1a1a1a;border-radius:6px;padding:8px 12px;margin-bottom:4px;display:flex;justify-content:space-between}
+.batch-result .entity .eid{color:#a855f7;font-family:'JetBrains Mono',monospace;font-size:12px}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="nav-inner"><a href="/" class="nav-logo"><img src="/valkey-logo.svg" alt="Valkey"><span class="accent">for ai</span></a><div class="nav-links"><a href="/#use-cases">Use Cases</a><a href="/#frameworks">Frameworks</a><a href="https://github.com/meet-bhagdev/valkeyforai/tree/main" target="_blank">GitHub</a></div></div></nav>
+<script>if(window.self!==window.top)document.querySelector('.nav').style.display='none'</script>
+<div class="container">
+<div class="live">LIVE - Real Valkey 9 HSET + HGETALL + Pipeline</div>
+<h1>Feature Store</h1>
+<p class="sub">Real HSET, HGETALL, and pipelined batch reads against a live Valkey instance. Write features for ML entities, read them back in sub-millisecond time, and batch-fetch 100 entities in a single round-trip.</p>
+
+<div class="stats">
+<div class="stat"><div class="n" id="nEnt">0</div><div class="l">Entities</div></div>
+<div class="stat"><div class="n" id="nW">0</div><div class="l">Writes</div></div>
+<div class="stat"><div class="n" id="nR">0</div><div class="l">Reads</div></div>
+<div class="stat"><div class="n g" id="lastMs">-</div><div class="l">Last Latency</div></div>
+</div>
+
+<div class="panel">
+<h3>1. Write Features (HSET)</h3>
+<div class="row" style="margin-top:0">
+<input type="text" id="entityId" placeholder="Entity ID" value="user_001" style="width:140px">
+</div>
+<div class="row">
+<button class="btn btn-p" onclick="writeSample()">Write Sample Features</button>
+<button class="btn btn-s" onclick="write10()">Write 10 Users</button>
+<button class="btn btn-s" onclick="resetFs()">Reset</button>
+</div>
+<div id="writeResult"></div>
+</div>
+
+<div class="panel">
+<h3>2. Read Features (HGETALL)</h3>
+<div class="row" style="margin-top:0">
+<input type="text" id="readId" placeholder="Entity ID" value="user_001" style="width:140px">
+<button class="btn btn-p" onclick="readEntity()">HGETALL</button>
+</div>
+<div id="readResult"></div>
+</div>
+
+<div class="panel">
+<h3>3. Batch Read (Pipeline)</h3>
+<p style="font-size:13px;color:#888;margin-bottom:10px">Fetch multiple entities in a single pipeline round-trip. Write 10 users first, then batch-read them all.</p>
+<div class="row" style="margin-top:0">
+<button class="btn btn-p" onclick="batchRead()">Pipeline HGETALL x10</button>
+<button class="btn btn-s" onclick="batchRead100()">Pipeline x100</button>
+</div>
+<div id="batchResult"></div>
+</div>
+
+<div class="panel">
+<h3>Valkey Commands</h3>
+<div class="cmd" id="cmd">// Write or read features to start...</div>
+</div>
+
+<div class="panel" style="border-color:#333">
+<h3>Deploy This Yourself</h3>
+<pre class="cmd" style="color:#888">git clone https://github.com/meet-bhagdev/valkeyforai.git
+cd valkeyforai/demo/live/deploy
+docker compose up --build</pre>
+</div>
+</div>
+
+<script>
+const API="https://2vipd3rcpj.execute-api.us-east-1.amazonaws.com";
+let writes=0,reads=0,entities=new Set();
+
+function log(t){const e=document.getElementById('cmd');e.textContent+='\n> '+t;e.scrollTop=e.scrollHeight}
+
+async function writeSample(){
+  const eid=document.getElementById('entityId').value||'user_001';
+  const features={age:28+Math.floor(Math.random()*30),lifetime_value:(Math.random()*5000).toFixed(2),
+    segment:['premium','standard','trial'][Math.floor(Math.random()*3)],
+    login_count:Math.floor(Math.random()*500),churn_risk:(Math.random()).toFixed(3)};
+  const r=await(await fetch(API+'/api/feature-store/write',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({entity_id:eid,features})})).json();
+  writes++;entities.add(eid);
+  document.getElementById('nW').textContent=writes;
+  document.getElementById('nEnt').textContent=entities.size;
+  document.getElementById('lastMs').textContent=r.latency_ms+'ms';
+  r.commands.forEach(c=>log(c));
+  document.getElementById('writeResult').innerHTML='<div class="result"><div class="k">'+r.key+'</div>'+r.fields+' fields written in '+r.latency_ms+'ms</div>';
+}
+
+async function write10(){
+  for(let i=1;i<=10;i++){
+    document.getElementById('entityId').value='user_'+String(i).padStart(3,'0');
+    await writeSample();
+  }
+}
+
+async function readEntity(){
+  const eid=document.getElementById('readId').value||'user_001';
+  const r=await(await fetch(API+'/api/feature-store/read',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({entity_id:eid})})).json();
+  reads++;
+  document.getElementById('nR').textContent=reads;
+  document.getElementById('lastMs').textContent=r.latency_ms+'ms';
+  log(r.command);
+  if(!Object.keys(r.features).length){
+    document.getElementById('readResult').innerHTML='<div class="result">No features found for '+eid+'. Write some first.</div>';return;
+  }
+  let html='<div class="result"><div class="k">'+r.key+' ('+r.latency_ms+'ms)</div><div class="feat-grid">';
+  for(const[k,v]of Object.entries(r.features)){
+    if(k.startsWith('_'))continue;
+    html+='<div class="feat"><div class="fname">'+k+'</div><div class="fval">'+v+'</div></div>';
+  }
+  html+='</div></div>';
+  document.getElementById('readResult').innerHTML=html;
+}
+
+async function batchRead(){
+  const ids=[];for(let i=1;i<=10;i++)ids.push('user_'+String(i).padStart(3,'0'));
+  const r=await(await fetch(API+'/api/feature-store/batch',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({entity_ids:ids})})).json();
+  reads+=r.count;
+  document.getElementById('nR').textContent=reads;
+  document.getElementById('lastMs').textContent=r.latency_ms+'ms';
+  log(r.command);
+  let html='<div class="batch-result"><div style="margin-bottom:8px;font-size:13px"><strong>'+r.count+' entities</strong> in <strong style="color:#22c55e">'+r.latency_ms+'ms</strong> (1 pipeline round-trip)</div>';
+  r.entities.forEach(e=>{
+    const f=e.features;
+    const summary=Object.entries(f).filter(([k])=>!k.startsWith('_')).map(([k,v])=>k+'='+v).join(', ');
+    html+='<div class="entity"><span class="eid">'+e.key.split(':').pop()+'</span><span style="color:#888;font-size:12px">'+summary.slice(0,80)+'</span></div>';
+  });
+  html+='</div>';
+  document.getElementById('batchResult').innerHTML=html;
+}
+
+async function batchRead100(){
+  const ids=[];for(let i=1;i<=100;i++)ids.push('user_'+String(i).padStart(3,'0'));
+  // Write them first
+  for(let i=11;i<=100;i++){
+    const eid='user_'+String(i).padStart(3,'0');
+    const features={age:20+Math.floor(Math.random()*40),ltv:(Math.random()*5000).toFixed(2),segment:['premium','standard','trial'][i%3]};
+    await fetch(API+'/api/feature-store/write',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({entity_id:eid,features})});
+    entities.add(eid);
+  }
+  document.getElementById('nEnt').textContent=entities.size;
+  // Now batch read all 100
+  const r=await(await fetch(API+'/api/feature-store/batch',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({entity_ids:ids})})).json();
+  reads+=r.count;
+  document.getElementById('nR').textContent=reads;
+  document.getElementById('lastMs').textContent=r.latency_ms+'ms';
+  log(r.command);
+  document.getElementById('batchResult').innerHTML='<div class="batch-result"><div style="font-size:15px;font-weight:700;margin-bottom:4px">'+r.count+' entities in <span style="color:#22c55e">'+r.latency_ms+'ms</span></div><div style="font-size:13px;color:#888">Single pipeline round-trip. That\'s '+((r.latency_ms/r.count)*1000).toFixed(0)+' microseconds per entity.</div></div>';
+}
+
+async function resetFs(){
+  await fetch(API+'/api/feature-store/reset',{method:'POST'});
+  writes=0;reads=0;entities.clear();
+  document.getElementById('nW').textContent=0;document.getElementById('nR').textContent=0;
+  document.getElementById('nEnt').textContent=0;document.getElementById('lastMs').textContent='-';
+  document.getElementById('writeResult').innerHTML='';document.getElementById('readResult').innerHTML='';
+  document.getElementById('batchResult').innerHTML='';
+  log('DEL demo:fs:*');
+}
+</script>
+</body>
+</html>

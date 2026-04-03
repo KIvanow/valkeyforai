@@ -56,6 +56,18 @@ h1{font-size:36px;font-weight:900;margin-bottom:8px}
 <div class="tech">INCR + EXPIRE pipeline | ~0.5ms per request</div>
 </a>
 
+<a class="card" href="conversation-memory.html">
+<h3>Conversation Memory</h3>
+<p>Send messages, switch sessions, load history. Real RPUSH, LRANGE, and EXPIRE with automatic TTL expiry on sessions.</p>
+<div class="tech">RPUSH + LRANGE + EXPIRE | LIST data structure</div>
+</a>
+
+<a class="card" href="feature-store.html">
+<h3>Feature Store</h3>
+<p>Write ML features, read them back, batch-fetch 100 entities in a single pipeline round-trip. See per-entity microsecond latencies.</p>
+<div class="tech">HSET + HGETALL + Pipeline | HASH data structure</div>
+</a>
+
 <div class="info">
 <strong>Backend:</strong> FastAPI + Valkey 9 (<code>valkey-bundle</code>) on EC2 with Amazon Bedrock for embeddings and LLM.<br><br>
 <strong>Deploy it yourself:</strong><br>
