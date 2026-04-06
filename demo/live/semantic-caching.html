@@ -94,7 +94,7 @@ h1{font-size:26px;font-weight:800;margin-bottom:4px}
 <div class="step locked" id="s3">
 <span class="step-num">3</span><h3>Ask the same thing differently</h3>
 <p class="explain">This is a different string, but it means the same thing. Valkey will find the cached response because the embeddings are similar.</p>
-<div class="prompt-display">"Explain Valkey to me"</div>
+<div class="prompt-display">"Can you explain what Valkey is and what it's used for?"</div>
 <button class="btn btn-p" id="b3" onclick="doStep3()">Run</button>
 <div id="r3"></div>
 </div>
@@ -145,7 +145,7 @@ docker compose up --build</code>
 <strong style="color:#e5e5e5">On every query:</strong><br>
 1. Embed the prompt (Titan, 1536-dim)<br>
 2. FT.SEARCH the cache index for similar embeddings<br>
-3a. If cosine distance &lt; 0.20 → <span style="color:#22c55e">cache hit</span>, return stored response<br>
+3a. If cosine distance &lt; 0.30 → <span style="color:#22c55e">cache hit</span>, return stored response<br>
 3b. If no match → <span style="color:#ef4444">cache miss</span>, call Claude, store result with HSET + EXPIRE
 </p>
 </div>
@@ -193,7 +193,7 @@ function outcomeHTML(data){
       <span class="tag miss-tag">CACHE MISS</span>
       <div class="response-text">${data.response}</div>
       <div class="timing">
-        ${data.score ? 'Nearest match distance: '+data.score+' (above 0.20 threshold)' : 'Cache is empty'}<br>
+        ${data.score ? 'Nearest match distance: '+data.score+' (above 0.30 threshold)' : 'Cache is empty'}<br>
         Embed: <span>${data.latency.embed_ms}ms</span> +
         Valkey search: <span>${data.latency.search_ms}ms</span> +
         Claude: <span class="slow">${data.latency.llm_ms}ms</span> =
@@ -204,7 +204,7 @@ function outcomeHTML(data){
 }
 
 async function callCache(prompt){
-  const r=await fetch(API+'/api/semantic-cache/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,threshold:0.20})});
+  const r=await fetch(API+'/api/semantic-cache/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,threshold:0.30})});
   return await r.json();
 }
 
@@ -239,11 +239,11 @@ async function doStep2(){
 async function doStep3(){
   document.getElementById('b3').disabled=true;
   document.getElementById('b3').textContent='Embedding + searching cache...';
-  log('Embed "Explain Valkey to me" → [1536-dim vector]', true);
+  log('Embed "Can you explain what Valkey is and what it\'s used for?" → [1536-dim vector]', true);
   log('FT.SEARCH demo:cache_idx "*=>[KNN 1 @embedding $v]" PARAMS 2 v [query_vector] DIALECT 2');
-  const d=await callCache("Explain Valkey to me");
+  const d=await callCache("Can you explain what Valkey is and what it's used for?");
   hitLatency=d.latency.total_ms;
-  log('Found match! Distance: '+d.score+' < threshold 0.20 → returning cached response', true);
+  log('Found match! Distance: '+d.score+' < threshold 0.30 → returning cached response', true);
   document.getElementById('r3').innerHTML=outcomeHTML(d);
   done('s3');
   unlock('s4');
