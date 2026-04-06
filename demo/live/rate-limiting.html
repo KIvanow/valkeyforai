@@ -9,150 +9,233 @@
 .nav{position:sticky;top:0;z-index:100;background:rgba(0,0,0,.8);backdrop-filter:blur(20px);border-bottom:1px solid #222;padding:16px 32px}
 .nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
 .nav-logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px;color:#e5e5e5;text-decoration:none}
-.nav-logo img{height:24px}
-.accent{color:#6366f1}
-.nav-links{display:flex;gap:24px;font-size:14px}
-.nav-links a{color:#888;text-decoration:none}
-.nav-links a:hover{color:#e5e5e5}
+.nav-logo img{height:24px}.accent{color:#6366f1}
+.nav-links{display:flex;gap:24px;font-size:14px}.nav-links a{color:#888;text-decoration:none}.nav-links a:hover{color:#e5e5e5}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#e5e5e5;line-height:1.5}
-a{color:inherit}
-.container{max-width:900px;margin:0 auto;padding:32px 24px}
-h1{font-size:28px;font-weight:800;margin-bottom:4px}
-.sub{color:#888;font-size:14px;margin-bottom:24px}
-.live{display:inline-block;background:#22c55e22;color:#22c55e;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;margin-bottom:16px}
-.panel{background:#141414;border:1px solid #222;border-radius:12px;padding:20px;margin-bottom:16px}
-.panel h3{font-size:14px;font-weight:700;margin-bottom:12px;color:#888}
-.btn{padding:10px 24px;border-radius:8px;font-size:14px;font-weight:600;border:none;cursor:pointer;transition:.15s}
-.btn-p{background:linear-gradient(135deg,#a855f7,#6366f1);color:#fff}
-.btn-p:hover{opacity:.9}
-.btn-d{background:#ef4444;color:#fff}
-.btn-s{background:#141414;color:#e5e5e5;border:1px solid #222}
+body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#e5e5e5;line-height:1.6}a{color:inherit}
+.wrap{display:flex;max-width:1200px;margin:0 auto;padding:24px;gap:24px}
+.main{flex:1;min-width:0}.sidebar{width:340px;flex-shrink:0;position:sticky;top:80px;align-self:flex-start;max-height:calc(100vh - 100px);overflow-y:auto}
+h1{font-size:26px;font-weight:800;margin-bottom:4px}.sub{color:#888;font-size:14px;margin-bottom:24px}
+.live{display:inline-block;background:#22c55e22;color:#22c55e;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;margin-bottom:12px}
+.step{background:#141414;border:1px solid #222;border-radius:12px;padding:20px;margin-bottom:16px;transition:opacity .3s}
+.step.locked{opacity:.3;pointer-events:none}
+.step-num{display:inline-block;width:24px;height:24px;border-radius:50%;background:#222;color:#888;font-size:12px;font-weight:700;text-align:center;line-height:24px;margin-right:8px}
+.step.done .step-num{background:#22c55e;color:#fff}.step.active .step-num{background:linear-gradient(135deg,#a855f7,#6366f1);color:#fff}
+.step h3{display:inline;font-size:15px;font-weight:700}.step .explain{color:#888;font-size:13px;margin:10px 0}
+.btn{padding:10px 24px;border-radius:8px;font-size:14px;font-weight:600;border:none;cursor:pointer;transition:.15s;margin-top:8px}
+.btn-p{background:linear-gradient(135deg,#a855f7,#6366f1);color:#fff}.btn-p:hover{opacity:.9}.btn-p:disabled{opacity:.5;cursor:wait}
+.btn-d{background:#ef4444;color:#fff}.btn-s{background:#141414;color:#e5e5e5;border:1px solid #222}
 .row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;align-items:center}
-.stats{display:flex;gap:20px;margin-bottom:20px;flex-wrap:wrap}
-.stat .n{font-size:22px;font-weight:800}
-.stat .l{font-size:11px;color:#555;text-transform:uppercase}
-.bar-wrap{background:#1a1a1a;border-radius:8px;height:36px;margin:16px 0;overflow:hidden;position:relative}
+.outcome{margin-top:12px;border-radius:8px;padding:14px;font-size:13px;line-height:1.6;background:#0a0a0a;border:1px solid #222}
+.bar-wrap{background:#1a1a1a;border-radius:8px;height:36px;margin:12px 0;overflow:hidden;position:relative}
 .bar-fill{height:100%;border-radius:8px;transition:width .15s;background:linear-gradient(90deg,#a855f7,#6366f1)}
 .bar-fill.full{background:#ef4444}
 .bar-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:14px;font-weight:700;color:#fff}
-.log{background:#0a0a0a;border:1px solid #222;border-radius:8px;padding:12px;max-height:280px;overflow-y:auto}
+.log{background:#0a0a0a;border:1px solid #222;border-radius:8px;padding:12px;max-height:250px;overflow-y:auto}
 .log-entry{padding:5px 0;border-bottom:1px solid #1a1a1a;display:flex;justify-content:space-between;font-size:13px;font-family:'JetBrains Mono',monospace}
-.log-entry.ok{color:#22c55e}
-.log-entry.no{color:#ef4444}
-.cmd{background:#0a0a0a;border:1px solid #222;border-radius:8px;padding:12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#a855f7;max-height:180px;overflow-y:auto;white-space:pre-wrap}
-.ttl-bar{margin-top:8px;font-size:12px;color:#888}
-.ttl-bar .inner{height:4px;background:#a855f7;border-radius:2px;transition:width 1s linear}
-.latencies{display:flex;gap:4px;margin-top:12px;align-items:flex-end;height:60px}
+.log-entry.ok{color:#22c55e}.log-entry.no{color:#ef4444}
+.sidebar-panel{background:#141414;border:1px solid #222;border-radius:12px;padding:16px;margin-bottom:16px}
+.sidebar-panel h4{font-size:13px;font-weight:700;color:#888;margin-bottom:10px}
+.cmd-log{font-family:'JetBrains Mono',monospace;font-size:11px;color:#a855f7;line-height:1.8;white-space:pre-wrap;word-break:break-all}
+.cmd-log .comment{color:#555}.cmd-log .new{animation:flash .5s}
+@keyframes flash{from{background:#a855f722}to{background:transparent}}
+.latencies{display:flex;gap:3px;align-items:flex-end;height:50px;margin-top:8px}
 .lat-bar{width:6px;border-radius:2px 2px 0 0;transition:height .15s}
+.stats{display:flex;gap:20px;margin-bottom:16px;flex-wrap:wrap}
+.stat .n{font-size:22px;font-weight:800}.stat .l{font-size:11px;color:#555;text-transform:uppercase}
+.deploy{background:#141414;border:1px solid #333;border-radius:12px;padding:16px;margin-top:16px;font-size:13px;color:#888}
+.deploy code{background:#0a0a0a;padding:8px 12px;border-radius:6px;display:block;margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#888;white-space:pre}
+@media(max-width:900px){.wrap{flex-direction:column}.sidebar{width:100%;position:static;max-height:none}}
 </style>
 </head>
 <body>
 <nav class="nav"><div class="nav-inner"><a href="/" class="nav-logo"><img src="/valkey-logo.svg" alt="Valkey"><span class="accent">for ai</span></a><div class="nav-links"><a href="/#use-cases">Use Cases</a><a href="/#frameworks">Frameworks</a><a href="https://github.com/meet-bhagdev/valkeyforai/tree/main" target="_blank">GitHub</a></div></div></nav>
 <script>if(window.self!==window.top)document.querySelector('.nav').style.display='none'</script>
-<div class="container">
+<div class="wrap">
+<div class="main">
 <div class="live">LIVE - Real Valkey 9 INCR + EXPIRE Pipeline</div>
 <h1>Rate Limiting</h1>
-<p class="sub">Real INCR + EXPIRE pipeline against a live Valkey instance. Click fast and watch yourself get rate limited. Every latency is real.</p>
+<p class="sub">Protect your LLM APIs from abuse. Valkey counts requests atomically with INCR and auto-expires the counter with EXPIRE. The whole pipeline takes under 1ms.</p>
 
 <div class="stats">
 <div class="stat"><div class="n" style="color:#22c55e" id="nOk">0</div><div class="l">Allowed</div></div>
 <div class="stat"><div class="n" style="color:#ef4444" id="nNo">0</div><div class="l">Denied</div></div>
 <div class="stat"><div class="n" style="color:#a855f7" id="avgMs">-</div><div class="l">Avg Latency</div></div>
-<div class="stat"><div class="n" style="color:#888" id="ttlDisplay">-</div><div class="l">Window TTL</div></div>
 </div>
 
-<div class="panel">
-<h3>Fixed Window Rate Limiter</h3>
-<p style="font-size:13px;color:#888;margin-bottom:8px">Each click runs a real INCR + EXPIRE pipeline. Limit: 10 requests per 60-second window.</p>
+<div class="step active" id="s1">
+<span class="step-num">1</span><h3>Understand the pattern</h3>
+<p class="explain">Fixed-window rate limiting uses two Valkey commands in a pipeline:<br><br>
+<strong style="color:#e5e5e5">INCR</strong> key - atomically increments a counter. The key includes the user ID and the current time window.<br>
+<strong style="color:#e5e5e5">EXPIRE</strong> key 60 - sets the counter to auto-delete after the window ends.<br><br>
+If the counter exceeds the limit, the request is denied. When the window expires, the key disappears and the counter resets to zero. No cleanup jobs needed.</p>
+<button class="btn btn-p" id="b1" onclick="doStep1()">Got it, start the demo</button>
+<div id="r1"></div>
+</div>
+
+<div class="step locked" id="s2">
+<span class="step-num">2</span><h3>Send 5 requests (should all pass)</h3>
+<p class="explain">Limit is 10 requests per 60-second window. These 5 should all be allowed. Watch the bar fill up and the latencies in the sidebar.</p>
 <div class="bar-wrap"><div class="bar-fill" id="bar" style="width:0%"></div><div class="bar-label" id="barLabel">0 / 10</div></div>
-<div class="row">
-<button class="btn btn-p" onclick="check()">Send Request</button>
-<button class="btn btn-d" onclick="burst()">Burst 5x</button>
-<button class="btn btn-s" onclick="reset()">Reset</button>
-</div>
-<div class="ttl-bar">Window: <span id="ttlText">-</span><div style="background:#222;border-radius:2px;height:4px;margin-top:4px"><div class="inner" id="ttlBar" style="width:100%"></div></div></div>
+<button class="btn btn-p" id="b2" onclick="doStep2()">Send 5 requests</button>
+<div class="log" id="log2" style="margin-top:10px"></div>
 </div>
 
-<div class="panel">
-<h3>Latency Histogram</h3>
+<div class="step locked" id="s3">
+<span class="step-num">3</span><h3>Send 5 more (fills the limit)</h3>
+<p class="explain">This brings us to 10/10. The last request should just barely make it.</p>
+<button class="btn btn-p" id="b3" onclick="doStep3()">Send 5 more</button>
+<div class="log" id="log3" style="margin-top:10px"></div>
+</div>
+
+<div class="step locked" id="s4">
+<span class="step-num">4</span><h3>Send 1 more (should be DENIED)</h3>
+<p class="explain">We're at the limit. This request should be rejected. Valkey still runs INCR (the counter goes to 11) but the API checks the count and returns denied.</p>
+<button class="btn btn-d" id="b4" onclick="doStep4()">Send 1 more</button>
+<div id="r4"></div>
+</div>
+
+<div class="step locked" id="s5">
+<span class="step-num">5</span><h3>Try it yourself</h3>
+<p class="explain">Click as fast as you can. Reset to start over. The window auto-expires after 60 seconds.</p>
+<div class="bar-wrap"><div class="bar-fill" id="bar2" style="width:0%"></div><div class="bar-label" id="barLabel2">0 / 10</div></div>
+<div class="row">
+<button class="btn btn-p" onclick="doManual()">Send Request</button>
+<button class="btn btn-d" onclick="doBurst()">Burst 5x</button>
+<button class="btn btn-s" onclick="doReset()">Reset</button>
+</div>
 <div class="latencies" id="latencies"></div>
 <div style="font-size:11px;color:#555;margin-top:4px">Each bar = one request. Height = latency. Green = allowed, red = denied.</div>
+<div class="log" id="logFree" style="margin-top:10px"></div>
 </div>
 
-<div class="panel">
-<h3>Request Log</h3>
-<div class="log" id="log"></div>
-</div>
-
-<div class="panel">
-<h3>Valkey Commands</h3>
-<div class="cmd" id="cmd">// Click "Send Request" to start...</div>
-</div>
-
-<div class="panel" style="border-color:#333">
-<h3>Deploy This Yourself</h3>
-<pre class="cmd" style="color:#888">git clone https://github.com/meet-bhagdev/valkeyforai.git
+<div class="deploy">
+<strong>Deploy this yourself</strong>
+<code>git clone https://github.com/meet-bhagdev/valkeyforai.git
 cd valkeyforai/demo/live/deploy
-docker compose up --build</pre>
+docker compose up --build</code>
+</div>
+</div>
+
+<div class="sidebar">
+<div class="sidebar-panel">
+<h4>What Valkey Did</h4>
+<div class="cmd-log" id="cmd"><span class="comment"># Commands will appear as you go...</span></div>
+</div>
+<div class="sidebar-panel">
+<h4>How it works</h4>
+<p style="font-size:12px;color:#888;line-height:1.7">
+<strong style="color:#e5e5e5">Key format:</strong> <code style="color:#a855f7">rl:{user}:{window}</code><br>
+The window number is <code style="color:#a855f7">floor(now / 60)</code>, so it rotates every 60 seconds.<br><br>
+<strong style="color:#e5e5e5">Pipeline:</strong> INCR + EXPIRE run as a single round-trip. Atomic, no race conditions.<br><br>
+<strong style="color:#e5e5e5">Cost:</strong> ~0.5ms per check. At 10,000 req/s that's 5 seconds of Valkey time per second - trivial.
+</p>
+</div>
 </div>
 </div>
 
 <script>
 const API="https://2vipd3rcpj.execute-api.us-east-1.amazonaws.com";
-let nOk=0,nNo=0,latencies=[];
+let nOk=0,nNo=0,latencies=[],currentCount=0;
 
-function logCmd(t){const e=document.getElementById('cmd');e.textContent+='\n> '+t;e.scrollTop=e.scrollHeight}
+function log(text,isComment){const el=document.getElementById('cmd');const div=document.createElement('div');div.className=isComment?'comment':'new';div.textContent=isComment?'# '+text:'> '+text;el.appendChild(div);el.scrollTop=el.scrollHeight}
+function unlock(id){document.getElementById(id).classList.remove('locked');document.getElementById(id).classList.add('active')}
+function done(id){document.getElementById(id).classList.remove('active');document.getElementById(id).classList.add('done')}
 
-function updateBar(cur,lim){
-  const pct=Math.min(100,(cur/lim)*100);
-  const b=document.getElementById('bar');
-  b.style.width=pct+'%';
-  b.className='bar-fill'+(cur>lim?' full':'');
-  document.getElementById('barLabel').textContent=Math.min(cur,lim+1)+' / '+lim;
+function updateBar(id,labelId,cur,lim){
+  var pct=Math.min(100,(cur/lim)*100);
+  var b=document.getElementById(id);
+  b.style.width=pct+'%';b.className='bar-fill'+(cur>lim?' full':'');
+  document.getElementById(labelId).textContent=Math.min(cur,lim+1)+' / '+lim;
 }
 
 function addLatBar(ms,ok){
-  const h=Math.max(4,Math.min(60,ms*80));
-  const c=ok?'#22c55e':'#ef4444';
-  const el=document.getElementById('latencies');
-  el.innerHTML+='<div class="lat-bar" style="height:'+h+'px;background:'+c+'" title="'+ms+'ms"></div>';
-  if(el.children.length>80)el.removeChild(el.firstChild);
+  var h=Math.max(4,Math.min(50,ms*80));
+  var el=document.getElementById('latencies');
+  el.innerHTML+='<div class="lat-bar" style="height:'+h+'px;background:'+(ok?'#22c55e':'#ef4444')+'" title="'+ms+'ms"></div>';
+  if(el.children.length>60)el.removeChild(el.firstChild);
 }
 
-async function check(){
-  const r=await(await fetch(API+'/api/rate-limit/check',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user_id:'demo-user',max_requests:10,window:60})})).json();
-  r.commands.forEach(c=>logCmd(c));
-  latencies.push(r.latency_ms);
-  if(r.allowed){nOk++;document.getElementById('nOk').textContent=nOk}
+function logEntry(targetId,data){
+  var el=document.getElementById(targetId);
+  var cls=data.allowed?'ok':'no';
+  var icon=data.allowed?'OK':'DENIED';
+  el.innerHTML='<div class="log-entry '+cls+'"><span>'+(data.allowed?'&#10003;':'&#10007;')+' #'+data.current+' '+icon+' ('+data.remaining+' remaining)</span><span>'+data.latency_ms+'ms</span></div>'+el.innerHTML;
+}
+
+function updateStats(data){
+  latencies.push(data.latency_ms);
+  if(data.allowed){nOk++;document.getElementById('nOk').textContent=nOk}
   else{nNo++;document.getElementById('nNo').textContent=nNo}
-  const avg=(latencies.reduce((a,b)=>a+b,0)/latencies.length).toFixed(2);
+  var avg=(latencies.reduce(function(a,b){return a+b},0)/latencies.length).toFixed(2);
   document.getElementById('avgMs').textContent=avg+'ms';
-  document.getElementById('ttlDisplay').textContent=r.ttl+'s';
-  document.getElementById('ttlText').textContent=r.ttl+'s remaining';
-  document.getElementById('ttlBar').style.width=(r.ttl/60*100)+'%';
-  updateBar(r.current,r.limit);
-  addLatBar(r.latency_ms,r.allowed);
-  const log=document.getElementById('log');
-  const cls=r.allowed?'ok':'no';
-  const icon=r.allowed?'✅':'❌';
-  log.innerHTML='<div class="log-entry '+cls+'"><span>'+icon+' #'+r.current+(r.allowed?' ALLOWED':' DENIED')+' ('+r.remaining+' remaining)</span><span>'+r.latency_ms+'ms</span></div>'+log.innerHTML;
+  currentCount=data.current;
+  data.commands.forEach(function(c){log(c)});
 }
 
-async function burst(){for(let i=0;i<5;i++){await check();await new Promise(r=>setTimeout(r,30))}}
+async function sendOne(){
+  var r=await(await fetch(API+'/api/rate-limit/check',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user_id:'demo-walkthrough',max_requests:10,window:60})})).json();
+  updateStats(r);
+  return r;
+}
 
-async function reset(){
+async function doStep1(){
   await fetch(API+'/api/rate-limit/reset',{method:'POST'});
-  nOk=0;nNo=0;latencies=[];
-  document.getElementById('nOk').textContent=0;
-  document.getElementById('nNo').textContent=0;
-  document.getElementById('avgMs').textContent='-';
-  document.getElementById('ttlDisplay').textContent='-';
-  document.getElementById('ttlBar').style.width='100%';
-  updateBar(0,10);
-  document.getElementById('log').innerHTML='';
-  document.getElementById('latencies').innerHTML='';
-  logCmd('DEL demo:rl:*');
+  log('DEL demo:rl:*');
+  log('Rate limit reset. Window: 10 requests per 60 seconds.',true);
+  document.getElementById('r1').innerHTML='<div class="outcome" style="border-color:#a855f744"><div style="color:#a855f7;font-size:13px">Ready. Each request runs INCR + EXPIRE in a pipeline against Valkey. Limit: 10 requests per 60-second window.</div></div>';
+  done('s1');unlock('s2');document.getElementById('b1').textContent='Done';
+}
+
+async function doStep2(){
+  document.getElementById('b2').disabled=true;document.getElementById('b2').textContent='Sending...';
+  for(var i=0;i<5;i++){
+    var r=await sendOne();
+    logEntry('log2',r);
+    updateBar('bar','barLabel',r.current,r.limit);
+    await new Promise(function(res){setTimeout(res,80)});
+  }
+  log('5 requests sent, all allowed. Counter at '+currentCount+'/10.',true);
+  done('s2');unlock('s3');document.getElementById('b2').textContent='Done';
+}
+
+async function doStep3(){
+  document.getElementById('b3').disabled=true;document.getElementById('b3').textContent='Sending...';
+  for(var i=0;i<5;i++){
+    var r=await sendOne();
+    logEntry('log3',r);
+    updateBar('bar','barLabel',r.current,r.limit);
+    await new Promise(function(res){setTimeout(res,80)});
+  }
+  log('10/10 reached. Next request will be denied.',true);
+  done('s3');unlock('s4');document.getElementById('b3').textContent='Done';
+}
+
+async function doStep4(){
+  document.getElementById('b4').disabled=true;
+  var r=await sendOne();
+  updateBar('bar','barLabel',r.current,r.limit);
+  var msg=r.allowed
+    ?'<div class="outcome" style="border-color:#22c55e44"><div style="color:#22c55e">Allowed (unexpected - window may have rotated)</div></div>'
+    :'<div class="outcome" style="border-color:#ef444444;background:#ef444408"><div style="color:#ef4444;font-size:13px;font-weight:700">DENIED</div><div style="color:#888;font-size:13px;margin-top:6px">Request #'+r.current+' exceeded the limit of '+r.limit+'. Valkey still ran INCR (counter is now '+r.current+') but the application checked the count and rejected the request. The key auto-expires when the window ends - no cleanup needed.</div><div style="font-family:\'JetBrains Mono\',monospace;font-size:12px;color:#ef4444;margin-top:8px">Latency: '+r.latency_ms+'ms for the entire check</div></div>';
+  document.getElementById('r4').innerHTML=msg;
+  done('s4');unlock('s5');document.getElementById('b4').textContent='Done';
+}
+
+async function doManual(){
+  var r=await sendOne();
+  logEntry('logFree',r);
+  updateBar('bar2','barLabel2',r.current,r.limit);
+  addLatBar(r.latency_ms,r.allowed);
+}
+async function doBurst(){for(var i=0;i<5;i++){await doManual();await new Promise(function(res){setTimeout(res,30)})}}
+async function doReset(){
+  await fetch(API+'/api/rate-limit/reset',{method:'POST'});
+  nOk=0;nNo=0;latencies=[];currentCount=0;
+  document.getElementById('nOk').textContent=0;document.getElementById('nNo').textContent=0;document.getElementById('avgMs').textContent='-';
+  updateBar('bar2','barLabel2',0,10);
+  document.getElementById('logFree').innerHTML='';document.getElementById('latencies').innerHTML='';
+  log('DEL demo:rl:*');log('Counter reset.',true);
 }
 </script>
 </body>

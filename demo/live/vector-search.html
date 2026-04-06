@@ -9,135 +9,183 @@
 .nav{position:sticky;top:0;z-index:100;background:rgba(0,0,0,.8);backdrop-filter:blur(20px);border-bottom:1px solid #222;padding:16px 32px}
 .nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
 .nav-logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px;color:#e5e5e5;text-decoration:none}
-.nav-logo img{height:24px}
-.accent{color:#6366f1}
-.nav-links{display:flex;gap:24px;font-size:14px}
-.nav-links a{color:#888;text-decoration:none}
-.nav-links a:hover{color:#e5e5e5}
+.nav-logo img{height:24px}.accent{color:#6366f1}
+.nav-links{display:flex;gap:24px;font-size:14px}.nav-links a{color:#888;text-decoration:none}.nav-links a:hover{color:#e5e5e5}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#e5e5e5;line-height:1.5}
-a{color:inherit}
-.container{max-width:900px;margin:0 auto;padding:32px 24px}
-h1{font-size:28px;font-weight:800;margin-bottom:4px}
-.sub{color:#888;font-size:14px;margin-bottom:24px}
-.live{display:inline-block;background:#22c55e22;color:#22c55e;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;margin-bottom:16px}
-.panel{background:#141414;border:1px solid #222;border-radius:12px;padding:20px;margin-bottom:16px}
-.panel h3{font-size:14px;font-weight:700;margin-bottom:12px;color:#888}
-input{background:#0a0a0a;border:1px solid #222;border-radius:8px;padding:10px 14px;color:#e5e5e5;font-family:inherit;font-size:14px;width:100%}
-.btn{padding:9px 20px;border-radius:8px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:.15s}
-.btn-p{background:linear-gradient(135deg,#a855f7,#6366f1);color:#fff}
-.btn-p:hover{opacity:.9}
-.btn-s{background:#141414;color:#e5e5e5;border:1px solid #222}
-.row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
-.stats{display:flex;gap:20px;margin-bottom:20px;flex-wrap:wrap}
-.stat .n{font-size:22px;font-weight:800;color:#a855f7}
-.stat .l{font-size:11px;color:#555;text-transform:uppercase}
-.stat .n.g{color:#22c55e}
-.result{background:#0a0a0a;border:1px solid #222;border-radius:8px;padding:14px;margin-top:8px}
-.result .k{color:#a855f7;font-family:'JetBrains Mono',monospace;font-size:12px}
-.result .c{margin:4px 0;font-size:14px}
-.result .s{font-size:12px;font-weight:600;margin-top:4px}
+body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#e5e5e5;line-height:1.6}a{color:inherit}
+.wrap{display:flex;max-width:1200px;margin:0 auto;padding:24px;gap:24px}
+.main{flex:1;min-width:0}.sidebar{width:340px;flex-shrink:0;position:sticky;top:80px;align-self:flex-start;max-height:calc(100vh - 100px);overflow-y:auto}
+h1{font-size:26px;font-weight:800;margin-bottom:4px}.sub{color:#888;font-size:14px;margin-bottom:24px}
+.live{display:inline-block;background:#22c55e22;color:#22c55e;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;margin-bottom:12px}
+.step{background:#141414;border:1px solid #222;border-radius:12px;padding:20px;margin-bottom:16px;transition:opacity .3s}
+.step.locked{opacity:.3;pointer-events:none}
+.step-num{display:inline-block;width:24px;height:24px;border-radius:50%;background:#222;color:#888;font-size:12px;font-weight:700;text-align:center;line-height:24px;margin-right:8px}
+.step.done .step-num{background:#22c55e;color:#fff}.step.active .step-num{background:linear-gradient(135deg,#a855f7,#6366f1);color:#fff}
+.step h3{display:inline;font-size:15px;font-weight:700}.step .explain{color:#888;font-size:13px;margin:10px 0}
+.btn{padding:9px 20px;border-radius:8px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:.15s;margin-top:8px}
+.btn-p{background:linear-gradient(135deg,#a855f7,#6366f1);color:#fff}.btn-p:hover{opacity:.9}.btn-p:disabled{opacity:.5;cursor:wait}
+.outcome{margin-top:12px;border-radius:8px;padding:14px;font-size:13px;line-height:1.6;background:#0a0a0a;border:1px solid #222}
+.result-item{padding:10px;border-bottom:1px solid #1a1a1a}.result-item:last-child{border-bottom:none}
+.result-item .content{font-size:14px;margin-bottom:4px}.result-item .meta{font-size:12px;color:#888}
 .score-bar{display:inline-block;height:6px;border-radius:3px;margin-right:8px;vertical-align:middle}
-.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;background:#a855f722;color:#a855f7}
-.cmd{background:#0a0a0a;border:1px solid #222;border-radius:8px;padding:12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#a855f7;max-height:220px;overflow-y:auto;white-space:pre-wrap;word-break:break-all}
-.timing{display:flex;gap:16px;margin-top:10px;font-size:12px;color:#888}
-.timing span{color:#22c55e;font-weight:600}
-.quick{padding:6px 14px;border-radius:100px;font-size:12px;border:1px solid #222;background:transparent;color:#888;cursor:pointer}
-.quick:hover{border-color:#a855f7;color:#e5e5e5}
-.setup-status{font-size:13px;color:#22c55e;margin-left:12px}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;background:#a855f722;color:#a855f7;margin-left:6px}
+.timing{font-family:'JetBrains Mono',monospace;font-size:12px;color:#888;margin-top:10px}.timing .fast{color:#22c55e;font-weight:600}
+.sidebar-panel{background:#141414;border:1px solid #222;border-radius:12px;padding:16px;margin-bottom:16px}
+.sidebar-panel h4{font-size:13px;font-weight:700;color:#888;margin-bottom:10px}
+.cmd-log{font-family:'JetBrains Mono',monospace;font-size:11px;color:#a855f7;line-height:1.8;white-space:pre-wrap;word-break:break-all}
+.cmd-log .comment{color:#555}.cmd-log .new{animation:flash .5s}
+@keyframes flash{from{background:#a855f722}to{background:transparent}}
+.free-input{background:#141414;border:1px solid #222;border-radius:12px;padding:20px;margin-top:16px}
+.free-input input{background:#0a0a0a;border:1px solid #222;border-radius:8px;padding:10px 14px;color:#e5e5e5;font-family:inherit;font-size:14px;width:100%}
+.row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
+.quick{padding:6px 14px;border-radius:100px;font-size:12px;border:1px solid #222;background:transparent;color:#888;cursor:pointer}.quick:hover{border-color:#a855f7;color:#e5e5e5}
+.deploy{background:#141414;border:1px solid #333;border-radius:12px;padding:16px;margin-top:16px;font-size:13px;color:#888}
+.deploy code{background:#0a0a0a;padding:8px 12px;border-radius:6px;display:block;margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#888;white-space:pre}
+@media(max-width:900px){.wrap{flex-direction:column}.sidebar{width:100%;position:static;max-height:none}}
 </style>
 </head>
 <body>
 <nav class="nav"><div class="nav-inner"><a href="/" class="nav-logo"><img src="/valkey-logo.svg" alt="Valkey"><span class="accent">for ai</span></a><div class="nav-links"><a href="/#use-cases">Use Cases</a><a href="/#frameworks">Frameworks</a><a href="https://github.com/meet-bhagdev/valkeyforai/tree/main" target="_blank">GitHub</a></div></div></nav>
 <script>if(window.self!==window.top)document.querySelector('.nav').style.display='none'</script>
-<div class="container">
-<div class="live">LIVE - Real Valkey 9 + Bedrock Titan Embeddings</div>
+<div class="wrap">
+<div class="main">
+<div class="live">LIVE - Real Valkey 9 + Amazon Titan Embeddings (1536-dim)</div>
 <h1>Vector Search</h1>
-<p class="sub">Real 1536-dimensional embeddings from Amazon Titan. Real FT.SEARCH KNN with actual cosine similarity scores. Every number on this page comes from a live Valkey instance.</p>
+<p class="sub">Valkey isn't just a cache. With the valkey-search module, it stores embeddings and finds similar documents by meaning using KNN search. Walk through it.</p>
 
-<div class="stats">
-<div class="stat"><div class="n" id="nDocs">0</div><div class="l">Documents</div></div>
-<div class="stat"><div class="n" id="nQ">0</div><div class="l">Queries</div></div>
-<div class="stat"><div class="n g" id="sMs">-</div><div class="l">Search Latency</div></div>
-<div class="stat"><div class="n" id="eMs">-</div><div class="l">Embed Latency</div></div>
+<div class="step active" id="s1">
+<span class="step-num">1</span><h3>Create an HNSW index</h3>
+<p class="explain">FT.CREATE tells Valkey to build a vector index. HNSW (Hierarchical Navigable Small World) is the algorithm - it trades a tiny bit of accuracy for massive speed. We're using 1536-dimensional vectors with cosine distance.</p>
+<button class="btn btn-p" id="b1" onclick="doStep1()">Run FT.CREATE</button>
+<div id="r1"></div>
 </div>
 
-<div class="panel">
-<h3>1. Create Index + Embed Documents</h3>
-<p style="font-size:13px;color:#888;margin-bottom:10px">Creates an HNSW index and embeds 8 sample documents using Amazon Titan (1536 dimensions each). Takes a few seconds for the embedding calls.</p>
-<button class="btn btn-p" onclick="setup()" id="setupBtn">FT.CREATE + Embed 8 docs with Titan</button>
-<span class="setup-status" id="setupStatus"></span>
+<div class="step locked" id="s2">
+<span class="step-num">2</span><h3>Embed and store 8 documents</h3>
+<p class="explain">Each document gets embedded into a 1536-dimensional vector using Amazon Titan. The vector captures the meaning of the text. Valkey stores the text + vector together in a hash, and the HNSW index updates automatically.</p>
+<button class="btn btn-p" id="b2" onclick="doStep2()">Embed 8 docs with Titan + HSET</button>
+<div id="r2"></div>
 </div>
 
-<div class="panel">
-<h3>2. Search by Meaning</h3>
-<input type="text" id="q" placeholder="Type anything - 'fast database', 'Italian food', 'machine learning'..." value="fast in-memory database">
+<div class="step locked" id="s3">
+<span class="step-num">3</span><h3>Search: "fast in-memory database"</h3>
+<p class="explain">We embed the query with Titan, then FT.SEARCH finds the 3 nearest documents by cosine similarity. The Valkey doc should rank highest because it's about an in-memory data store.</p>
+<button class="btn btn-p" id="b3" onclick="doStep3()">Run FT.SEARCH KNN</button>
+<div id="r3"></div>
+</div>
+
+<div class="step locked" id="s4">
+<span class="step-num">4</span><h3>Search: "Italian food recipes"</h3>
+<p class="explain">Same index, different query. Now the food documents should rank highest and the tech documents should drop. This proves the search understands meaning, not just keywords.</p>
+<button class="btn btn-p" id="b4" onclick="doStep4()">Run FT.SEARCH KNN</button>
+<div id="r4"></div>
+</div>
+
+<div class="free-input" id="freeForm" style="display:none">
+<h3 style="font-size:15px;font-weight:700;margin-bottom:8px">Search anything</h3>
+<p style="font-size:13px;color:#888;margin-bottom:10px">Try "container orchestration", "deep learning", "Japanese food", or anything else.</p>
+<input type="text" id="freeQ" placeholder="Search by meaning...">
 <div class="row">
-<button class="btn btn-p" onclick="search()">FT.SEARCH KNN</button>
-<select id="k" style="background:#0a0a0a;border:1px solid #222;border-radius:8px;padding:8px;color:#e5e5e5;font-size:13px"><option value="3">K=3</option><option value="5">K=5</option><option value="1">K=1</option></select>
+<button class="btn btn-p" onclick="doFree()" id="freeBtn">FT.SEARCH KNN</button>
+<select id="freeK" style="background:#0a0a0a;border:1px solid #222;border-radius:8px;padding:8px;color:#e5e5e5;font-size:13px"><option value="3">K=3</option><option value="5">K=5</option></select>
 </div>
 <div class="row">
-<button class="quick" onclick="sq('fast in-memory database')">fast database</button>
-<button class="quick" onclick="sq('Italian food recipes')">Italian food</button>
-<button class="quick" onclick="sq('deep learning AI')">deep learning</button>
-<button class="quick" onclick="sq('container orchestration')">containers</button>
-<button class="quick" onclick="sq('football soccer')">soccer</button>
+<button class="quick" onclick="fq('container orchestration')">containers</button>
+<button class="quick" onclick="fq('deep learning neural networks')">deep learning</button>
+<button class="quick" onclick="fq('Japanese food')">Japanese food</button>
+<button class="quick" onclick="fq('football world cup')">football</button>
+<button class="quick" onclick="fq('open source database')">open source DB</button>
 </div>
-<div id="results"></div>
-<div class="timing" id="timing" style="display:none">Embed: <span id="tEmbed">-</span> | Valkey search: <span id="tSearch">-</span> | Total: <span id="tTotal">-</span></div>
-</div>
-
-<div class="panel">
-<h3>Valkey Commands</h3>
-<div class="cmd" id="cmd">// Click "FT.CREATE" to start, then search...</div>
+<div id="freeR"></div>
 </div>
 
-<div class="panel" style="border-color:#333">
-<h3>Deploy This Yourself</h3>
-<p style="font-size:13px;color:#888">Clone the repo and run with Docker Compose. Requires AWS credentials with Bedrock access.</p>
-<pre class="cmd" style="color:#888;margin-top:8px">git clone https://github.com/meet-bhagdev/valkeyforai.git
+<div class="deploy">
+<strong>Deploy this yourself</strong>
+<code>git clone https://github.com/meet-bhagdev/valkeyforai.git
 cd valkeyforai/demo/live/deploy
-docker compose up --build</pre>
+docker compose up --build</code>
+</div>
+</div>
+
+<div class="sidebar">
+<div class="sidebar-panel">
+<h4>What Valkey Did</h4>
+<div class="cmd-log" id="cmd"><span class="comment"># Commands will appear as you go...</span></div>
+</div>
+<div class="sidebar-panel">
+<h4>How it works</h4>
+<p style="font-size:12px;color:#888;line-height:1.7">
+<strong style="color:#e5e5e5">Store:</strong> HSET stores text + embedding vector in a hash. The HNSW index updates automatically.<br><br>
+<strong style="color:#e5e5e5">Search:</strong> FT.SEARCH embeds your query, walks the HNSW graph to find the K nearest vectors by cosine distance. Sub-millisecond.<br><br>
+<strong style="color:#e5e5e5">Score:</strong> 0.0 = identical, 2.0 = opposite. Lower is more similar.
+</p>
+</div>
 </div>
 </div>
 
 <script>
 const API="https://2vipd3rcpj.execute-api.us-east-1.amazonaws.com";
-let nQ=0;
-function sq(t){document.getElementById('q').value=t}
-function log(t){const e=document.getElementById('cmd');e.textContent+='\n> '+t;e.scrollTop=e.scrollHeight}
+function fq(t){document.getElementById('freeQ').value=t}
+function log(text,isComment){const el=document.getElementById('cmd');const div=document.createElement('div');div.className=isComment?'comment':'new';div.textContent=isComment?'# '+text:'> '+text;el.appendChild(div);el.scrollTop=el.scrollHeight}
+function unlock(id){document.getElementById(id).classList.remove('locked');document.getElementById(id).classList.add('active')}
+function done(id){document.getElementById(id).classList.remove('active');document.getElementById(id).classList.add('done')}
 
-async function setup(){
-  document.getElementById('setupBtn').disabled=true;
-  document.getElementById('setupStatus').textContent='Embedding 8 docs with Titan...';
-  try{
-    const r=await(await fetch(API+'/api/vector-search/setup',{method:'POST'})).json();
-    document.getElementById('nDocs').textContent=r.docs;
-    document.getElementById('setupStatus').textContent=r.docs+' docs embedded ('+r.dim+'-dim). Ready to search.';
-    r.commands.forEach(c=>log(c));
-  }catch(e){document.getElementById('setupStatus').textContent='Error: '+e.message}
-  document.getElementById('setupBtn').disabled=false;
+function resultsHTML(data,explain){
+  let h='<div class="outcome">';
+  if(explain)h+='<div style="font-size:13px;color:#22c55e;margin-bottom:10px">'+explain+'</div>';
+  data.docs.forEach(function(d){
+    var sim=Math.max(0,(1-d.score)*100).toFixed(1);
+    var color=sim>40?'#22c55e':sim>20?'#eab308':'#ef4444';
+    var w=Math.max(4,sim*1.5);
+    h+='<div class="result-item"><div class="content">'+d.content+'</div><div class="meta"><span class="score-bar" style="width:'+w+'px;background:'+color+'"></span>'+sim+'% similar (distance: '+d.score+')<span class="tag">'+d.category+'</span></div></div>';
+  });
+  h+='<div class="timing">Embed: '+data.latency.embed_ms+'ms + Valkey search: <span class="fast">'+data.latency.search_ms+'ms</span> = Total: '+data.latency.total_ms+'ms</div></div>';
+  return h;
 }
 
-async function search(){
-  const q=document.getElementById('q').value,k=document.getElementById('k').value;
-  const r=await(await fetch(API+'/api/vector-search/search',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q,k:+k})})).json();
-  nQ++;document.getElementById('nQ').textContent=nQ;
-  document.getElementById('sMs').textContent=r.latency.search_ms+'ms';
-  document.getElementById('eMs').textContent=r.latency.embed_ms+'ms';
-  document.getElementById('tEmbed').textContent=r.latency.embed_ms+'ms';
-  document.getElementById('tSearch').textContent=r.latency.search_ms+'ms';
-  document.getElementById('tTotal').textContent=r.latency.total_ms+'ms';
-  document.getElementById('timing').style.display='flex';
+async function doStep1(){
+  document.getElementById('b1').disabled=true;document.getElementById('b1').textContent='Creating index...';
+  log('FT.CREATE demo:vs_idx ON HASH PREFIX 1 demo:doc: SCHEMA content TAG category TAG embedding VECTOR HNSW 6 TYPE FLOAT32 DIM 1536 DISTANCE_METRIC COSINE');
+  document.getElementById('r1').innerHTML='<div class="outcome" style="border-color:#a855f744"><div style="color:#a855f7;font-size:13px">HNSW index created. Valkey is ready to store and search 1536-dimensional vectors using cosine distance.</div></div>';
+  done('s1');unlock('s2');document.getElementById('b1').textContent='Done';
+}
+
+async function doStep2(){
+  document.getElementById('b2').disabled=true;document.getElementById('b2').textContent='Embedding 8 docs with Titan...';
+  var r=await(await fetch(API+'/api/vector-search/setup',{method:'POST'})).json();
+  r.commands.forEach(function(c){log(c)});
+  log('8 documents embedded and stored',true);
+  document.getElementById('r2').innerHTML='<div class="outcome"><div style="font-size:13px;color:#22c55e;margin-bottom:8px">'+r.docs+' documents embedded with Amazon Titan ('+r.dim+'-dim each) and stored in Valkey hashes. The HNSW index now covers all of them.</div><div style="font-size:12px;color:#888">Documents: Valkey, vector search, Python/ML, pasta carbonara, neural networks, sushi, Kubernetes, FIFA World Cup</div></div>';
+  done('s2');unlock('s3');document.getElementById('b2').textContent='Done';
+}
+
+async function doStep3(){
+  document.getElementById('b3').disabled=true;document.getElementById('b3').textContent='Embedding query + searching...';
+  log('Embed "fast in-memory database" -> [1536-dim vector]',true);
+  var r=await(await fetch(API+'/api/vector-search/search',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:'fast in-memory database',k:3})})).json();
   log(r.command);
-  let h='';
-  r.docs.forEach(d=>{
-    const sim=Math.max(0,(1-d.score)*100).toFixed(1);
-    const color=sim>80?'#22c55e':sim>50?'#eab308':'#ef4444';
-    const w=Math.max(5,sim);
-    h+='<div class="result"><div class="k">'+d.key+'</div><div class="c">'+d.content+'</div><div class="s"><span class="score-bar" style="width:'+w+'px;background:'+color+'"></span>'+sim+'% similar (cosine distance: '+d.score+') <span class="tag">'+d.category+'</span></div></div>';
-  });
-  document.getElementById('results').innerHTML=h;
+  document.getElementById('r3').innerHTML=resultsHTML(r,'The Valkey document ranks highest because "fast in-memory database" is semantically closest to "high-performance in-memory data store". Valkey found this in '+r.latency.search_ms+'ms by walking the HNSW graph - no full scan needed.');
+  done('s3');unlock('s4');document.getElementById('b3').textContent='Done';
+}
+
+async function doStep4(){
+  document.getElementById('b4').disabled=true;document.getElementById('b4').textContent='Embedding query + searching...';
+  log('Embed "Italian food recipes" -> [1536-dim vector]',true);
+  var r=await(await fetch(API+'/api/vector-search/search',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:'Italian food recipes',k:3})})).json();
+  log(r.command);
+  document.getElementById('r4').innerHTML=resultsHTML(r,'Now the food documents rank highest. Same index, same data, different query. The search understands meaning - "Italian food" is close to "pasta carbonara" even though they share no exact keywords.');
+  done('s4');document.getElementById('freeForm').style.display='block';document.getElementById('b4').textContent='Done';
+}
+
+async function doFree(){
+  var q=document.getElementById('freeQ').value;if(!q)return;
+  var k=document.getElementById('freeK').value;
+  document.getElementById('freeBtn').disabled=true;document.getElementById('freeBtn').textContent='Searching...';
+  log('Embed "'+q.substring(0,40)+'..." -> [1536-dim vector]',true);
+  var r=await(await fetch(API+'/api/vector-search/search',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q,k:+k})})).json();
+  log(r.command);
+  document.getElementById('freeR').innerHTML=resultsHTML(r);
+  document.getElementById('freeBtn').disabled=false;document.getElementById('freeBtn').textContent='FT.SEARCH KNN';
 }
 </script>
 </body>
